@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<!-- Load jQuery, Taffydb, Vue and Sheetrock from CDNJS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/taffydb/2.7.3/taffy.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/1.1.4/dist/sheetrock.min.js"></script>
+	</head>
+	<body>
+		<table id="statistics" class="table table-condensed table-striped"></table>
+	</body>
+	<footer>
+		<script>
+			var myCallback = function (error, options, response) {
+				if (!error) {
+					var products = TAFFY([
+						{ "item"  : 1,
+							"name"  : "Blue Ray Player",
+							"price" : 99.99
+						},
+						{ "item"  : 2,
+							"name"  : "3D TV",
+							"price" : 1799.99
+						}
+					]);
+					debugger;
+
+					// where item is equal to 1
+					var item1 = products({item:1}).first();
+					console.log(response.rows);
+				}
+			};
+			// making sure it will work even if order changes
+			var idIndex = response.rows[0].labels.indexOf('id');
+			var contentIndex = response.rows[0].labels.indexOf('content');
+			var typeIndex = response.rows[0].labels.indexOf('type');
+			var dependsIndex = response.rows[0].labels.indexOf('depends');
+			var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
+
+			var collection = response.rows.slice(1, response.rows.length); // remove labels
+			var docObject = Object();
+			$(collection).each(function(){
+				var tempObject = Object();
+				tempObject.id = this.cellsArray[idIndex];
+				tempObject.content = this.cellsArray[contentIndex];
+				tempObject.type = this.cellsArray[typeIndex];
+				tempObject.depends = this.cellsArray[dependsIndex];
+				tempObject.mandatory = this.cellsArray[mandatoryIndex];
+
+
+				if (tempObject.depends !== "")
+				{
+
+				}
+			});
+			sheetrock({
+				url: "https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/edit#gid=0",
+				callback: myCallback
+			});
+		</script>
+	</footer>
+</html>
