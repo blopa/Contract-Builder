@@ -1,8 +1,7 @@
 <html>
 	<head>
-		<!-- Load jQuery, Taffydb, Vue and Sheetrock from CDNJS -->
+		<!-- Load jQuery, Vue and Sheetrock from CDNJS -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/taffydb/2.7.3/taffy.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/1.1.4/dist/sheetrock.min.js"></script>
 	</head>
@@ -12,24 +11,11 @@
 	<footer>
 		<script>
 			// globals
-			var docObject = {};
+			var docObject = [];
 			var collection;
 			var myCallback = function (error, options, response) {
 				if (!error) {
-					var products = TAFFY([
-						{ "item"  : 1,
-							"name"  : "Blue Ray Player",
-							"price" : 99.99
-						},
-						{ "item"  : 2,
-							"name"  : "3D TV",
-							"price" : 1799.99
-						}
-					]);
-
-					// where item is equal to 1
-					var item1 = products({item:1}).first();
-					console.log(response.rows);
+					//console.log(response.rows);
 					// making sure it will work even if order changes
 					var idIndex = response.rows[0].labels.indexOf('id');
 					var descriptionIndex = response.rows[0].labels.indexOf('description');
@@ -39,7 +25,10 @@
 					var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
 
 					var collection = response.rows.slice(1, response.rows.length); // remove labels
-					$(collection).each(function(){
+					var collNoDependency = collection.filter(function(item){ // get all objects that has no dependency
+						return (item.cellsArray[dependsIndex] === '');
+					});
+					$(collNoDependency).each(function(){
 						var tempObject = Object();
 						tempObject.id = this.cellsArray[idIndex];
 						tempObject.description = this.cellsArray[descriptionIndex];
@@ -47,15 +36,31 @@
 						tempObject.type = this.cellsArray[typeIndex];
 						tempObject.depends = this.cellsArray[dependsIndex];
 						tempObject.mandatory = this.cellsArray[mandatoryIndex];
+						tempObject.childs = [];
 
-						if (tempObject.depends !== "")
-						{
-							var dependObject = collection.filter(function(item){ // get all objects that has dependency
-								return (item.cellsArray[dependsIndex] === tempObject.depends);
-							});
-							debugger;
-						}
+						docObject.push(tempObject);
 					});
+					var collDependency = collection.filter(function(item){ // get all objects that has dependency
+						return (item.cellsArray[dependsIndex] !== '');
+					});
+					$(collDependency).each(function(){
+						var tempObject = Object();
+						tempObject.id = this.cellsArray[idIndex];
+						tempObject.description = this.cellsArray[descriptionIndex];
+						tempObject.content = this.cellsArray[contentIndex];
+						tempObject.type = this.cellsArray[typeIndex];
+						tempObject.depends = this.cellsArray[dependsIndex];
+						tempObject.mandatory = this.cellsArray[mandatoryIndex];
+						tempObject.childs = [];
+
+						docObject.filter(function(item){ // get all objects that has dependency
+							if (item.id === tempObject.depends)
+								item.childs.push(tempObject);
+						});
+					});
+
+					debugger;
+					localStorage.setItem('testObject', JSON.stringify(docObject));
 				}
 			};
 			sheetrock({
