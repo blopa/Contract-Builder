@@ -32,6 +32,7 @@
 					console.log(response.rows);
 					// making sure it will work even if order changes
 					var idIndex = response.rows[0].labels.indexOf('id');
+					var descriptionIndex = response.rows[0].labels.indexOf('description');
 					var contentIndex = response.rows[0].labels.indexOf('content');
 					var typeIndex = response.rows[0].labels.indexOf('type');
 					var dependsIndex = response.rows[0].labels.indexOf('depends');
@@ -41,6 +42,7 @@
 					$(collection).each(function(){
 						var tempObject = Object();
 						tempObject.id = this.cellsArray[idIndex];
+						tempObject.description = this.cellsArray[descriptionIndex];
 						tempObject.content = this.cellsArray[contentIndex];
 						tempObject.type = this.cellsArray[typeIndex];
 						tempObject.depends = this.cellsArray[dependsIndex];
@@ -48,7 +50,7 @@
 
 						if (tempObject.depends !== "")
 						{
-							var dependObject = collection.filter(function(item){
+							var dependObject = collection.filter(function(item){ // get all objects that has dependency
 								return (item.cellsArray[dependsIndex] === tempObject.depends);
 							});
 							debugger;
