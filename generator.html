@@ -4,9 +4,34 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/1.1.4/dist/sheetrock.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.css">
+
+		<style>
+			body {
+				background-color: #e3f5df;
+			}
+			#start-btn{
+				margin-top: 200px !important;
+				height: 100px;
+				width: 200px;
+			}
+			#main .btn{
+				margin: 0 auto;
+				display: block;
+			}
+			#main {
+				width: 900px;
+				margin: 0 auto;
+			}
+		</style>
 	</head>
 	<body>
-		<table id="statistics" class="table table-condensed table-striped"></table>
+		<div id="main">
+			<!--all content goes here-->
+			<div id="content">
+
+			</div>
+		</div>
 	</body>
 	<footer>
 		<script>
@@ -24,7 +49,7 @@
 					var dependsIndex = response.rows[0].labels.indexOf('depends');
 					var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
 
-					var collection = response.rows.slice(1, response.rows.length); // remove labels
+					collection = response.rows.slice(1, response.rows.length); // remove labels
 					var collNoDependency = collection.filter(function(item){ // get all objects that has no dependency
 						return (item.cellsArray[dependsIndex] === '');
 					});
@@ -61,12 +86,19 @@
 
 					debugger;
 					localStorage.setItem('testObject', JSON.stringify(docObject));
+
+					var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
+					$("#content").append(startBtn);
 				}
 			};
 			sheetrock({
 				url: "https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/edit#gid=0",
 				callback: myCallback
 			});
+
+			function startDecisions(){
+				window.alert('hello world');
+			}
 		</script>
 	</footer>
 </html>
