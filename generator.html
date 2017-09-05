@@ -23,6 +23,13 @@
 				width: 900px;
 				margin: 0 auto;
 			}
+			@media print
+			{
+				.no-print, .no-print *
+				{
+					display: none !important;
+				}
+			}
 		</style>
 	</head>
 	<body>
@@ -68,6 +75,7 @@
 					var collDependency = collection.filter(function(item){ // get all objects that has dependency
 						return (item.cellsArray[dependsIndex] !== '');
 					});
+					// TODO add while to deep decision tree
 					$(collDependency).each(function(){
 						var tempObject = Object();
 						tempObject.id = this.cellsArray[idIndex];
@@ -84,8 +92,8 @@
 						});
 					});
 
-					debugger;
-					localStorage.setItem('testObject', JSON.stringify(docObject));
+					//debugger;
+					localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
 
 					var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
 					$("#content").append(startBtn);
@@ -96,8 +104,60 @@
 				callback: myCallback
 			});
 
+			function toggleItem(id){
+				$('#' + id).toggle();
+			}
 			function startDecisions(){
 				window.alert('hello world');
+				$("#start-btn").toggle();
+				var decisionsDiv = $('<div/>').attr({id:'decisions'});
+				var decisionsTree = JSON.parse(localStorage.getItem('CG-decisionsTree'));
+				// TODO add while to deep decision tree
+				$(decisionsTree).each(function(){
+					var id = 'div-' + this.id;
+					var innerDiv = $('<div/>').attr({class:'inner-div', id:id});
+					var toggle = $('<input/>').attr({type:'checkbox', class:'no-print', onchange:"toggleItem('" + id + "')"});
+					var description = $("<h3>").text('Description: ' + this.description).attr({class:'no-print'});
+					var htmlTag = "";
+					if (this.type === 'paragraph')
+						htmlTag = "<p>";
+					else if (this.type === 'title')
+						htmlTag = "<h1>";
+					else if (this.type === 'subtitle')
+						htmlTag = "<h2>";
+
+					var paragraph = $(htmlTag).text(this.content);
+					innerDiv.append(description).append(paragraph);
+					if (this.childs.length > 0)
+					{
+						$(this.childs).each(function(){
+							var id = 'div-' + this.id;
+							var tempDiv = $('<div/>').attr({class:'inner-div', id:id});
+							var innerToggle = $('<input/>').attr({type:'checkbox', class:'no-print', onchange:"toggleItem('" + id + "')"});
+							var description = $("<h3>").text('Description: ' + this.description).attr({class:'no-print'});
+							var htmlTag = "";
+							if (this.type === 'paragraph')
+								htmlTag = "<p>";
+							else if (this.type === 'title')
+								htmlTag = "<h1>";
+							else if (this.type === 'subtitle')
+								htmlTag = "<h2>";
+
+							var paragraph = $(htmlTag).text(this.content);
+							tempDiv.append(description).append(paragraph);
+							innerDiv.append(innerToggle).append(tempDiv);
+						});
+					}
+					decisionsDiv.append(toggle).append(innerDiv);
+				});
+				$("#content").append(decisionsDiv);
+				var printBtn = $('<input/>').attr({class:'btn btn-success no-print', id:'print-btn', type: 'button', value:'Print', onClick:'preparePrint()'});
+				$("#decisions").append(printBtn);
+			}
+			function preparePrint()
+			{
+
+				window.print();
 			}
 		</script>
 	</footer>
