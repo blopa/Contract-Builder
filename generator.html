@@ -26,15 +26,29 @@
 				/*background: #ffffff;*/
 			}
 			#vars-menu {
+				display: none;
 				width: 400px;
 				padding: 5px;
 				background: rgb(221, 221, 221);
 				margin-left: 210mm;
 				position: absolute;
 			}
+			#print {
+				width: 100%;
+				margin-bottom: 10px;
+			}
 			#main {
 				width: 900px;
 				margin: 0 auto;
+			}
+			#parse-sheet {
+				margin-top: 200px;
+			}
+			#sheet-input {
+				width: 100%;
+			}
+			.align-center {
+				text-align: center;
 			}
 			.vue-var {
 				float: right;
@@ -59,7 +73,7 @@
 
 			</div>
 			<div id="vars-menu" class="no-print">
-
+				<input id="print" type="button" onclick="preparePrint()" value="Print!">
 			</div>
 		</div>
 	</body>
@@ -166,19 +180,51 @@
 					$("#content").append(startBtn);
 				}
 			};
-			sheetrock({
-				url: "https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/edit#gid=0",
-				callback: myCallback
-			});
+			var sheetId = getURLParam("sheetId"); // 1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY
+			if (sheetId)
+			{
+				sheetrock({
+					url: "https://docs.google.com/spreadsheets/d/" + sheetId + "/edit#gid=0",
+					callback: myCallback
+				});
+			}
+			else{
+				var innerDiv = $('<div/>').attr({id:'parse-sheet'});
+				var paragraph = $('<p>').text("Paste your spreadsheet URL").attr({class:'align-center'});
+				var input = $('<input/>').attr({type:'text', id:'sheet-input', placeholder:'Example: https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/edit#gid=0'});
+				var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'sheet-btn', type: 'button', value:'Go!', onClick:'parseSpreadsheet()'});
+				paragraph.append(input);
+				innerDiv.append(paragraph).append(startBtn);
+				$("#content").append(innerDiv);
+			}
 
-			function toggleItem(id){
-				$('#' + id).toggle();
+			function parseSpreadsheet()
+			{
+				debugger;
+				var resourceUrl = $("#sheet-input").val();
+				var spreadsheetId = new RegExp("/spreadsheets/d/([a-zA-Z0-9-_]+)").exec(resourceUrl)[1];
+				var url = window.location.href;
+				if (url.indexOf('?') > -1){
+					url += '&sheetId=' + spreadsheetId;
+				}
+				else{
+					url += '?sheetId=' + spreadsheetId;
+				}
+				window.location.href = url;
+			}
+//			function toggleItem(id){
+//				$('#' + id).toggle();
+//			}
+
+			function getURLParam(name){
+				return (location.search.split(name + '=')[1] || '').split('&')[0];
 			}
 
 			function startDecisions(){
 				//window.alert('hello world');
 				//debugger;
 				$("#start-btn").toggle();
+				$("#vars-menu").show();
 				var decisionsTree = JSON.parse(localStorage.getItem('CG-decisionsTree'));
 				var decisionsDiv = $('<div/>').attr({id:'decisions'});
 				var pickOption = $('<div/>').attr({id:'pick-option'});
@@ -200,21 +246,34 @@
 				else if (item.type === 'subtitle')
 					htmlTag = "<h2>";
 
+				var content = $(htmlTag).text(item.content);
+				innerDiv.append(content);
+				decisionsDiv.append(innerDiv);
+
 				var match = item.content.match(/{{\s*[\w\.]+\s*}}/g);
 				if (match)
 				{
 					var vueTemp = match.map(function(x) { return x.match(/[\w\.]+/)[0]; });
 					if (vueTemp.length > 0)
 					{
-						updateVarsMenu(vueTemp);
+						updateVarsMenu(vueTemp, item.id);
 					}
 				}
-				var content = $(htmlTag).text(item.content);
-				innerDiv.append(content);
-				decisionsDiv.append(innerDiv);
 			}
 
-			function updateVarsMenu(arr)
+			function updateVarsValue(data){
+				debugger;
+				var content = document.getElementById("content");
+				var classes = content.getElementsByClassName(data.placeholder);
+				var len = Object.keys(classes).length;
+				var val = data.value;
+				if (val === "")
+					val = data.placeholder;
+				for (var i = 0; i < len; i++)
+					classes[i].innerText = val;
+			}
+
+			function updateVarsMenu(arr, id)
 			{
 				var vueVars = JSON.parse(localStorage.getItem('CG-vueVars'));
 				var newVars = $(arr).not(vueVars).get();
@@ -222,13 +281,14 @@
 					var varName = "{{" + this + "}}";
 					var varDiv = $('<div/>').attr({id:'var_' + this});
 					var paragraph = $('<p>').text(varName);
-					var input = $('<input/>').attr({type:'text', class:'vue-var', placeholder:varName ,onchange:""});
+					var input = $('<input/>').attr({type:'text', class:'vue-var', placeholder:varName, oninput:"updateVarsValue(this)"});
 					paragraph.append(input);
 					varDiv.append(paragraph);
 					$("#vars-menu").append(varDiv);
 					var pattern = new RegExp(varName, 'g');
-					var newHTML = $("#content").html().replace(pattern, '<abbr class="' + varName + '">' + varName + '</abbr>');
-					$("#content").html(newHTML);
+					var content = $("#" + id);
+					var newHTML = content.html().replace(pattern, '<abbr class="' + varName + '">' + varName + '</abbr>');
+					content.html(newHTML);
 				});
 				$.extend(vueVars, arr);
 				localStorage.setItem('CG-vueVars', JSON.stringify(vueVars));
