@@ -19,9 +19,29 @@
 				margin: 0 auto;
 				display: block;
 			}
+			#content {
+				width: 210mm;
+				padding-left: 0;
+				float: left;
+				/*background: #ffffff;*/
+			}
+			#vars-menu {
+				width: 400px;
+				padding: 5px;
+				background: rgb(221, 221, 221);
+				margin-left: 210mm;
+				position: absolute;
+			}
 			#main {
 				width: 900px;
 				margin: 0 auto;
+			}
+			.vue-var {
+				float: right;
+			}
+			.btn-pick{
+				float: left;
+				margin: 10px !important;
 			}
 			@media print
 			{
@@ -38,6 +58,9 @@
 			<div id="content">
 
 			</div>
+			<div id="vars-menu" class="no-print">
+
+			</div>
 		</div>
 	</body>
 	<footer>
@@ -49,10 +72,8 @@
 
 			function findFather(objSearch, objAdd, idx)
 			{
-				debugger;
 				var found = false;
 				objSearch.filter(function(item){ // find item father of the dependency
-					debugger;
 					if (!found)
 					{
 						if (item.id === objAdd.depends)
@@ -83,7 +104,6 @@
 
 					collection = response.rows.slice(1, response.rows.length); // remove labels
 					collection.filter(function(item){ // get all objects that has no dependency
-						debugger;
 						if (item.cellsArray[dependsIndex] === "")
 						{
 							var tempObject = Object();
@@ -140,7 +160,6 @@
 						}
 					}
 
-					//debugger;
 					localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
 
 					var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
@@ -157,55 +176,104 @@
 			}
 
 			function startDecisions(){
-				window.alert('hello world');
+				//window.alert('hello world');
+				//debugger;
 				$("#start-btn").toggle();
-				var decisionsDiv = $('<div/>').attr({id:'decisions'});
 				var decisionsTree = JSON.parse(localStorage.getItem('CG-decisionsTree'));
-				// TODO add while to deep decision tree
-				$(decisionsTree).each(function(){
-					var id = 'div-' + this.id;
-					var innerDiv = $('<div/>').attr({class:'inner-div', id:id});
-					var toggle = $('<input/>').attr({type:'checkbox', class:'no-print', onchange:"toggleItem('" + id + "')"});
-					var description = $("<h3>").text('Description: ' + this.description).attr({class:'no-print'});
-					var htmlTag = "";
-					if (this.type === 'paragraph')
-						htmlTag = "<p>";
-					else if (this.type === 'title')
-						htmlTag = "<h1>";
-					else if (this.type === 'subtitle')
-						htmlTag = "<h2>";
-
-					var paragraph = $(htmlTag).text(this.content);
-					innerDiv.append(description).append(paragraph);
-					if (this.childs.length > 0)
-					{
-						$(this.childs).each(function(){
-							var id = 'div-' + this.id;
-							var tempDiv = $('<div/>').attr({class:'inner-div', id:id});
-							var innerToggle = $('<input/>').attr({type:'checkbox', class:'no-print', onchange:"toggleItem('" + id + "')"});
-							var description = $("<h3>").text('Description: ' + this.description).attr({class:'no-print'});
-							var htmlTag = "";
-							if (this.type === 'paragraph')
-								htmlTag = "<p>";
-							else if (this.type === 'title')
-								htmlTag = "<h1>";
-							else if (this.type === 'subtitle')
-								htmlTag = "<h2>";
-
-							var paragraph = $(htmlTag).text(this.content);
-							tempDiv.append(description).append(paragraph);
-							innerDiv.append(innerToggle).append(tempDiv);
-						});
-					}
-					decisionsDiv.append(toggle).append(innerDiv);
-				});
+				var decisionsDiv = $('<div/>').attr({id:'decisions'});
+				var pickOption = $('<div/>').attr({id:'pick-option'});
 				$("#content").append(decisionsDiv);
-				var printBtn = $('<input/>').attr({class:'btn btn-success no-print', id:'print-btn', type: 'button', value:'Print', onClick:'preparePrint()'});
-				$("#decisions").append(printBtn);
+				var ids = [];
+				genHTML(decisionsTree);
 			}
+
+			function genHTMLContent(item)
+			{
+				var innerDiv = $('<div/>').attr({id:item.id});
+				var decisionsDiv = $("#decisions");
+				var htmlTag = "";
+
+				if (item.type === 'paragraph')
+					htmlTag = "<p>";
+				else if (item.type === 'title')
+					htmlTag = "<h1>";
+				else if (item.type === 'subtitle')
+					htmlTag = "<h2>";
+
+				var match = item.content.match(/{{\s*[\w\.]+\s*}}/g);
+				if (match)
+				{
+					var vueTemp = match.map(function(x) { return x.match(/[\w\.]+/)[0]; });
+					if (vueTemp.length > 0)
+					{
+						updateVarsMenu(vueTemp);
+					}
+				}
+				var content = $(htmlTag).text(item.content);
+				innerDiv.append(content);
+				decisionsDiv.append(innerDiv);
+			}
+
+			function updateVarsMenu(arr)
+			{
+				var vueVars = JSON.parse(localStorage.getItem('CG-vueVars'));
+				var newVars = $(arr).not(vueVars).get();
+				$(newVars).each(function(index){
+					var varName = "{{" + this + "}}";
+					var varDiv = $('<div/>').attr({id:'var_' + this});
+					var paragraph = $('<p>').text(varName);
+					var input = $('<input/>').attr({type:'text', class:'vue-var', placeholder:varName ,onchange:""});
+					paragraph.append(input);
+					varDiv.append(paragraph);
+					$("#vars-menu").append(varDiv);
+				});
+				$.extend(vueVars, arr);
+				localStorage.setItem('CG-vueVars', JSON.stringify(vueVars));
+			}
+
+			function genHTML(json)
+			{
+				var decisionsDiv = $("#decisions");
+//				var pickOption = $("#pick-option");
+//				if (pickOption)
+//					pickOption.remove();
+				$("#pick-option").remove();
+				var pickOption = $('<div/>').attr({id:'pick-option'});
+				$(json).each(function(index){
+					//debugger;
+					if (this.mandatory.toLowerCase() === "true")
+						genHTMLContent(this);
+					else
+					{
+						//ids.push(this.id);
+						var startBtn = $('<input/>').attr({class:'btn btn-primary btn-pick', id:'btn_' + this.id, type: 'button', value:this.description, onClick:"parseJson('" + this.id + "', '')"});
+						pickOption.append(startBtn);
+					}
+				});
+				decisionsDiv.append(pickOption);
+			}
+
+			function parseJson(item, json)
+			{
+				$("#pick-option").remove();
+				if (json === "")
+					json = JSON.parse(localStorage.getItem('CG-decisionsTree'));
+				$(json).each(function(index){
+					if (this.id === item)
+					{
+						genHTMLContent(this);
+						if (this.childs.length > 0)
+							genHTML(this.childs);
+					}
+					else if (this.childs.length > 0)
+					{
+						parseJson(item, this.childs);
+					}
+				});
+			}
+
 			function preparePrint()
 			{
-
 				window.print();
 			}
 		</script>
