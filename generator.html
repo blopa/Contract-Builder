@@ -245,7 +245,7 @@
 				else if (item.type === 'subtitle')
 					htmlTag = "<h2>";
 
-				var content = $(htmlTag).text(item.content);
+				var content = $(htmlTag).html(item.content); // change to .text to not parse as HTML
 				innerDiv.append(content);
 				decisionsDiv.append(innerDiv);
 
