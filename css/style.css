@@ -1,0 +1,72 @@
+body {
+    background-color: #e3f5df;
+}
+#start-btn{
+    margin-top: 200px !important;
+    height: 100px;
+    width: 200px;
+}
+#main .btn{
+    margin: 0 auto;
+    display: block;
+}
+#content {
+    width: 210mm;
+    /*padding-left: 0;*/
+    float: left;
+    padding: 30mm 20mm 20mm 30mm;
+    /*background: #ffffff;*/
+}
+#vars-menu {
+    display: none;
+    width: 400px;
+    padding: 5px;
+    background: rgb(221, 221, 221);
+    margin-left: 210mm;
+    position: absolute;
+}
+#print {
+    width: 100%;
+    margin-bottom: 10px;
+}
+#main {
+    width: 900px;
+    margin: 0 auto;
+}
+#parse-sheet {
+    margin-top: 200px;
+}
+#sheet-input {
+    width: 100%;
+}
+.align-center {
+    text-align: center;
+}
+.vue-var {
+    float: right;
+    width: 250px;
+}
+.btn-pick{
+    float: left;
+    margin: 10px !important;
+}
+#main-message{
+    text-align: center;
+}
+.margin-top, .margin-right, .margin-bottom, .margin-left{
+    float: right;
+    width: 80px;
+}
+.menu-title{
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+@media print
+{
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
