@@ -53,15 +53,18 @@
 				var found = false;
 				objSearch.filter(function(item){ // find item father of the dependency
 					debugger;
-					if (item.id === objAdd.depends)
+					if (!found)
 					{
-						collDependency.splice(idx, 1); // remove current item
-						item.childs.push(objAdd);
-						found = true;
-					}
-					else if (item.childs.length > 0)
-					{
-						found = finder(item.childs, objAdd, idx);
+						if (item.id === objAdd.depends)
+						{
+							collDependency.splice(idx, 1); // remove current item
+							item.childs.push(objAdd);
+							found = true;
+						}
+						else if (item.childs.length > 0)
+						{
+							found = finder(item.childs, objAdd, idx);
+						}
 					}
 				});
 				return found;
