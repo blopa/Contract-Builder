@@ -304,6 +304,7 @@
 				$("#pick-option").remove();
 				var ids = JSON.parse(localStorage.getItem('CG-brothersIds'));
 				var replaced = false;
+				var buildNewIds = false;
 				if ((ids instanceof Array) && (replaceJson))
 				{
 					if (ids.length > 0)
@@ -313,10 +314,14 @@
 					}
 				}
 				else
+				{
 					ids = [];
+					buildNewIds = true;
+				}
 				var pickOption = $('<div/>').attr({id:'pick-option'});
 				var found = false;
 				$(json).each(function(index){
+					debugger;
 					if (!found)
 					{
 						if (this.mandatory.toLowerCase() === "true")
@@ -336,7 +341,7 @@
 							found = true;
 						}
 					}
-					else if (ids.length <= 0)
+					else if (buildNewIds)
 						ids.push(this);
 				});
 				decisionsDiv.append(pickOption);
@@ -363,7 +368,7 @@
 								if (this.childs.length > 0)
 									genChoices(this.childs, false);
 								else
-									genChoices("", true);
+									genChoices(json, true);
 							}
 							else if (this.childs.length > 0)
 							{
@@ -375,7 +380,7 @@
 				}
 				else
 				{
-					genChoices("", true);
+					genChoices(json, true);
 				}
 
 				return found;
