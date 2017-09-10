@@ -37,6 +37,26 @@ body {
 #parse-sheet {
     margin-top: 200px;
 }
+#pick-inner {
+    margin: 0 auto;
+    width: 80%;
+    display: grid;
+}
+#pick-option {
+    background-color: rgba(221, 221, 221, 0.72);
+    /* margin: 0 auto; */
+    z-index: 999 !important;
+    /* display: table-cell; */
+    padding: 15px;
+    /* margin-top: auto; */
+    /* margin-bottom: auto; */
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    width: 400px;
+    text-align: center;
+    border: 2px solid #847777;
+}
 #sheet-input {
     width: 100%;
 }
