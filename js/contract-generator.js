@@ -2,6 +2,34 @@
 var docObject = [];
 var collDependency = [];
 var collection;
+var draggableDiv = document.getElementById("pick-option");
+var isDown = false;
+
+draggableDiv.addEventListener('mousedown', function(e) {
+	isDown = true;
+	offset = [
+		draggableDiv.offsetLeft - e.clientX,
+		draggableDiv.offsetTop - e.clientY
+	];
+}, true);
+
+document.addEventListener('mouseup', function() {
+	isDown = false;
+}, true);
+
+document.addEventListener('mousemove', function(event) {
+	event.preventDefault();
+	if (isDown) {
+		mousePosition = {
+
+			x : event.clientX,
+			y : event.clientY
+
+		};
+		draggableDiv.style.left = (mousePosition.x + offset[0]) + 'px';
+		draggableDiv.style.top  = (mousePosition.y + offset[1]) + 'px';
+	}
+}, true);
 
 function findFather(objSearch, objAdd, idx)
 {
@@ -169,7 +197,8 @@ function startDecisions()
 	$("#vars-menu").show();
 	var decisionsTree = JSON.parse(localStorage.getItem('CG-decisionsTree'));
 	var decisionsDiv = $('<div/>').attr({id:'decisions'});
-	var pickOption = $('<div/>').attr({id:'pick-option', class:'no-print'});
+	//var pickOption = $('<div/>').attr({id:'pick-option', class:'no-print'});
+	//var pickOption = $('#pick-option');
 	var content = $("#content");
 	content.append(decisionsDiv);
 	content.css('background-color', '#ffffff');
@@ -185,7 +214,7 @@ function genHTMLContent(item)
 	var exists = $('#' + item.id);
 	if (exists.length > 0)
 	{
-		$("#pick-option").remove();
+		$("#pick-option").hide();
 		return false;
 	}
 	var innerDiv = $('<div/>').attr({id:item.id});
@@ -281,7 +310,9 @@ function genChoices(json, replaceJson)
 //				var pickOption = $("#pick-option");
 //				if (pickOption)
 //					pickOption.remove();
-	$("#pick-option").remove();
+	var pickOption = $('#pick-option');
+	pickOption.show();
+	pickOption.html("");
 	var ids = JSON.parse(localStorage.getItem('CG-brothersIds'));
 	var replaced = false;
 	var buildNewIds = false;
@@ -298,7 +329,7 @@ function genChoices(json, replaceJson)
 		ids = [];
 		buildNewIds = true;
 	}
-	var pickOption = $('<div/>').attr({id:'pick-option', class:'no-print'});
+	//var pickOption = $('<div/>').attr({id:'pick-option', class:'no-print'});
 	var found = false;
 	var i = 0;
 	$(json).each(function(index){
@@ -335,13 +366,15 @@ function genChoices(json, replaceJson)
 	});
 	if (found)
 		decisionsDiv.append(pickOption);
+	else
+		pickOption.hide();
 	localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
 }
 
 function parseJson(add, item, json)
 {
 	//debugger;
-	$("#pick-option").remove();
+	$("#pick-option").html("");
 	var found = false;
 	if (json === "")
 		json = JSON.parse(localStorage.getItem('CG-decisionsTree'));

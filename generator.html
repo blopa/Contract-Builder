@@ -16,21 +16,23 @@
 			<!--all content goes here-->
 			<div id="content">
 				<h2 id="main-message">Loading...</h2>
+				<div id="pick-option" class="no-print">
+
+				</div>
 			</div>
 			<div id="vars-menu" class="no-print">
 				<h3 class="menu-title">Menu</h3>
 				<input id="print" type="button" class="btn btn-success" onclick="preparePrint()" value="Print!">
 				<hr/>
-				<h3 class="menu-title">Margin</h3>
-				<p>Margin Top (mm): <input type="number" class="margin-top form-control" value="30" oninput="updateMargin(this)"></p>
-				<p>Margin Right (mm): <input type="number" class="margin-right form-control" value="20" oninput="updateMargin(this)"></p>
-				<p>Margin Bottom (mm): <input type="number" class="margin-bottom form-control" value="20" oninput="updateMargin(this)"></p>
-				<p>Margin Left (mm): <input type="number" class="margin-left form-control" value="30" oninput="updateMargin(this)"></p>
+				<div id="margin">
+					<h3 class="menu-title">Margin</h3>
+					<p>Margin Top (mm): <input type="number" class="margin-top form-control" value="30" oninput="updateMargin(this)"></p>
+					<p>Margin Right (mm): <input type="number" class="margin-right form-control" value="20" oninput="updateMargin(this)"></p>
+					<p>Margin Bottom (mm): <input type="number" class="margin-bottom form-control" value="20" oninput="updateMargin(this)"></p>
+					<p>Margin Left (mm): <input type="number" class="margin-left form-control" value="30" oninput="updateMargin(this)"></p>
+				</div>
 				<hr/>
 				<h3 class="menu-title">Variables</h3>
-				<div id="margin">
-
-				</div>
 			</div>
 		</div>
 	</body>
