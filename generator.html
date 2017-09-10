@@ -2,6 +2,8 @@
 	<head>
 		<!-- Load jQuery, Vue and Sheetrock from CDNJS -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+		<script src="http://evidenceprime.github.io/html-docx-js/test/vendor/FileSaver.js"></script>
+		<script src="http://evidenceprime.github.io/html-docx-js/build/html-docx.js"></script>
 		<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.js"></script>-->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/1.1.4/dist/sheetrock.min.js"></script>
 		<!--<script src="js/contract-generator.js"></script>-->
@@ -23,6 +25,7 @@
 			<div id="vars-menu" class="no-print">
 				<h3 class="menu-title">Menu</h3>
 				<input id="print" type="button" class="btn btn-success" onclick="preparePrint()" value="Print!">
+				<input id="download" type="button" class="btn btn-success" onclick="prepareDownload('content')" value="Download as Docx!">
 				<hr/>
 				<div id="margin">
 					<h3 class="menu-title">Margin</h3>

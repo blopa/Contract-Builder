@@ -414,3 +414,25 @@ function preparePrint()
 {
 	window.print();
 }
+
+function prepareDownload(contentId)
+{
+	//debugger;
+	var htmlDoc = $('#' + contentId).html();
+	var converted = htmlDocx.asBlob(htmlDoc);
+	//saveAs(converted, "contract.docx", "text/html");
+	saveAs(converted, 'test.docx');
+}
+
+// function saveAs(data, name, type) {
+// 	if (data !== null && navigator.msSaveBlob)
+// 		return navigator.msSaveBlob(new Blob([data], { type: type }), name);
+// 	var a = $("<a style='display: none;'/>");
+// 	var url = window.URL.createObjectURL(new Blob([data], {type: type}));
+// 	a.attr("href", url);
+// 	a.attr("download", name);
+// 	$("body").append(a);
+// 	a[0].click();
+// 	window.URL.revokeObjectURL(url);
+// 	a.remove();
+// }
