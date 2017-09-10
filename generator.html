@@ -82,50 +82,62 @@
 					var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
 
 					collection = response.rows.slice(1, response.rows.length); // remove labels
-					var collNoDependency = collection.filter(function(item){ // get all objects that has no dependency
-						return (item.cellsArray[dependsIndex] === '');
-					});
-					$(collNoDependency).each(function(){
-						var tempObject = Object();
-						tempObject.id = this.cellsArray[idIndex];
-						tempObject.description = this.cellsArray[descriptionIndex];
-						tempObject.content = this.cellsArray[contentIndex];
-						tempObject.type = this.cellsArray[typeIndex];
-						tempObject.depends = this.cellsArray[dependsIndex];
-						tempObject.mandatory = this.cellsArray[mandatoryIndex];
-						tempObject.childs = [];
+					collection.filter(function(item){ // get all objects that has no dependency
+						debugger;
+						if (item.cellsArray[dependsIndex] === "")
+						{
+							var tempObject = Object();
+							tempObject.id = item.cellsArray[idIndex];
+							tempObject.description = item.cellsArray[descriptionIndex];
+							tempObject.content = item.cellsArray[contentIndex];
+							tempObject.type = item.cellsArray[typeIndex];
+							tempObject.depends = item.cellsArray[dependsIndex];
+							tempObject.mandatory = item.cellsArray[mandatoryIndex];
+							tempObject.childs = [];
 
-						docObject.push(tempObject);
+							docObject.push(tempObject);
+						}
 					});
 					collDependency = collection.filter(function(item){ // get all objects that has dependency
-						return (item.cellsArray[dependsIndex] !== '');
+						return (item.cellsArray[dependsIndex] !== "");
 					});
 					// TODO add while to deep decision tree
 					var tempColl = [];
 					var i = 0;
 					var stop = false;
+					var message = "";
 					//while (collDependency.length > 0) {
 					while ((!stop) && (collDependency.length > 0)) {
 						tempColl = collDependency;
 						$(tempColl).each(function(index){
-							var tempObject = Object();
-							tempObject.id = this.cellsArray[idIndex];
-							tempObject.description = this.cellsArray[descriptionIndex];
-							tempObject.content = this.cellsArray[contentIndex];
-							tempObject.type = this.cellsArray[typeIndex];
-							tempObject.depends = this.cellsArray[dependsIndex];
-							tempObject.mandatory = this.cellsArray[mandatoryIndex];
-							tempObject.childs = [];
-
-							var resp = finder(docObject, tempObject, index - i);
-							if (!resp)
+							if (!stop)
 							{
-								window.alert("error");
-								stop = true;
-								return;
+								var tempObject = Object();
+								tempObject.id = this.cellsArray[idIndex];
+								tempObject.description = this.cellsArray[descriptionIndex];
+								tempObject.content = this.cellsArray[contentIndex];
+								tempObject.type = this.cellsArray[typeIndex];
+								tempObject.depends = this.cellsArray[dependsIndex];
+								tempObject.mandatory = this.cellsArray[mandatoryIndex];
+								tempObject.childs = [];
+
+								if (tempObject.id === tempObject.depends)
+								{
+									stop = true;
+									message = "an item cannot depend of itself";
+									return;
+								}
+
+								stop = !finder(docObject, tempObject, index - i);
+								i++;
 							}
-							i++;
 						});
+
+						if (stop)
+						{
+							if (message !== "")
+								window.alert(message);
+						}
 					}
 
 					//debugger;
