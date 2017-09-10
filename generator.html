@@ -23,6 +23,7 @@
 				width: 210mm;
 				padding-left: 0;
 				float: left;
+				padding: 30mm 20mm 20mm 30mm;
 				/*background: #ffffff;*/
 			}
 			#vars-menu {
@@ -230,7 +231,9 @@
 				var decisionsTree = JSON.parse(localStorage.getItem('CG-decisionsTree'));
 				var decisionsDiv = $('<div/>').attr({id:'decisions'});
 				var pickOption = $('<div/>').attr({id:'pick-option'});
-				$("#content").append(decisionsDiv);
+				var content = $("#content");
+				content.append(decisionsDiv);
+				content.css('background-color', '#ffffff');
 				//var ids = [];
 				genChoices(decisionsTree, false); // first call to genHTML
 			}
@@ -284,21 +287,28 @@
 			function updateVarsMenu(arr, id)
 			{
 				var vueVars = JSON.parse(localStorage.getItem('CG-vueVars'));
+				if (!(vueVars instanceof Array))
+					vueVars = [];
 				var newVars = $(arr).not(vueVars).get();
-				$(newVars).each(function(index){
+				debugger;
+				$(arr).each(function(index){
 					var varName = "{{" + this + "}}";
-					var varDiv = $('<div/>').attr({id:'var_' + this});
-					var paragraph = $('<p>').text(varName);
-					var input = $('<input/>').attr({type:'text', class:'vue-var', placeholder:varName, oninput:"updateVarsValue(this)"});
-					paragraph.append(input);
-					varDiv.append(paragraph);
-					$("#vars-menu").append(varDiv);
+					if (newVars.length > 0) // means there's new vars
+					{
+						var varDiv = $('<div/>').attr({id:'var_' + this});
+						var paragraph = $('<p>').text(varName);
+						var input = $('<input/>').attr({type:'text', class:'vue-var', placeholder:varName, oninput:"updateVarsValue(this)"});
+						paragraph.append(input);
+						varDiv.append(paragraph);
+						$("#vars-menu").append(varDiv);
+					}
+					// update var from HTML
 					var pattern = new RegExp(varName, 'g');
 					var content = $("#" + id);
 					var newHTML = content.html().replace(pattern, '<abbr class="' + varName + '">' + varName + '</abbr>');
 					content.html(newHTML);
 				});
-				$.extend(vueVars, arr); // TODO concat
+				$.extend(vueVars, arr);
 				localStorage.setItem('CG-vueVars', JSON.stringify(vueVars));
 			}
 
@@ -344,8 +354,8 @@
 							//this.description
 							var innerDiv = $('<div/>').attr({id:'pick-inner'});
 							var paragraph = $('<p>').text('Use "' + this.description + '"?');
-							var btnYes = $('<input/>').attr({class:'btn btn-primary btn-pick', id:'btn_' + this.id, type: 'button', value:'Yes', onClick:"parseJson(true, '" + this.id + "', '')"});
-							var btnNo = $('<input/>').attr({class:'btn btn-primary btn-pick', id:'btn_' + this.id, type: 'button', value:'No', onClick:"parseJson(false, '" + this.id + "', '')"});
+							var btnYes = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + this.id, type: 'button', value:'Yes', onClick:"parseJson(true, '" + this.id + "', '')"});
+							var btnNo = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + this.id, type: 'button', value:'No', onClick:"parseJson(false, '" + this.id + "', '')"});
 							innerDiv.append(paragraph).append(btnYes).append(btnNo);
 							pickOption.append(innerDiv);
 							found = true;
@@ -358,6 +368,8 @@
 					}
 					else if (buildNewIds)
 						ids.push(this);
+					else if (!replaceJson) // if it's not replacing the json, means that it's not using ids, so increment
+						ids.unshift(this);
 				});
 				decisionsDiv.append(pickOption);
 				localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
