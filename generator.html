@@ -176,7 +176,7 @@
 
 					localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
 					localStorage.removeItem('CG-brothersIds');
-					localStorage.removeItem('CG-vueVars')
+					localStorage.removeItem('CG-vueVars');
 
 					var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
 					$("#content").append(startBtn);
@@ -236,6 +236,9 @@
 			function genHTMLContent(item)
 			{
 				debugger;
+				var exists = $('#' + item.id);
+				if (exists.length > 0)
+					return;
 				var innerDiv = $('<div/>').attr({id:item.id});
 				var decisionsDiv = $("#decisions");
 				var htmlTag = "";
@@ -290,7 +293,7 @@
 					var newHTML = content.html().replace(pattern, '<abbr class="' + varName + '">' + varName + '</abbr>');
 					content.html(newHTML);
 				});
-				$.extend(vueVars, arr);
+				$.extend(vueVars, arr); // TODO concat
 				localStorage.setItem('CG-vueVars', JSON.stringify(vueVars));
 			}
 
@@ -305,9 +308,9 @@
 				var ids = JSON.parse(localStorage.getItem('CG-brothersIds'));
 				var replaced = false;
 				var buildNewIds = false;
-				if ((ids instanceof Array) && (replaceJson))
+				if (ids instanceof Array)
 				{
-					if (ids.length > 0)
+					if ((ids.length > 0) && (replaceJson))
 					{
 						json = ids;
 						replaced = true;
@@ -320,6 +323,7 @@
 				}
 				var pickOption = $('<div/>').attr({id:'pick-option'});
 				var found = false;
+				var i = 0;
 				$(json).each(function(index){
 					debugger;
 					if (!found)
@@ -330,8 +334,6 @@
 						{
 							//ids.push(this.id);
 							//this.description
-							if (replaced)
-								ids.splice(index, 1); // remove current item
 							var innerDiv = $('<div/>').attr({id:'pick-inner'});
 							var paragraph = $('<p>').text('Use "' + this.description + '"?');
 							var btnYes = $('<input/>').attr({class:'btn btn-primary btn-pick', id:'btn_' + this.id, type: 'button', value:'Yes', onClick:"parseJson(true, '" + this.id + "', '')"});
@@ -339,6 +341,11 @@
 							innerDiv.append(paragraph).append(btnYes).append(btnNo);
 							pickOption.append(innerDiv);
 							found = true;
+						}
+						if (replaced)
+						{
+							ids.splice(index - i, 1); // remove current item
+							i++;
 						}
 					}
 					else if (buildNewIds)
@@ -366,7 +373,10 @@
 								found = true;
 								genHTMLContent(this);
 								if (this.childs.length > 0)
+								{
+									debugger;
 									genChoices(this.childs, false);
+								}
 								else
 									genChoices(json, true);
 							}
