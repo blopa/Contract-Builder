@@ -13,9 +13,10 @@ body {
 #content {
     width: 210mm;
     /*padding-left: 0;*/
+    /*background: #ffffff;*/
     float: left;
     padding: 30mm 20mm 20mm 30mm;
-    /*background: #ffffff;*/
+    white-space: pre-wrap;
 }
 #vars-menu {
     display: none;
@@ -44,7 +45,7 @@ body {
 }
 .vue-var {
     float: right;
-    width: 250px;
+    width: 100%;
 }
 .btn-pick{
     float: left;
@@ -56,6 +57,10 @@ body {
 .margin-top, .margin-right, .margin-bottom, .margin-left{
     float: right;
     width: 80px;
+}
+.vars{
+    border-bottom: 1px solid #9e9898;
+    height: 70px;
 }
 .menu-title{
     text-align: center;

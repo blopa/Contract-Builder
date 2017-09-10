@@ -26,7 +26,7 @@ function findFather(objSearch, objAdd, idx)
 
 var myCallback = function (error, options, response) {
 	if (!error) {
-		debugger;
+		//debugger;
 		//console.log(response.rows);
 		// making sure it will work even if order changes
 		var idIndex = response.rows[0].labels.indexOf('id');
@@ -233,7 +233,7 @@ function updateVarsMenu(arr, id)
 		var varName = "{{" + this + "}}";
 		if (newVars.length > 0) // means there's new vars
 		{
-			var varDiv = $('<div/>').attr({id:'var_' + this});
+			var varDiv = $('<div/>').attr({id:'var_' + this, class:'vars'});
 			var paragraph = $('<p>').text(varName);
 			var input = $('<input/>').attr({type:'text', class:'vue-var form-control', placeholder:varName, oninput:"updateVarsValue(this)"});
 			paragraph.append(input);
