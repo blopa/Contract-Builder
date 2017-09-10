@@ -127,6 +127,7 @@
 							tempObject.type = item.cellsArray[typeIndex];
 							tempObject.depends = item.cellsArray[dependsIndex];
 							tempObject.mandatory = item.cellsArray[mandatoryIndex];
+							tempObject.used = false;
 							tempObject.childs = [];
 
 							docObject.push(tempObject);
@@ -153,6 +154,7 @@
 								tempObject.type = this.cellsArray[typeIndex];
 								tempObject.depends = this.cellsArray[dependsIndex];
 								tempObject.mandatory = this.cellsArray[mandatoryIndex];
+								tempObject.used = false;
 								tempObject.childs = [];
 
 								if (tempObject.id === tempObject.depends)
@@ -235,10 +237,12 @@
 
 			function genHTMLContent(item)
 			{
-				debugger;
+				//debugger;
+//				if (item.used) // .toLowerCase() === "true"
+//					return;
 				var exists = $('#' + item.id);
 				if (exists.length > 0)
-					return;
+					return false;
 				var innerDiv = $('<div/>').attr({id:item.id});
 				var decisionsDiv = $("#decisions");
 				var htmlTag = "";
@@ -263,6 +267,7 @@
 						updateVarsMenu(vueTemp, item.id);
 					}
 				}
+				return true;
 			}
 
 			function updateVarsValue(data){
@@ -299,7 +304,7 @@
 
 			function genChoices(json, replaceJson)
 			{
-				debugger;
+				//debugger;
 				var decisionsDiv = $("#decisions");
 //				var pickOption = $("#pick-option");
 //				if (pickOption)
@@ -325,11 +330,14 @@
 				var found = false;
 				var i = 0;
 				$(json).each(function(index){
-					debugger;
+					//debugger;
 					if (!found)
 					{
 						if (this.mandatory.toLowerCase() === "true")
-							genHTMLContent(this);
+						{
+							found = !genHTMLContent(this);
+							this.used = true;
+						}
 						else // TODO when brothers, must be able to choose all of them
 						{
 							//ids.push(this.id);
@@ -357,7 +365,7 @@
 
 			function parseJson(add, item, json)
 			{
-				debugger;
+				//debugger;
 				$("#pick-option").remove();
 				var found = false;
 				if (json === "")
@@ -367,14 +375,14 @@
 					$(json).each(function(index){
 						if (!found)
 						{
-							debugger;
+							//debugger;
 							if (this.id === item)
 							{
-								found = true;
-								genHTMLContent(this);
+								found = genHTMLContent(this);
+								this.used = true;
 								if (this.childs.length > 0)
 								{
-									debugger;
+									//debugger;
 									genChoices(this.childs, false);
 								}
 								else
@@ -382,7 +390,7 @@
 							}
 							else if (this.childs.length > 0)
 							{
-								debugger;
+								//debugger;
 								found = parseJson(add, item, this.childs);
 							}
 						}
