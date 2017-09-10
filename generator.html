@@ -76,21 +76,31 @@
 						return (item.cellsArray[dependsIndex] !== '');
 					});
 					// TODO add while to deep decision tree
-					$(collDependency).each(function(){
-						var tempObject = Object();
-						tempObject.id = this.cellsArray[idIndex];
-						tempObject.description = this.cellsArray[descriptionIndex];
-						tempObject.content = this.cellsArray[contentIndex];
-						tempObject.type = this.cellsArray[typeIndex];
-						tempObject.depends = this.cellsArray[dependsIndex];
-						tempObject.mandatory = this.cellsArray[mandatoryIndex];
-						tempObject.childs = [];
+					var tempColl = [];
+					while (collDependency.length > 0) {
+						tempColl = collDependency;
+						var i = 0;
+						$(tempColl).each(function(index){
+							var tempObject = Object();
+							tempObject.id = this.cellsArray[idIndex];
+							tempObject.description = this.cellsArray[descriptionIndex];
+							tempObject.content = this.cellsArray[contentIndex];
+							tempObject.type = this.cellsArray[typeIndex];
+							tempObject.depends = this.cellsArray[dependsIndex];
+							tempObject.mandatory = this.cellsArray[mandatoryIndex];
+							tempObject.childs = [];
 
-						docObject.filter(function(item){ // get all objects that has dependency
-							if (item.id === tempObject.depends)
-								item.childs.push(tempObject);
+							docObject.filter(function(item){ // find item father of the dependency
+								if (item.id === tempObject.depends)
+								{
+									debugger;
+									collDependency.splice(index - i, 1); // remove current item
+									i++;
+									item.childs.push(tempObject);
+								}
+							});
 						});
-					});
+					}
 
 					//debugger;
 					localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
