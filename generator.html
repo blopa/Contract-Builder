@@ -200,7 +200,6 @@
 
 			function parseSpreadsheet()
 			{
-				debugger;
 				var resourceUrl = $("#sheet-input").val();
 				var spreadsheetId = new RegExp("/spreadsheets/d/([a-zA-Z0-9-_]+)").exec(resourceUrl)[1];
 				var url = window.location.href;
@@ -220,9 +219,9 @@
 				return (location.search.split(name + '=')[1] || '').split('&')[0];
 			}
 
-			function startDecisions(){
-				//window.alert('hello world');
-				//debugger;
+			function startDecisions()
+			{
+				debugger;
 				$("#start-btn").toggle();
 				$("#vars-menu").show();
 				var decisionsTree = JSON.parse(localStorage.getItem('CG-decisionsTree'));
@@ -262,7 +261,6 @@
 			}
 
 			function updateVarsValue(data){
-				debugger;
 				var content = document.getElementById("content");
 				var classes = content.getElementsByClassName(data.placeholder);
 				var len = Object.keys(classes).length;
@@ -303,7 +301,6 @@
 				$("#pick-option").remove();
 				var pickOption = $('<div/>').attr({id:'pick-option'});
 				$(json).each(function(index){
-					//debugger;
 					if (this.mandatory.toLowerCase() === "true")
 						genHTMLContent(this);
 					else
