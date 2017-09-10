@@ -47,7 +47,7 @@
 			var collDependency = [];
 			var collection;
 
-			function finder(objSearch, objAdd, idx)
+			function findFather(objSearch, objAdd, idx)
 			{
 				debugger;
 				var found = false;
@@ -63,7 +63,7 @@
 						}
 						else if (item.childs.length > 0)
 						{
-							found = finder(item.childs, objAdd, idx);
+							found = findFather(item.childs, objAdd, idx);
 						}
 					}
 				});
@@ -128,7 +128,7 @@
 									return;
 								}
 
-								stop = !finder(docObject, tempObject, index - i);
+								stop = !findFather(docObject, tempObject, index - i);
 								i++;
 							}
 						});
@@ -155,6 +155,7 @@
 			function toggleItem(id){
 				$('#' + id).toggle();
 			}
+
 			function startDecisions(){
 				window.alert('hello world');
 				$("#start-btn").toggle();
