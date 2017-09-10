@@ -175,6 +175,8 @@
 					}
 
 					localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
+					localStorage.removeItem('CG-brothersIds');
+					localStorage.removeItem('CG-vueVars')
 
 					var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
 					$("#content").append(startBtn);
@@ -221,19 +223,19 @@
 
 			function startDecisions()
 			{
-				debugger;
 				$("#start-btn").toggle();
 				$("#vars-menu").show();
 				var decisionsTree = JSON.parse(localStorage.getItem('CG-decisionsTree'));
 				var decisionsDiv = $('<div/>').attr({id:'decisions'});
 				var pickOption = $('<div/>').attr({id:'pick-option'});
 				$("#content").append(decisionsDiv);
-				var ids = [];
-				genHTML(decisionsTree);
+				//var ids = [];
+				genChoices(decisionsTree, false); // first call to genHTML
 			}
 
 			function genHTMLContent(item)
 			{
+				debugger;
 				var innerDiv = $('<div/>').attr({id:item.id});
 				var decisionsDiv = $("#decisions");
 				var htmlTag = "";
@@ -292,44 +294,91 @@
 				localStorage.setItem('CG-vueVars', JSON.stringify(vueVars));
 			}
 
-			function genHTML(json)
+			function genChoices(json, replaceJson)
 			{
+				debugger;
 				var decisionsDiv = $("#decisions");
 //				var pickOption = $("#pick-option");
 //				if (pickOption)
 //					pickOption.remove();
 				$("#pick-option").remove();
-				var pickOption = $('<div/>').attr({id:'pick-option'});
-				$(json).each(function(index){
-					if (this.mandatory.toLowerCase() === "true")
-						genHTMLContent(this);
-					else
+				var ids = JSON.parse(localStorage.getItem('CG-brothersIds'));
+				var replaced = false;
+				if ((ids instanceof Array) && (replaceJson))
+				{
+					if (ids.length > 0)
 					{
-						//ids.push(this.id);
-						var startBtn = $('<input/>').attr({class:'btn btn-primary btn-pick', id:'btn_' + this.id, type: 'button', value:this.description, onClick:"parseJson('" + this.id + "', '')"});
-						pickOption.append(startBtn);
+						json = ids;
+						replaced = true;
 					}
+				}
+				else
+					ids = [];
+				var pickOption = $('<div/>').attr({id:'pick-option'});
+				var found = false;
+				$(json).each(function(index){
+					if (!found)
+					{
+						if (this.mandatory.toLowerCase() === "true")
+							genHTMLContent(this);
+						else // TODO when brothers, must be able to choose all of them
+						{
+							//ids.push(this.id);
+							//this.description
+							if (replaced)
+								ids.splice(index, 1); // remove current item
+							var innerDiv = $('<div/>').attr({id:'pick-inner'});
+							var paragraph = $('<p>').text('Use "' + this.description + '"?');
+							var btnYes = $('<input/>').attr({class:'btn btn-primary btn-pick', id:'btn_' + this.id, type: 'button', value:'Yes', onClick:"parseJson(true, '" + this.id + "', '')"});
+							var btnNo = $('<input/>').attr({class:'btn btn-primary btn-pick', id:'btn_' + this.id, type: 'button', value:'No', onClick:"parseJson(false, '" + this.id + "', '')"});
+							innerDiv.append(paragraph).append(btnYes).append(btnNo);
+							pickOption.append(innerDiv);
+							found = true;
+						}
+					}
+					else if (ids.length <= 0)
+						ids.push(this);
 				});
 				decisionsDiv.append(pickOption);
+				localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
 			}
 
-			function parseJson(item, json)
+			function parseJson(add, item, json)
 			{
+				debugger;
 				$("#pick-option").remove();
+				var found = false;
 				if (json === "")
 					json = JSON.parse(localStorage.getItem('CG-decisionsTree'));
-				$(json).each(function(index){
-					if (this.id === item)
-					{
-						genHTMLContent(this);
-						if (this.childs.length > 0)
-							genHTML(this.childs);
-					}
-					else if (this.childs.length > 0)
-					{
-						parseJson(item, this.childs);
-					}
-				});
+				if (add)
+				{
+					$(json).each(function(index){
+						if (!found)
+						{
+							debugger;
+							if (this.id === item)
+							{
+								found = true;
+								genHTMLContent(this);
+								if (this.childs.length > 0)
+									genChoices(this.childs, false);
+								else
+									genChoices("", true);
+							}
+							else if (this.childs.length > 0)
+							{
+								debugger;
+								found = parseJson(add, item, this.childs);
+							}
+						}
+					});
+				}
+				else
+				{
+					genChoices("", true);
+				}
+
+				return found;
 			}
 
 			function preparePrint()
