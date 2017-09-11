@@ -422,19 +422,19 @@ function prepareDownload(contentId)
 	htmlDoc = htmlDoc.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 	htmlDoc = htmlDoc.replace(/  /g, "&nbsp;&nbsp;"); // replace double whitespaces by double &nbsp;
 	var converted = htmlDocx.asBlob(htmlDoc);
-	//saveAs(converted, "contract.docx", "text/html");
-	saveAs(converted, 'test.docx');
+	saveAs(converted, 'contract.docx');
+	//downloadFile(htmlDoc, "sample.docx", "text/html");
 }
 
-// function saveAs(data, name, type) {
-// 	if (data !== null && navigator.msSaveBlob)
-// 		return navigator.msSaveBlob(new Blob([data], { type: type }), name);
-// 	var a = $("<a style='display: none;'/>");
-// 	var url = window.URL.createObjectURL(new Blob([data], {type: type}));
-// 	a.attr("href", url);
-// 	a.attr("download", name);
-// 	$("body").append(a);
-// 	a[0].click();
-// 	window.URL.revokeObjectURL(url);
-// 	a.remove();
-// }
+//function downloadFile(data, name, type) {
+//	if (data !== null && navigator.msSaveBlob)
+//		return navigator.msSaveBlob(new Blob([data], { type: type }), name);
+//	var a = $("<a style='display: none;'/>");
+//	var url = window.URL.createObjectURL(new Blob([data], {type: type}));
+//	a.attr("href", url);
+//	a.attr("download", name);
+//	$("body").append(a);
+//	a[0].click();
+//	window.URL.revokeObjectURL(url);
+//	a.remove();
+//}
