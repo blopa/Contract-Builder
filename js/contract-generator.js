@@ -52,7 +52,7 @@ function findFather(objSearch, objAdd, idx)
 
 var sheetCallback = function (error, options, response) {
 	if (!error) {
-		debugger;
+		//debugger;
 		//console.log(response.rows);
 		// making sure it will work even if order changes
 		var idIndex = response.rows[0].labels.indexOf('id');
@@ -195,7 +195,7 @@ function updateMargin(data){
 
 function changeListType(value)
 {
-	debugger;
+	//debugger;
 	var style = $('#custom-styles');
 	var listStyle = localStorage.getItem('CG-listStyles');
 	if (value === "1") // numbers
@@ -242,7 +242,7 @@ function startDecisions()
 
 function genHTMLContent(item)
 {
-	debugger;
+	//debugger;
 //	if (item.used) // .toLowerCase() === "true"
 //		return;
 	var exists = $('#' + item.id);
@@ -344,7 +344,7 @@ function updateVarsValue(data)
 
 function updateVarsMenu(arr, id)
 {
-	//debugger;
+	debugger;
 	var vueVars = JSON.parse(localStorage.getItem('CG-vueVars'));
 	var savedVueVars = JSON.parse(localStorage.getItem('CG-savedVueVars'));
 	if (!(vueVars instanceof Array))
@@ -352,26 +352,31 @@ function updateVarsMenu(arr, id)
 	if (!(savedVueVars instanceof Object))
 		savedVueVars = {};
 	var newVars = $(arr).not(vueVars).get();
-	//debugger;
-	$(arr).each(function(index){
-		//debugger;
-		var varName = "{{" + this + "}}";
-		var text = varName;
-		if (savedVueVars[varName])
-			text = savedVueVars[varName];
-		else
-			savedVueVars[varName] = "";
-		if (newVars.length > 0) // means there's new vars
-		{
+	if (newVars.length > 0) // means there's new vars
+	{
+		$(newVars).each(function(idx){
+			var varName = "{{" + this + "}}";
 			var varDiv = $('<div/>').attr({id:'var_' + this, class:'vars'});
 			var paragraph = $('<p>').text(varName);
 			var input = $('<input/>').attr({type:'text', class:'vue-var form-control', placeholder:varName, oninput:"updateVarsValue(this)"});
-			if (text !== varName)
-				input.attr({value:text});
 			paragraph.append(input);
 			varDiv.append(paragraph);
 			$("#vars-menu").append(varDiv);
-		}
+		});
+	}
+	//debugger;
+	$(arr).each(function(index){
+		debugger;
+		var varName = "{{" + this + "}}";
+		var text = varName;
+		if (savedVueVars[varName]) // !== "undefined"
+			text = savedVueVars[varName];
+		else
+			savedVueVars[varName] = "";
+
+		if (text !== varName)
+			input.attr({value:text});
+
 		// update var from HTML
 		var pattern = new RegExp(varName, 'g');
 		var content = $("#" + id);
