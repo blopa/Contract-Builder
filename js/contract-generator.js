@@ -401,6 +401,7 @@ function genChoices(json, replaceJson)
 //		pickOption.remove();
 	var pickOption = $('#pick-option');
 	pickOption.show();
+	$('#sheet-effect').show();
 	pickOption.html("");
 	var ids = JSON.parse(localStorage.getItem('CG-brothersIds'));
 	var replaced = false;
