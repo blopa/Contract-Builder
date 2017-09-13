@@ -32,6 +32,7 @@ body {
     border-width: 0 0 80px 80px;
     border-style: solid;
     border-color: #dcd5d5 #e3f5df;
+    box-shadow: 4px 4px 7px #888888;
 }
 #sheet-effect {
     display: none;
