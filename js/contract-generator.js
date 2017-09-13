@@ -316,17 +316,17 @@ function genHTMLContent(item)
 	var match = item.content.match(/{{\s*[\w\.]+\s*}}/g);
 	if (match)
 	{
+		//debugger;
 		var vueTemp = match.map(function(x) { return x.match(/[\w\.]+/)[0]; });
 		if (vueTemp.length > 0)
-		{
 			updateVarsMenu(vueTemp, item.id);
-		}
 	}
 	return true;
 }
 
 function updateVarsValue(data)
 {
+	//debugger;
 	var savedVueVars = JSON.parse(localStorage.getItem('CG-savedVueVars'));
 	if (!(savedVueVars instanceof Object))
 		savedVueVars = {};
@@ -366,16 +366,19 @@ function updateVarsMenu(arr, id)
 	}
 	//debugger;
 	$(arr).each(function(index){
-		//debugger;
+		debugger;
 		var varName = "{{" + this + "}}";
 		var text = varName;
 		if (savedVueVars[varName]) // !== "undefined"
+		{
 			text = savedVueVars[varName];
+			$('#var_' + this)
+		}
 		else
 			savedVueVars[varName] = "";
 
 		if (text !== varName)
-			input.attr({value:text});
+			$('#var_' + this).find('input').first().val(text);
 
 		// update var from HTML
 		var pattern = new RegExp(varName, 'g');
