@@ -21,10 +21,8 @@ document.addEventListener('mousemove', function(event) {
 	event.preventDefault();
 	if (isDown) {
 		mousePosition = {
-
 			x : event.clientX,
 			y : event.clientY
-
 		};
 		draggableDiv.style.left = (mousePosition.x + offset[0]) + 'px';
 		draggableDiv.style.top  = (mousePosition.y + offset[1]) + 'px';
@@ -52,7 +50,7 @@ function findFather(objSearch, objAdd, idx)
 	return found;
 }
 
-var myCallback = function (error, options, response) {
+var sheetCallback = function (error, options, response) {
 	if (!error) {
 		debugger;
 		//console.log(response.rows);
@@ -135,21 +133,28 @@ var myCallback = function (error, options, response) {
 		$("#content").append(startBtn);
 		$("#main-message").text("Let's get started :D");
 	}
+	else
+	{
+		//$("#main-message").text("Connection error. Please try again.");
+		window.alert("Connection error. Please try again.");
+		window.location.href = window.location.href.split("?")[0];
+	}
 };
 
+// Processing starts here
 var sheetId = getURLParam("sheetId"); // 1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY
 if (sheetId)
 {
 	sheetrock({
 		url: "https://docs.google.com/spreadsheets/d/" + sheetId + "/edit#gid=0",
-		callback: myCallback
+		callback: sheetCallback
 	});
 }
 else{
 	$("#main-message").text("Contract Generator");
 	var innerDiv = $('<div/>').attr({id:'parse-sheet'});
-	var paragraph = $('<p>').text("Paste your spreadsheet URL").attr({class:'align-center'});
-	var input = $('<input/>').attr({type:'text', id:'sheet-input', class:'form-control', placeholder:'Example: https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/edit#gid=0'});
+	var paragraph = $('<p>').text("Paste your Google Spreadsheet URL").attr({class:'align-center'});
+	var input = $('<input/>').attr({type:'text', id:'sheet-input', class:'form-control', placeholder:'Paste your Google Spreadsheet URL here.', value:'https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/'});
 	var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'sheet-btn', type: 'button', value:'Go!', onClick:'parseSpreadsheet()'});
 	paragraph.append(input);
 	innerDiv.append(paragraph).append(startBtn);
@@ -188,7 +193,8 @@ function updateMargin(data){
 		content.css('padding-left', data.value + "mm");
 }
 
-function changeListType(value){
+function changeListType(value)
+{
 	debugger;
 	var style = $('#custom-styles');
 	var listStyle = localStorage.getItem('CG-listStyles');
@@ -271,6 +277,31 @@ function genHTMLContent(item)
 			$('#custom-styles').append($('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>'));
 		}
 	}
+	else if (item.type === 'numeric-list')
+	{
+		var lastElement = decisionsDiv.children().last().prev();
+		var lastElemName = lastElement.children().last().prop("nodeName");
+		if (lastElemName === "UL")
+		{
+			//var qty = lastElement.find("ul").length;
+			var lastLi = lastElement.children().last().children();
+			var qty = parseInt(window.getComputedStyle(lastLi[0],':before').content.replace('"', ''));
+			if (isNaN(qty))
+				qty = 0;
+			var numberClass = 'number-' + (++qty);
+			content = $("<ul>").append($("<li>").html(item.content).attr({class:'list ' + numberClass})); // change to .text to not parse as HTML
+			$('#custom-styles').append($('<style>.' + numberClass + ':before {content: "' + qty + '";margin-left: -20px;margin-right: 10px;}</style>'));
+		}
+		else
+		{
+			content = $("<ul>").append($("<li>").html(item.content).attr({class:'list number-1'})); // change to .text to not parse as HTML
+			$('#custom-styles').append($('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>'));
+		}
+	}
+	else if (item.type === 'circle-list')
+		content = $("<ul>").append($("<li>").html(item.content).attr({class:'list circle-list'})); // change to .text to not parse as HTML
+	else if (item.type === 'square-list')
+		content = $("<ul>").append($("<li>").html(item.content).attr({class:'list square-list'})); // change to .text to not parse as HTML
 	else if (item.type === 'title')
 		content = $("<h1>").html(item.content); // change to .text to not parse as HTML
 	else if (item.type === 'subtitle')

@@ -19,6 +19,12 @@ body {
 .list{
     list-style-type: none;
 }
+.circle-list{
+    list-style-type: circle;
+}
+.square-list{
+    list-style-type: square;
+}
 #content {
     width: 210mm;
     /*padding-left: 0;*/
