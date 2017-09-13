@@ -16,7 +16,7 @@ body {
 #pick-inner p{
     height: 80px;
 }
-#content li{
+.list{
     list-style-type: none;
 }
 #content {

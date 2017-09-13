@@ -128,6 +128,7 @@ var myCallback = function (error, options, response) {
 		localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
 		localStorage.removeItem('CG-brothersIds');
 		localStorage.removeItem('CG-vueVars');
+		localStorage.removeItem('CG-listStyles');
 		//localStorage.removeItem('CG-savedVueVars');
 
 		var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
@@ -188,7 +189,28 @@ function updateMargin(data){
 }
 
 function changeListType(value){
-
+	debugger;
+	var style = $('#custom-styles');
+	var listStyle = localStorage.getItem('CG-listStyles');
+	if (value === "1") // numbers
+	{
+		style.html(listStyle);
+		$(".list").css("list-style-type","none");
+	}
+	else if (value === "2") // circle
+	{
+		if (listStyle === null)
+			localStorage.setItem('CG-listStyles', style.html());
+		style.html("");
+		$(".list").css("list-style-type","disc");
+	}
+	else if (value === "3") // square
+	{
+		if (listStyle === null)
+			localStorage.setItem('CG-listStyles', style.html());
+		style.html("");
+		$(".list").css("list-style-type","square");
+	}
 }
 
 function getURLParam(name){
