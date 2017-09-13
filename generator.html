@@ -14,6 +14,9 @@
 		<title>Contract Generator</title>
 	</head>
 	<body>
+		<div id="custom-styles" class="no-print" style="display: none;">
+
+		</div>
 		<div id="main">
 			<!--all content goes here-->
 			<div id="content">
@@ -26,7 +29,16 @@
 				<h3 class="menu-title">Menu</h3>
 				<input id="print" type="button" class="btn btn-success" onclick="preparePrint()" value="Print!">
 				<input id="download" type="button" class="btn btn-success" onclick="prepareDownload('content')" value="Download as Docx!">
-				<hr/>
+				<hr class="clear-both"/>
+				<div id="list-style">
+					<h3 class="menu-title">List Type</h3>
+					<select class="custom-select" name="list-types" id="list-types-select" onchange="changeListType(this.value);">
+						<option value="1">Numeric</option>
+						<option value="2">Circle</option>
+						<option value="3">Square</option>
+					</select>
+					<hr class="clear-both"/>
+				</div>
 				<div id="margin">
 					<h3 class="menu-title">Margin</h3>
 					<p>Margin Top (mm): <input type="number" class="margin-top form-control" value="30" oninput="updateMargin(this)"></p>
@@ -34,7 +46,7 @@
 					<p>Margin Bottom (mm): <input type="number" class="margin-bottom form-control" value="20" oninput="updateMargin(this)"></p>
 					<p>Margin Left (mm): <input type="number" class="margin-left form-control" value="30" oninput="updateMargin(this)"></p>
 				</div>
-				<hr/>
+				<hr class="clear-both"/>
 				<h3 class="menu-title">Variables</h3>
 			</div>
 		</div>

@@ -54,7 +54,7 @@ function findFather(objSearch, objAdd, idx)
 
 var myCallback = function (error, options, response) {
 	if (!error) {
-		//debugger;
+		debugger;
 		//console.log(response.rows);
 		// making sure it will work even if order changes
 		var idIndex = response.rows[0].labels.indexOf('id');
@@ -64,7 +64,8 @@ var myCallback = function (error, options, response) {
 		var dependsIndex = response.rows[0].labels.indexOf('depends');
 		var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
 
-		collection = response.rows.slice(1, response.rows.length); // remove labels
+		//collection = response.rows.slice(1, response.rows.length); // remove labels
+		collection = response.rows; // remove labels
 		collection.filter(function(item){ // get all objects that has no dependency
 			if (item.cellsArray[dependsIndex] === "")
 			{
@@ -186,6 +187,10 @@ function updateMargin(data){
 		content.css('padding-left', data.value + "mm");
 }
 
+function changeListType(value){
+
+}
+
 function getURLParam(name){
 	return (location.search.split(name + '=')[1] || '').split('&')[0];
 }
@@ -203,34 +208,57 @@ function startDecisions()
 	content.append(decisionsDiv);
 	content.css('background-color', '#ffffff');
 	//var ids = [];
+	//debugger;
 	genChoices(decisionsTree, false); // first call to genHTML
 }
 
 function genHTMLContent(item)
 {
-	//debugger;
-//				if (item.used) // .toLowerCase() === "true"
-//					return;
+	debugger;
+//	if (item.used) // .toLowerCase() === "true"
+//		return;
 	var exists = $('#' + item.id);
+	var pickOption = $("#pick-option");
+	//pickOption.html("");
 	if (exists.length > 0)
 	{
-		$("#pick-option").hide();
+		pickOption.hide("");
 		return false;
 	}
 	var innerDiv = $('<div/>').attr({id:item.id});
 	var decisionsDiv = $("#decisions");
-	var htmlTag = "";
+	var content;
 
-	if (item.type === 'paragraph')
-		htmlTag = "<p>";
+	if (item.type === 'list')
+	{
+		$('#list-style').show();
+		var lastElement = decisionsDiv.children().last().prev();
+		var lastElemName = lastElement.children().last().prop("nodeName");
+		if (lastElemName === "UL")
+		{
+			//var qty = lastElement.find("ul").length;
+			var lastLi = lastElement.children().last().children();
+			var qty = parseInt(window.getComputedStyle(lastLi[0],':before').content.replace('"', ''));
+			var numberClass = 'number-' + (++qty);
+			content = $("<ul>").append($("<li>").html(item.content).attr({class:'list ' + numberClass})); // change to .text to not parse as HTML
+			$('#custom-styles').append($('<style>.' + numberClass + ':before {content: "' + qty + '";margin-left: -20px;margin-right: 10px;}</style>'));
+		}
+		else
+		{
+			content = $("<ul>").append($("<li>").html(item.content).attr({class:'list number-1'})); // change to .text to not parse as HTML
+			$('#custom-styles').append($('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>'));
+		}
+	}
 	else if (item.type === 'title')
-		htmlTag = "<h1>";
+		content = $("<h1>").html(item.content); // change to .text to not parse as HTML
 	else if (item.type === 'subtitle')
-		htmlTag = "<h2>";
+		content = $("<h2>").html(item.content); // change to .text to not parse as HTML
+	else if (item.type === 'paragraph')
+		content = $("<p>").html(item.content); // change to .text to not parse as HTML
 
-	var content = $(htmlTag).html(item.content); // change to .text to not parse as HTML
 	innerDiv.append(content);
 	decisionsDiv.append(innerDiv);
+	decisionsDiv.append(pickOption);
 
 	var match = item.content.match(/{{\s*[\w\.]+\s*}}/g);
 	if (match)
@@ -307,9 +335,9 @@ function genChoices(json, replaceJson)
 {
 	//debugger;
 	var decisionsDiv = $("#decisions");
-//				var pickOption = $("#pick-option");
-//				if (pickOption)
-//					pickOption.remove();
+//	var pickOption = $("#pick-option");
+//	if (pickOption)
+//		pickOption.remove();
 	var pickOption = $('#pick-option');
 	pickOption.show();
 	pickOption.html("");

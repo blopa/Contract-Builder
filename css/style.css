@@ -10,6 +10,15 @@ body {
     margin: 5px auto;
     display: block;
 }
+#list-style{
+    display: none;
+}
+#pick-inner p{
+    height: 80px;
+}
+#content li{
+    list-style-type: none;
+}
 #content {
     width: 210mm;
     /*padding-left: 0;*/
@@ -17,6 +26,14 @@ body {
     float: left;
     padding: 30mm 20mm 20mm 30mm;
     white-space: pre-wrap;
+}
+.clear-both{
+    clear: both;
+}
+#vars-menu select{
+    width: 100%;
+    float: right;
+    margin-bottom: 5px;
 }
 #vars-menu {
     display: none;
