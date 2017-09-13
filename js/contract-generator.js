@@ -344,7 +344,7 @@ function updateVarsValue(data)
 
 function updateVarsMenu(arr, id)
 {
-	debugger;
+	//debugger;
 	var vueVars = JSON.parse(localStorage.getItem('CG-vueVars'));
 	var savedVueVars = JSON.parse(localStorage.getItem('CG-savedVueVars'));
 	if (!(vueVars instanceof Array))
@@ -366,7 +366,7 @@ function updateVarsMenu(arr, id)
 	}
 	//debugger;
 	$(arr).each(function(index){
-		debugger;
+		//debugger;
 		var varName = "{{" + this + "}}";
 		var text = varName;
 		if (savedVueVars[varName]) // !== "undefined"
