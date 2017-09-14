@@ -176,8 +176,13 @@ function parseSpreadsheet()
 	else
 		sheetId = "0";
 	var url = window.location.href.split("?")[0]; // remove all parameters
-	url += '?spreadsheetId=' + spreadsheetId + '&sheetId=' + sheetId;
-	window.location.href = url;
+	if ((spreadsheetId) && (sheetId))
+	{
+		url += '?spreadsheetId=' + spreadsheetId + '&sheetId=' + sheetId;
+		window.location.href = url;
+	}
+	else
+		window.alert("This isn't a valid Google Spreadsheet URL.");
 }
 //			function toggleItem(id){
 //				$('#' + id).toggle();
