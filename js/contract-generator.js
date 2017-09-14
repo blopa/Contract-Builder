@@ -142,11 +142,12 @@ var sheetCallback = function (error, options, response) {
 };
 
 // Processing starts here
-var sheetId = getURLParam("sheetId"); // 1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY
-if (sheetId)
+var spreadsheetId = getURLParam("spreadsheetId"); // 1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY
+var sheetId = getURLParam("sheetId"); // 3214345
+if ((spreadsheetId) && (sheetId))
 {
 	sheetrock({
-		url: "https://docs.google.com/spreadsheets/d/" + sheetId + "/edit#gid=0",
+		url: "https://docs.google.com/spreadsheets/d/" + spreadsheetId + "/edit#gid=" + sheetId,
 		callback: sheetCallback
 	});
 }
@@ -161,19 +162,27 @@ else{
 	$("#content").append(innerDiv);
 }
 
-// functions
+// FUNCTIONS
 function parseSpreadsheet()
 {
+	//debugger;
 	var resourceUrl = $("#sheet-input").val();
-	var spreadsheetId = new RegExp("/spreadsheets/d/([a-zA-Z0-9-_]+)").exec(resourceUrl)[1];
-	var url = window.location.href;
-	if (url.indexOf('?') > -1){
-		url += '&sheetId=' + spreadsheetId;
+	var spreadsheetId = new RegExp("/spreadsheets/d/([a-zA-Z0-9-_]+)").exec(resourceUrl);
+	if (spreadsheetId)
+		spreadsheetId = spreadsheetId[1];
+	var sheetId = new RegExp("[#&]gid=([0-9]+)").exec(resourceUrl);
+	if (sheetId)
+		sheetId = sheetId[1];
+	else
+		sheetId = "0";
+	var url = window.location.href.split("?")[0]; // remove all parameters
+	if ((spreadsheetId) && (sheetId))
+	{
+		url += '?spreadsheetId=' + spreadsheetId + '&sheetId=' + sheetId;
+		window.location.href = url;
 	}
-	else{
-		url += '?sheetId=' + spreadsheetId;
-	}
-	window.location.href = url;
+	else
+		window.alert("This isn't a valid Google Spreadsheet URL.");
 }
 //			function toggleItem(id){
 //				$('#' + id).toggle();
