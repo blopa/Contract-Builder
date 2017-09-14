@@ -5,7 +5,7 @@
 > "I realized that document automation was a way to save time and increase consistency while reducing errors in documents. So with document automation, I create documents that look professional each and every time. By automating that process rather than recreating it for every document, I’m able to eliminate the errors."
 - [Andrew Legrand to http://abovethelaw.com](http://abovethelaw.com/2015/05/todays-tech-how-a-business-lawyer-uses-document-automation-in-his-practice/)
 
-<img src="/screenshots/contract_builder.gif?raw=true" width="550px">
+<img src="/screenshots/contract_builder.gif?raw=true" width="890px">
 
 **TESTED ONLY ON GOOGLE CHROME**
 
@@ -44,8 +44,13 @@ First of all you need to create a Google Spreadsheet following the same rules as
 So whenever you want a part of the contract to be only available when certain other part is on the contract, you should use the ``depends`` field. One row can depend of another row that also depends on another and so on. Use your creativity.
 
 ## Screenshot
+**Google Spreadsheet example**
 ![ScreenShot](https://raw.githubusercontent.com/blopa/Contract-Builder/master/screenshots/screenshot_1.png)
+
+**Built contract**
 ![ScreenShot](https://raw.githubusercontent.com/blopa/Contract-Builder/master/screenshots/screenshot_2.png)
+
+**Printing contract**
 ![ScreenShot](https://raw.githubusercontent.com/blopa/Contract-Builder/master/screenshots/screenshot_3.png)
 
 ## Release Notes
