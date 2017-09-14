@@ -175,13 +175,8 @@ function parseSpreadsheet()
 		sheetId = sheetId[1];
 	else
 		sheetId = "0";
-	var url = window.location.href;
-	if (url.indexOf('?') > -1){
-		url += '&spreadsheetId=' + spreadsheetId + '&sheetId=' + sheetId;
-	}
-	else{
-		url += '?spreadsheetId=' + spreadsheetId + '&sheetId=' + sheetId;
-	}
+	var url = window.location.href.split("?")[0]; // remove all parameters
+	url += '?spreadsheetId=' + spreadsheetId + '&sheetId=' + sheetId;
 	window.location.href = url;
 }
 //			function toggleItem(id){
