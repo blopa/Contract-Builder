@@ -46,7 +46,214 @@ So whenever you want a part of the contract to be only available when certain ot
 ## Example
 You can create complex tree decisions using the field ``depends``. The following ``JSON`` is a result of [this Google Spreadsheet](https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/edit).
 ```json
-[{"id":"sample_1","description":"Sample Agreement Title","content":"SAMPLE AGREEMENT","type":"title","depends":"","mandatory":"TRUE","used":false,"childs":[]},{"id":"sample_2","description":"Description","content":"This Agreement is entered into as of the {{date_day}} day of {{date_month}}, {{date_year}}, between {{the_committee}} and {{the_contractor}}","type":"paragraph","depends":"","mandatory":"FALSE","used":false,"childs":[]},{"id":"sample_3","description":"Independent Contractor","content":"<b>Independent Contractor</b>. Subject to the terms and conditions of this Agreement, the Committee hereby engages the Contractor as an independent contractor to perform the services set forth herein, and the Contractor hereby accepts such engagement.","type":"numeric-list","depends":"","mandatory":"FALSE","used":false,"childs":[]},{"id":"sample_4","description":"Duties, Term, and Compensation","content":"<b>Duties, Term, and Compensation.</b> The Contractor’s duties, term of engagement, compensation and provisions for payment thereof shall be as set forth in the budget which is attached as {{attachment_1}}, which may be amended in writing from time to time, or supplemented with subsequent estimates for services to be rendered by the Contractor and agreed to by the Committee, and which collectively are hereby incorporated by reference.","type":"numeric-list","depends":"","mandatory":"FALSE","used":false,"childs":[{"id":"sample_5","description":"Expenses","content":"<b>Expenses</b>. During the term of this Agreement, the Contractor shall bill and the Committee shall reimburse her for all reasonable and approved out-of-pocket expenses as set forth in {{attachment_1}} which are incurred in connection with the performance of the duties hereunder.","type":"circle-list","depends":"sample_4","mandatory":"FALSE","used":false,"childs":[]},{"id":"sample_6","description":"Written Reports","content":"<b>Written Reports</b>. The Committee may request that project plans, progress reports and a final results report be provided by Consultant.. A final results report shall be due at the conclusion of the project and shall be submitted to the Committee in a confidential written report at such time. The results report shall be in such form and setting forth such information and data as is reasonably requested by the Committee.","type":"numeric-list","depends":"sample_4","mandatory":"FALSE","used":false,"childs":[]},{"id":"sample_8","description":"Conflicts of Interest","content":"<b>Conflicts of Interest</b>; The Contractor represents that she is free to enter into this Agreement and that this engagement does not violate the terms of any agreement between the Contractor and {{third_party}}. During the term of this agreement, the Contractor shall devote as much of her productive time, energy and abilities to the performance of her duties hereunder as is necessary to perform the required duties in a timely and productive manner. The Contractor is expressly free to perform services for other parties while performing services for the Committee.","type":"numeric-list","depends":"sample_4","mandatory":"FALSE","used":false,"childs":[{"id":"sample_9","description":"Termination","content":"<b>Termination</b>. The Committee may terminate this Agreement at any time by {{working_days_qty}} working days’ written notice to the Contractor. In addition, if the Contractor is convicted of any crime or offense, fails or refuses to comply with the written policies or reasonable directive of the Committee, is guilty of serious misconduct in connection with performance hereunder, or materially breaches provisions of this Agreement, the Committee at any time may terminate the engagement of the Contractor immediately and without prior written notice to the Contractor","type":"numeric-list","depends":"sample_8","mandatory":"FALSE","used":false,"childs":[{"id":"sample_11","description":"Insurance","content":"<b>Insurance</b>. The Contractor will carry liability insurance (including malpractice insurance, if warranted) relative to any service that she performs for the Committee.","type":"circle-list","depends":"sample_9","mandatory":"FALSE","used":false,"childs":[{"id":"sample_12","description":"Assignment Type A","content":"<b>Assignment</b>. The Contractor shall not assign any of her rights under this Agreement, or delegate the performance of any of her duties hereunder, without the prior written consent of the Committee.","type":"circle-list","depends":"sample_11","mandatory":"TRUE","used":false,"childs":[]},{"id":"sample_13","description":"Assignment Type B","content":"<b>Assignment</b>. The Contractor shall not assign any of her rights under this Agreement, or delegate the performance of any of her duties hereunder, without the prior written consent of the Committee.","type":"circle-list","depends":"sample_11","mandatory":"TRUE","used":false,"childs":[{"id":"sample_17","description":"Entire Understanding","content":"<b>Entire Understanding</b>. This document and any exhibit attached constitut the entire understanding and agreement of the parties, and any and all prior agreements, understandings, and representations are hereby terminated and canceled in their entirety and are of no further force and effect.","type":"square-list","depends":"sample_13","mandatory":"FALSE","used":false,"childs":[{"id":"sample_18","description":"Unenforceability of Provisions","content":"<b>Unenforceability of Provisions</b>. If any provision of this Agreement, or any portion thereof, is held to be invalid and unenforceable, then the remainder of this Agreement shall nevertheless remain in full force and effect.","type":"square-list","depends":"sample_17","mandatory":"FALSE","used":false,"childs":[]}]}]},{"id":"sample_14","description":"Assignment Type C","content":"<b>Assignment</b>. The Contractor shall not assign any of her rights under this Agreement, or delegate the performance of any of her duties hereunder, without the prior written consent of the Committee.","type":"circle-list","depends":"sample_11","mandatory":"TRUE","used":false,"childs":[]},{"id":"sample_15","description":"Assignment Type D","content":"<b>Assignment</b>. The Contractor shall not assign any of her rights under this Agreement, or delegate the performance of any of her duties hereunder, without the prior written consent of the Committee.","type":"circle-list","depends":"sample_11","mandatory":"TRUE","used":false,"childs":[]}]}]}]}]},{"id":"sample_7","description":"Confidentiality","content":"<b>Confidentiality</b>. Upon the expiration or earlier termination of this Agreement, or whenever requested by the Committee, the Contractor shall immediately deliver to the Committee all such files, records, documents, specifications, information, and other items in her possession or under her control. The Contractor further agrees that she will not disclose her retention as an independent contractor or the terms of this Agreement to any person without the prior written consent of the Committee and shall at all times preserve the confidential nature of her relationship to the Committee and of the services hereunder.","type":"numeric-list","depends":"","mandatory":"TRUE","used":false,"childs":[]},{"id":"sample_10","description":"Independent Contractor","content":"<b>Independent Contractor</b>. This Agreement shall not render the Contractor an employee, partner, agent of, or joint venturer with the Committee for any purpose. The Contractor is and will remain an independent contractor in her relationship to the Committee. The Committee shall not be responsible for withholding taxes with respect to the Contractor’s compensation hereunder. The Contractor shall have no claim against the Committee hereunder or otherwise for vacation pay, sick leave, retirement benefits, social security, worker’s compensation, health or disability benefits, unemployment insurance benefits, or employee benefits of any kind.","type":"paragraph","depends":"","mandatory":"TRUE","used":false,"childs":[]},{"id":"sample_16","description":"Modification or Amendment","content":"<b>Modification or Amendment</b>. No amendment, change or modification of this Agreement shall be valid unless in writing signed by the parties hereto.","type":"square-list","depends":"","mandatory":"FALSE","used":false,"childs":[]},{"id":"sample_19","description":"Witness","content":"IN WITNESS WHEREOF the undersigned have executed this Agreement as of the day and year first written above. The parties hereto agree that facsimile signatures shall be as effective as if originals.","type":"paragraph","depends":"","mandatory":"TRUE","used":false,"childs":[]},{"id":"sample_20","description":"Signatures","content":"______________________________                                     ______________________________\n{{the_committee}}                                                        {{the_contractor}}\n\n______________________________                                     ______________________________\n{{witness_1}}                                                                {{witness_2}}","type":"paragraph","depends":"","mandatory":"TRUE","used":false,"childs":[]}]
+[
+	{
+		"id": "sample_1",
+		"description": "Sample Agreement Title",
+		"content": "SAMPLE AGREEMENT",
+		"type": "title",
+		"depends": "",
+		"mandatory": "TRUE",
+		"used": false,
+		"childs": []
+	},
+	{
+		"id": "sample_2",
+		"description": "Description",
+		"content": "This Agreement is entered into as of the {{date_day}} day of {{date_month}}, {{date_year}}, between {{the_committee}} and {{the_contractor}}",
+		"type": "paragraph",
+		"depends": "",
+		"mandatory": "FALSE",
+		"used": false,
+		"childs": []
+	},
+	{
+		"id": "sample_3",
+		"description": "Independent Contractor",
+		"content": "<b>Independent Contractor</b>. Subject to the terms and conditions of this Agreement, the Committee hereby engages the Contractor as an independent contractor to perform the services set forth herein, and the Contractor hereby accepts such engagement.",
+		"type": "numeric-list",
+		"depends": "",
+		"mandatory": "FALSE",
+		"used": false,
+		"childs": []
+	},
+	{
+		"id": "sample_4",
+		"description": "Duties, Term, and Compensation",
+		"content": "<b>Duties, Term, and Compensation.</b> The Contractor’s duties, term of engagement, compensation and provisions for payment thereof shall be as set forth in the budget which is attached as {{attachment_1}}, which may be amended in writing from time to time, or supplemented with subsequent estimates for services to be rendered by the Contractor and agreed to by the Committee, and which collectively are hereby incorporated by reference.",
+		"type": "numeric-list",
+		"depends": "",
+		"mandatory": "FALSE",
+		"used": false,
+		"childs": [
+			{
+				"id": "sample_5",
+				"description": "Expenses",
+				"content": "<b>Expenses</b>. During the term of this Agreement, the Contractor shall bill and the Committee shall reimburse her for all reasonable and approved out-of-pocket expenses as set forth in {{attachment_1}} which are incurred in connection with the performance of the duties hereunder.",
+				"type": "circle-list",
+				"depends": "sample_4",
+				"mandatory": "FALSE",
+				"used": false,
+				"childs": []
+			},
+			{
+				"id": "sample_6",
+				"description": "Written Reports",
+				"content": "<b>Written Reports</b>. The Committee may request that project plans, progress reports and a final results report be provided by Consultant.. A final results report shall be due at the conclusion of the project and shall be submitted to the Committee in a confidential written report at such time. The results report shall be in such form and setting forth such information and data as is reasonably requested by the Committee.",
+				"type": "numeric-list",
+				"depends": "sample_4",
+				"mandatory": "FALSE",
+				"used": false,
+				"childs": []
+			},
+			{
+				"id": "sample_8",
+				"description": "Conflicts of Interest",
+				"content": "<b>Conflicts of Interest</b>; The Contractor represents that she is free to enter into this Agreement and that this engagement does not violate the terms of any agreement between the Contractor and {{third_party}}. During the term of this agreement, the Contractor shall devote as much of her productive time, energy and abilities to the performance of her duties hereunder as is necessary to perform the required duties in a timely and productive manner. The Contractor is expressly free to perform services for other parties while performing services for the Committee.",
+				"type": "numeric-list",
+				"depends": "sample_4",
+				"mandatory": "FALSE",
+				"used": false,
+				"childs": [
+					{
+						"id": "sample_9",
+						"description": "Termination",
+						"content": "<b>Termination</b>. The Committee may terminate this Agreement at any time by {{working_days_qty}} working days’ written notice to the Contractor. In addition, if the Contractor is convicted of any crime or offense, fails or refuses to comply with the written policies or reasonable directive of the Committee, is guilty of serious misconduct in connection with performance hereunder, or materially breaches provisions of this Agreement, the Committee at any time may terminate the engagement of the Contractor immediately and without prior written notice to the Contractor",
+						"type": "numeric-list",
+						"depends": "sample_8",
+						"mandatory": "FALSE",
+						"used": false,
+						"childs": [
+							{
+								"id": "sample_11",
+								"description": "Insurance",
+								"content": "<b>Insurance</b>. The Contractor will carry liability insurance (including malpractice insurance, if warranted) relative to any service that she performs for the Committee.",
+								"type": "circle-list",
+								"depends": "sample_9",
+								"mandatory": "FALSE",
+								"used": false,
+								"childs": [
+									{
+										"id": "sample_12",
+										"description": "Assignment Type A",
+										"content": "<b>Assignment</b>. The Contractor shall not assign any of her rights under this Agreement, or delegate the performance of any of her duties hereunder, without the prior written consent of the Committee.",
+										"type": "circle-list",
+										"depends": "sample_11",
+										"mandatory": "TRUE",
+										"used": false,
+										"childs": []
+									},
+									{
+										"id": "sample_13",
+										"description": "Assignment Type B",
+										"content": "<b>Assignment</b>. The Contractor shall not assign any of her rights under this Agreement, or delegate the performance of any of her duties hereunder, without the prior written consent of the Committee.",
+										"type": "circle-list",
+										"depends": "sample_11",
+										"mandatory": "TRUE",
+										"used": false,
+										"childs": [
+											{
+												"id": "sample_17",
+												"description": "Entire Understanding",
+												"content": "<b>Entire Understanding</b>. This document and any exhibit attached constitut the entire understanding and agreement of the parties, and any and all prior agreements, understandings, and representations are hereby terminated and canceled in their entirety and are of no further force and effect.",
+												"type": "square-list",
+												"depends": "sample_13",
+												"mandatory": "FALSE",
+												"used": false,
+												"childs": [
+													{
+														"id": "sample_18",
+														"description": "Unenforceability of Provisions",
+														"content": "<b>Unenforceability of Provisions</b>. If any provision of this Agreement, or any portion thereof, is held to be invalid and unenforceable, then the remainder of this Agreement shall nevertheless remain in full force and effect.",
+														"type": "square-list",
+														"depends": "sample_17",
+														"mandatory": "FALSE",
+														"used": false,
+														"childs": []
+													}
+												]
+											}
+										]
+									},
+									{
+										"id": "sample_14",
+										"description": "Assignment Type C",
+										"content": "<b>Assignment</b>. The Contractor shall not assign any of her rights under this Agreement, or delegate the performance of any of her duties hereunder, without the prior written consent of the Committee.",
+										"type": "circle-list",
+										"depends": "sample_11",
+										"mandatory": "TRUE",
+										"used": false,
+										"childs": []
+									},
+									{
+										"id": "sample_15",
+										"description": "Assignment Type D",
+										"content": "<b>Assignment</b>. The Contractor shall not assign any of her rights under this Agreement, or delegate the performance of any of her duties hereunder, without the prior written consent of the Committee.",
+										"type": "circle-list",
+										"depends": "sample_11",
+										"mandatory": "TRUE",
+										"used": false,
+										"childs": []
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"id": "sample_7",
+		"description": "Confidentiality",
+		"content": "<b>Confidentiality</b>. Upon the expiration or earlier termination of this Agreement, or whenever requested by the Committee, the Contractor shall immediately deliver to the Committee all such files, records, documents, specifications, information, and other items in her possession or under her control. The Contractor further agrees that she will not disclose her retention as an independent contractor or the terms of this Agreement to any person without the prior written consent of the Committee and shall at all times preserve the confidential nature of her relationship to the Committee and of the services hereunder.",
+		"type": "numeric-list",
+		"depends": "",
+		"mandatory": "TRUE",
+		"used": false,
+		"childs": []
+	},
+	{
+		"id": "sample_10",
+		"description": "Independent Contractor",
+		"content": "<b>Independent Contractor</b>. This Agreement shall not render the Contractor an employee, partner, agent of, or joint venturer with the Committee for any purpose. The Contractor is and will remain an independent contractor in her relationship to the Committee. The Committee shall not be responsible for withholding taxes with respect to the Contractor’s compensation hereunder. The Contractor shall have no claim against the Committee hereunder or otherwise for vacation pay, sick leave, retirement benefits, social security, worker’s compensation, health or disability benefits, unemployment insurance benefits, or employee benefits of any kind.",
+		"type": "paragraph",
+		"depends": "",
+		"mandatory": "TRUE",
+		"used": false,
+		"childs": []
+	},
+	{
+		"id": "sample_16",
+		"description": "Modification or Amendment",
+		"content": "<b>Modification or Amendment</b>. No amendment, change or modification of this Agreement shall be valid unless in writing signed by the parties hereto.",
+		"type": "square-list",
+		"depends": "",
+		"mandatory": "FALSE",
+		"used": false,
+		"childs": []
+	},
+	{
+		"id": "sample_19",
+		"description": "Witness",
+		"content": "IN WITNESS WHEREOF the undersigned have executed this Agreement as of the day and year first written above. The parties hereto agree that facsimile signatures shall be as effective as if originals.",
+		"type": "paragraph",
+		"depends": "",
+		"mandatory": "TRUE",
+		"used": false,
+		"childs": []
+	},
+	{
+		"id": "sample_20",
+		"description": "Signatures",
+		"content": "______________________________                                     ______________________________\n{{the_committee}}                                                        {{the_contractor}}\n\n______________________________                                     ______________________________\n{{witness_1}}                                                                {{witness_2}}",
+		"type": "paragraph",
+		"depends": "",
+		"mandatory": "TRUE",
+		"used": false,
+		"childs": []
+	}
+]
 ```
 
 ## Screenshot
