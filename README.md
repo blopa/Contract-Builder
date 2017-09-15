@@ -44,7 +44,7 @@ First of all you need to create a Google Spreadsheet following the same rules as
 So whenever you want a part of the contract to be only available when certain other part is on the contract, you should use the ``depends`` field. One row can depend of another row that also depends on another and so on. Use your creativity.
 
 ## Example
-You can create complex tree decisions using the field ``depends``. The following ``JSON`` is a result of [this Google Spreadsheet](https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/edit).
+You can create complex tree decisions using the field ``depends``. The following ``JSON`` is a result of [this Google Spreadsheet](https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/edit). For a better view of the ``JSON`` [click here](https://codebeautify.org/jsonviewer/cba7783b).
 ```json
 [
 	{
@@ -257,7 +257,7 @@ You can create complex tree decisions using the field ``depends``. The following
 ```
 
 ## Screenshot
-**Google Spreadsheet example**
+**[Google Spreadsheet example](https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/copy)**
 ![ScreenShot](https://raw.githubusercontent.com/blopa/Contract-Builder/master/screenshots/screenshot_1.png)
 
 **Built contract**
