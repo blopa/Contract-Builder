@@ -267,6 +267,9 @@ You can create complex tree decisions using the field ``depends``. The following
 ![ScreenShot](https://raw.githubusercontent.com/blopa/Contract-Builder/master/screenshots/screenshot_3.png)
 
 ## Release Notes
+- **v0.0.2:**
+	- Fix mandatory children glitch
+	- Fix sheetId always equals to 0
 - **v0.0.1:**
 	- First working version
 

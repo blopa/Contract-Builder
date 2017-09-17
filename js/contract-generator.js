@@ -243,7 +243,7 @@ function startDecisions()
 	content.css('background-color', '#ffffff');
 	//var ids = [];
 	//debugger;
-	genChoices(decisionsTree, false); // first call to genHTML
+	var hasMand = genChoices(decisionsTree, false); // first call to genHTML
 }
 
 function genHTMLContent(item)
@@ -428,29 +428,32 @@ function genChoices(json, replaceJson)
 	//var pickOption = $('<div/>').attr({id:'pick-option', class:'no-print'});
 	var found = false;
 	var inner = false;
-	debugger;
+	var hasMand = false;
+	//debugger;
 	var mandCount = 0;
 	var jsonCount = json.length;
 	var i = 0;
 	$(json).each(function(index){
-		debugger;
+		//debugger;
 		if (!found)
 		{
 			if (this.mandatory.toLowerCase() === "true")
 			{
 				//debugger;
-				found = !genHTMLContent(this);
+				hasMand = genHTMLContent(this); // returns true if built a HTML
 				this.used = true;
 				mandCount++;
 				if (this.childs.length > 0)
 				{
-					genChoices(this.childs, replaceJson);
+					//debugger;
+					hasMand = genChoices(this.childs, replaceJson);
 					inner = true;
 				}
+				found = !hasMand; // reverse response to keep building blocks
 			}
 			else // TODO when brothers, must be able to choose all of them
 			{
-				debugger;
+				//debugger;
 				//ids.push(this.id);
 				//this.description
 				var innerDiv = $('<div/>').attr({id:'pick-inner'});
@@ -476,15 +479,16 @@ function genChoices(json, replaceJson)
 		decisionsDiv.append(pickOption);
 	else if ((mandCount >= jsonCount) && (ids.length > 0))
 	{
-		debugger;
-		genChoices(ids, true);
+		//debugger;
+		hasMand = genChoices(ids, true);
 		localStorage.setItem('CG-brothersIds', JSON.stringify(ids.slice(1, ids.length)));
 	}
 	else if (!inner)
 		pickOption.hide();
-	debugger;
+	//debugger;
 	if (mandCount < jsonCount)
 		localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
+	return hasMand;
 }
 
 function parseJson(add, item, json)
@@ -492,6 +496,7 @@ function parseJson(add, item, json)
 	//debugger;
 	$("#pick-option").html("");
 	var found = false;
+	var hasMand = false;
 	if (json === "")
 		json = JSON.parse(localStorage.getItem('CG-decisionsTree'));
 	if (add)
@@ -506,11 +511,11 @@ function parseJson(add, item, json)
 					this.used = true;
 					if (this.childs.length > 0)
 					{
-						debugger;
-						genChoices(this.childs, false);
+						//debugger;
+						hasMand = genChoices(this.childs, false);
 					}
 					else
-						genChoices(json, true);
+						hasMand = genChoices(json, true);
 				}
 				else if (this.childs.length > 0)
 				{
@@ -521,7 +526,7 @@ function parseJson(add, item, json)
 		});
 	}
 	else
-		genChoices(json, true);
+		hasMand = genChoices(json, true);
 
 	return found;
 }
