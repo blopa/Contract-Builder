@@ -282,7 +282,6 @@ A: Thank you! You can help by codding more features, creating pull requests, or 
 ## TODO
 - Create TODO list
 
-
 ## License
 Free. Don't forget to star :D and send pull requests. :D
 
