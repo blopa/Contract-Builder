@@ -173,6 +173,23 @@ else{
 }
 
 // FUNCTIONS
+function removeDuplicates(arr, key) {
+	if (!(arr instanceof Array) || key && typeof key !== 'string') {
+		return false;
+	}
+
+	if (key && typeof key === 'string') {
+		return arr.filter((obj, index, arr) => {
+				return arr.map(mapObj => mapObj[key]).indexOf(obj[key]) === index;
+	});
+
+	} else {
+		return arr.filter(function(item, index, arr) {
+			return arr.indexOf(item) == index;
+		});
+	}
+}
+
 function arraysEqual(arr1, arr2) {
 	if(arr1.length !== arr2.length)
 		return false;
@@ -262,7 +279,7 @@ function startDecisions()
 	content.css('background-color', '#ffffff');
 	//var ids = [];
 	//debugger;
-	var hasMand = genChoices(decisionsTree, false); // first call to genHTML
+	var hasChoice = genChoices(decisionsTree, false); // first call to genHTML
 }
 
 function genHTMLContent(item)
@@ -376,6 +393,7 @@ function updateVarsMenu(arr, id)
 		vueVars = [];
 	if (!(savedVueVars instanceof Object))
 		savedVueVars = {};
+	debugger;
 	var newVars = $(arr).not(vueVars).get();
 	if (newVars.length > 0) // means there's new vars
 	{
@@ -419,7 +437,7 @@ function updateVarsMenu(arr, id)
 
 function genChoices(json, replaceJson)
 {
-	//debugger;
+	debugger;
 	var decisionsDiv = $("#decisions");
 //	var pickOption = $("#pick-option");
 //	if (pickOption)
@@ -429,6 +447,7 @@ function genChoices(json, replaceJson)
 	$('#sheet-effect').show();
 	pickOption.html("");
 	var ids = JSON.parse(localStorage.getItem('CG-brothersIds'));
+	var tempIds = [];
 	var replaced = false;
 	var buildNewIds = false;
 	if (ids instanceof Array)
@@ -447,28 +466,29 @@ function genChoices(json, replaceJson)
 	//var pickOption = $('<div/>').attr({id:'pick-option', class:'no-print'});
 	var found = false;
 	var inner = false;
-	var hasMand = false;
+	var hasChoice = false;
 	//debugger;
 	var mandCount = 0;
 	var jsonCount = json.length;
 	var i = 0;
 	$(json).each(function(index){
-		//debugger;
+		debugger;
 		if (!found)
 		{
 			if (this.mandatory.toLowerCase() === "true")
 			{
 				//debugger;
-				hasMand = genHTMLContent(this); // returns true if built a HTML
+				hasChoice = !genHTMLContent(this); // returns true if built a HTML
 				this.used = true;
 				mandCount++;
 				if (this.childs.length > 0)
 				{
-					//debugger;
-					hasMand = genChoices(this.childs, replaceJson);
+					debugger;
+					hasChoice = genChoices(this.childs, false);
+					//ids = JSON.parse(localStorage.getItem('CG-brothersIds')); // reaload ids
 					inner = true;
 				}
-				found = !hasMand; // reverse response to keep building blocks
+				found = hasChoice; // reverse response to keep building blocks
 			}
 			else // TODO when brothers, must be able to choose all of them
 			{
@@ -482,6 +502,7 @@ function genChoices(json, replaceJson)
 				innerDiv.append(paragraph).append(btnYes).append(btnNo);
 				pickOption.append(innerDiv);
 				found = true;
+				hasChoice = true;
 			}
 			if (replaced)
 			{
@@ -492,30 +513,51 @@ function genChoices(json, replaceJson)
 		else if (buildNewIds)
 			ids.push(this);
 		else if (!replaceJson) // if it's not replacing the json, means that it's not using ids, so increment
-			ids.unshift(this);
+		{
+			debugger;
+			tempIds.push(this);
+		}
 	});
 	if (found)
 		decisionsDiv.append(pickOption);
 	else if ((mandCount >= jsonCount) && (ids.length > 0))
 	{
 		//debugger;
-		hasMand = genChoices(ids, true);
+		hasChoice = genChoices(ids, true);
 		localStorage.setItem('CG-brothersIds', JSON.stringify(ids.slice(1, ids.length)));
 	}
 	else if (!inner)
 		pickOption.hide();
 	//debugger;
-	if (mandCount < jsonCount)
+	if (!replaceJson) // if it's not replacing the json, means that it's not using ids, so increment
+	{
+		debugger;
+		tempIds = $(tempIds).not(ids).get();
+		ids = tempIds.concat(ids); // merges arrays
+	}
+	//if ((mandCount <= jsonCount) && !inner)
+	if (mandCount <= jsonCount)
+	{
+		if (inner)
+		{
+			debugger;
+			// TODO concat without repeating
+			//newVars = $(arr).not(vueVars).get();
+			tempIds = JSON.parse(localStorage.getItem('CG-brothersIds'));
+			ids = removeDuplicates(tempIds.concat(ids), 'id');
+		}
 		localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
-	return hasMand;
+	}
+	debugger;
+	return hasChoice;
 }
 
 function parseJson(add, item, json)
 {
-	//debugger;
+	debugger;
 	$("#pick-option").html("");
 	var found = false;
-	var hasMand = false;
+	var hasChoice = false;
 	if (json === "")
 		json = JSON.parse(localStorage.getItem('CG-decisionsTree'));
 	if (add)
@@ -531,10 +573,10 @@ function parseJson(add, item, json)
 					if (this.childs.length > 0)
 					{
 						//debugger;
-						hasMand = genChoices(this.childs, false);
+						hasChoice = genChoices(this.childs, false);
 					}
 					else
-						hasMand = genChoices(json, true);
+						hasChoice = genChoices(json, true);
 				}
 				else if (this.childs.length > 0)
 				{
@@ -545,7 +587,7 @@ function parseJson(add, item, json)
 		});
 	}
 	else
-		hasMand = genChoices(json, true);
+		hasChoice = genChoices(json, true);
 
 	return found;
 }
