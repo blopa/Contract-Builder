@@ -61,9 +61,12 @@ var sheetCallback = function (error, options, response) {
 		var typeIndex = response.rows[0].labels.indexOf('type');
 		var dependsIndex = response.rows[0].labels.indexOf('depends');
 		var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
+		//debugger;
 
-		//collection = response.rows.slice(1, response.rows.length); // remove labels
-		collection = response.rows; // remove labels
+		if (arraysEqual(response.rows[0].cellsArray, response.rows[0].labels))
+			collection = response.rows.slice(1, response.rows.length); // remove labels
+		else
+			collection = response.rows; // remove labels
 		collection.filter(function(item){ // get all objects that has no dependency
 			if (item.cellsArray[dependsIndex] === "")
 			{
@@ -164,6 +167,16 @@ else{
 }
 
 // FUNCTIONS
+function arraysEqual(arr1, arr2) {
+	if(arr1.length !== arr2.length)
+		return false;
+	for(var i = arr1.length; i--;) {
+		if(arr1[i] !== arr2[i])
+			return false;
+	}
+	return true;
+}
+
 function parseSpreadsheet()
 {
 	//debugger;
