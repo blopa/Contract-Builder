@@ -183,7 +183,8 @@ function removeDuplicates(arr, key) {
 				return arr.map(mapObj => mapObj[key]).indexOf(obj[key]) === index;
 	});
 
-	} else {
+	}
+	else {
 		return arr.filter(function(item, index, arr) {
 			return arr.indexOf(item) == index;
 		});
@@ -393,7 +394,7 @@ function updateVarsMenu(arr, id)
 		vueVars = [];
 	if (!(savedVueVars instanceof Object))
 		savedVueVars = {};
-	debugger;
+	//debugger;
 	var newVars = $(arr).not(vueVars).get();
 	if (newVars.length > 0) // means there's new vars
 	{
@@ -437,7 +438,7 @@ function updateVarsMenu(arr, id)
 
 function genChoices(json, replaceJson)
 {
-	debugger;
+	//debugger;
 	var decisionsDiv = $("#decisions");
 //	var pickOption = $("#pick-option");
 //	if (pickOption)
@@ -477,13 +478,14 @@ function genChoices(json, replaceJson)
 		{
 			if (this.mandatory.toLowerCase() === "true")
 			{
-				//debugger;
+				if (this.id === "sample_9")
+				debugger;
 				hasChoice = !genHTMLContent(this); // returns true if built a HTML
 				this.used = true;
 				mandCount++;
 				if (this.childs.length > 0)
 				{
-					debugger;
+					//debugger;
 					hasChoice = genChoices(this.childs, false);
 					//ids = JSON.parse(localStorage.getItem('CG-brothersIds')); // reaload ids
 					inner = true;
@@ -501,17 +503,22 @@ function genChoices(json, replaceJson)
 				var btnNo = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + this.id, type: 'button', value:'No', onClick:"parseJson(false, '" + this.id + "', '')"});
 				innerDiv.append(paragraph).append(btnYes).append(btnNo);
 				pickOption.append(innerDiv);
+				this.used = true;
 				found = true;
 				hasChoice = true;
 			}
 			if (replaced)
 			{
 				ids.splice(index - i, 1); // remove current item
+				localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
 				i++;
 			}
 		}
 		else if (buildNewIds)
+		{
+			debugger;
 			ids.push(this);
+		}
 		else if (!replaceJson) // if it's not replacing the json, means that it's not using ids, so increment
 		{
 			debugger;
@@ -522,7 +529,7 @@ function genChoices(json, replaceJson)
 		decisionsDiv.append(pickOption);
 	else if ((mandCount >= jsonCount) && (ids.length > 0))
 	{
-		//debugger;
+		debugger;
 		hasChoice = genChoices(ids, true);
 		localStorage.setItem('CG-brothersIds', JSON.stringify(ids.slice(1, ids.length)));
 	}
@@ -548,13 +555,13 @@ function genChoices(json, replaceJson)
 		}
 		localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
 	}
-	debugger;
+	//debugger;
 	return hasChoice;
 }
 
 function parseJson(add, item, json)
 {
-	debugger;
+	//debugger;
 	$("#pick-option").html("");
 	var found = false;
 	var hasChoice = false;
