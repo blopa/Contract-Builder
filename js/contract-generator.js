@@ -142,8 +142,9 @@ var sheetCallback = function (error, options, response) {
 };
 
 // Processing starts here
-var spreadsheetId = getURLParam("spreadsheetId"); // 1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY
-var sheetId = getURLParam("sheetId"); // 3214345
+var url = new URL(location);
+var spreadsheetId = url.searchParams.get("spreadsheetId"); // 1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY
+var sheetId = url.searchParams.get("sheetId"); // 3214345
 if ((spreadsheetId) && (sheetId))
 {
 	sheetrock({
@@ -228,10 +229,6 @@ function changeListType(value)
 	}
 }
 
-function getURLParam(name){
-	return (location.search.split(name + '=')[1] || '').split('&')[0];
-}
-
 function startDecisions()
 {
 	$("#start-btn").toggle();
@@ -246,7 +243,7 @@ function startDecisions()
 	content.css('background-color', '#ffffff');
 	//var ids = [];
 	//debugger;
-	genChoices(decisionsTree, false); // first call to genHTML
+	var hasMand = genChoices(decisionsTree, false); // first call to genHTML
 }
 
 function genHTMLContent(item)
@@ -375,7 +372,7 @@ function updateVarsMenu(arr, id)
 	}
 	//debugger;
 	$(arr).each(function(index){
-		debugger;
+		//debugger;
 		var varName = "{{" + this + "}}";
 		var text = varName;
 		if (savedVueVars[varName]) // !== "undefined"
@@ -430,6 +427,11 @@ function genChoices(json, replaceJson)
 	}
 	//var pickOption = $('<div/>').attr({id:'pick-option', class:'no-print'});
 	var found = false;
+	var inner = false;
+	var hasMand = false;
+	//debugger;
+	var mandCount = 0;
+	var jsonCount = json.length;
 	var i = 0;
 	$(json).each(function(index){
 		//debugger;
@@ -437,11 +439,21 @@ function genChoices(json, replaceJson)
 		{
 			if (this.mandatory.toLowerCase() === "true")
 			{
-				found = !genHTMLContent(this);
+				//debugger;
+				hasMand = genHTMLContent(this); // returns true if built a HTML
 				this.used = true;
+				mandCount++;
+				if (this.childs.length > 0)
+				{
+					//debugger;
+					hasMand = genChoices(this.childs, replaceJson);
+					inner = true;
+				}
+				found = !hasMand; // reverse response to keep building blocks
 			}
 			else // TODO when brothers, must be able to choose all of them
 			{
+				//debugger;
 				//ids.push(this.id);
 				//this.description
 				var innerDiv = $('<div/>').attr({id:'pick-inner'});
@@ -465,9 +477,18 @@ function genChoices(json, replaceJson)
 	});
 	if (found)
 		decisionsDiv.append(pickOption);
-	else
+	else if ((mandCount >= jsonCount) && (ids.length > 0))
+	{
+		//debugger;
+		hasMand = genChoices(ids, true);
+		localStorage.setItem('CG-brothersIds', JSON.stringify(ids.slice(1, ids.length)));
+	}
+	else if (!inner)
 		pickOption.hide();
-	localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
+	//debugger;
+	if (mandCount < jsonCount)
+		localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
+	return hasMand;
 }
 
 function parseJson(add, item, json)
@@ -475,6 +496,7 @@ function parseJson(add, item, json)
 	//debugger;
 	$("#pick-option").html("");
 	var found = false;
+	var hasMand = false;
 	if (json === "")
 		json = JSON.parse(localStorage.getItem('CG-decisionsTree'));
 	if (add)
@@ -490,10 +512,10 @@ function parseJson(add, item, json)
 					if (this.childs.length > 0)
 					{
 						//debugger;
-						genChoices(this.childs, false);
+						hasMand = genChoices(this.childs, false);
 					}
 					else
-						genChoices(json, true);
+						hasMand = genChoices(json, true);
 				}
 				else if (this.childs.length > 0)
 				{
@@ -504,7 +526,7 @@ function parseJson(add, item, json)
 		});
 	}
 	else
-		genChoices(json, true);
+		hasMand = genChoices(json, true);
 
 	return found;
 }
