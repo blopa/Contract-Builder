@@ -90,7 +90,7 @@ var sheetCallback = function (error, options, response) {
 		collDependency = collection.filter(function(item){ // get all objects that has dependency
 			return ((item.cellsArray[dependsIndex] !== "") && (item.cellsArray[disabledIndex].toLowerCase() !== "false"));
 		});
-		debugger;
+		//debugger;
 		// TODO add while to deep decision tree
 		var tempColl = [];
 		var i = 0;
