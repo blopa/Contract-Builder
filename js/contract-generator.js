@@ -61,7 +61,7 @@ var sheetCallback = function (error, options, response) {
 		var typeIndex = response.rows[0].labels.indexOf('type');
 		var dependsIndex = response.rows[0].labels.indexOf('depends');
 		var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
-		var enabledIndex = response.rows[0].labels.indexOf('enabled');
+		var disabledIndex = response.rows[0].labels.indexOf('disabled');
 		//debugger;
 
 		if (arraysEqual(response.rows[0].cellsArray, response.rows[0].labels))
@@ -78,17 +78,17 @@ var sheetCallback = function (error, options, response) {
 				tempObject.type = item.cellsArray[typeIndex];
 				tempObject.depends = item.cellsArray[dependsIndex];
 				tempObject.mandatory = item.cellsArray[mandatoryIndex];
-				tempObject.enabled = item.cellsArray[enabledIndex];
+				tempObject.disabled = item.cellsArray[disabledIndex];
 				tempObject.used = false;
 				tempObject.childs = [];
-				if (tempObject.enabled.toLowerCase() === "false") // ignore disabled rows
+				if (tempObject.disabled.toLowerCase() === "false") // ignore disabled rows
 					return;
 
 				docObject.push(tempObject);
 			}
 		});
 		collDependency = collection.filter(function(item){ // get all objects that has dependency
-			return ((item.cellsArray[dependsIndex] !== "") && (item.cellsArray[enabledIndex].toLowerCase() !== "false"));
+			return ((item.cellsArray[dependsIndex] !== "") && (item.cellsArray[disabledIndex].toLowerCase() !== "false"));
 		});
 		debugger;
 		// TODO add while to deep decision tree
@@ -109,7 +109,7 @@ var sheetCallback = function (error, options, response) {
 					tempObject.type = this.cellsArray[typeIndex];
 					tempObject.depends = this.cellsArray[dependsIndex];
 					tempObject.mandatory = this.cellsArray[mandatoryIndex];
-					tempObject.enabled = this.cellsArray[enabledIndex];
+					tempObject.disabled = this.cellsArray[disabledIndex];
 					tempObject.used = false;
 					tempObject.childs = [];
 
