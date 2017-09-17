@@ -40,6 +40,7 @@ First of all you need to create a Google Spreadsheet following the same rules as
 	- **square-list**: A list with a square before it
 - **depends**: Put the identification (id) of the row that this row must belong
 - **mandatory**: Make the row mandatory, meaning it will not ask to be added to the contract
+- **disabled**: Disable row
 
 So whenever you want a part of the contract to be only available when certain other part is on the contract, you should use the ``depends`` field. One row can depend of another row that also depends on another and so on. Use your creativity.
 
@@ -54,6 +55,7 @@ You can create complex tree decisions using the field ``depends``. The following
   "type": "title",
   "depends": "",
   "mandatory": "TRUE",
+  "disabled": "",
   "used": false,
   "childs": []
  },
@@ -64,6 +66,7 @@ You can create complex tree decisions using the field ``depends``. The following
   "type": "paragraph",
   "depends": "",
   "mandatory": "FALSE",
+  "disabled": "",
   "used": false,
   "childs": []
  },
@@ -74,6 +77,7 @@ You can create complex tree decisions using the field ``depends``. The following
   "type": "numeric-list",
   "depends": "",
   "mandatory": "FALSE",
+  "disabled": "TRUE",
   "used": false,
   "childs": []
  },
@@ -84,6 +88,7 @@ You can create complex tree decisions using the field ``depends``. The following
   "type": "numeric-list",
   "depends": "",
   "mandatory": "FALSE",
+  "disabled": "",
   "used": false,
   "childs": [
    {
@@ -93,6 +98,7 @@ You can create complex tree decisions using the field ``depends``. The following
     "type": "circle-list",
     "depends": "sample_4",
     "mandatory": "FALSE",
+    "disabled": "",
     "used": false,
     "childs": []
    },
@@ -103,6 +109,7 @@ You can create complex tree decisions using the field ``depends``. The following
     "type": "numeric-list",
     "depends": "sample_4",
     "mandatory": "FALSE",
+    "disabled": "",
     "used": false,
     "childs": []
    },
@@ -113,6 +120,7 @@ You can create complex tree decisions using the field ``depends``. The following
     "type": "numeric-list",
     "depends": "sample_4",
     "mandatory": "FALSE",
+    "disabled": "",
     "used": false,
     "childs": [
      {
@@ -122,6 +130,7 @@ You can create complex tree decisions using the field ``depends``. The following
       "type": "numeric-list",
       "depends": "sample_8",
       "mandatory": "FALSE",
+      "disabled": "",
       "used": false,
       "childs": [
        {
@@ -131,6 +140,7 @@ You can create complex tree decisions using the field ``depends``. The following
         "type": "circle-list",
         "depends": "sample_9",
         "mandatory": "FALSE",
+        "disabled": "",
         "used": false,
         "childs": [
          {
@@ -140,6 +150,7 @@ You can create complex tree decisions using the field ``depends``. The following
           "type": "circle-list",
           "depends": "sample_11",
           "mandatory": "TRUE",
+          "disabled": "",
           "used": false,
           "childs": []
          },
@@ -150,6 +161,7 @@ You can create complex tree decisions using the field ``depends``. The following
           "type": "circle-list",
           "depends": "sample_11",
           "mandatory": "TRUE",
+          "disabled": "",
           "used": false,
           "childs": [
            {
@@ -159,6 +171,7 @@ You can create complex tree decisions using the field ``depends``. The following
             "type": "square-list",
             "depends": "sample_13",
             "mandatory": "FALSE",
+            "disabled": "",
             "used": false,
             "childs": [
              {
@@ -168,6 +181,7 @@ You can create complex tree decisions using the field ``depends``. The following
               "type": "square-list",
               "depends": "sample_17",
               "mandatory": "FALSE",
+              "disabled": "",
               "used": false,
               "childs": []
              }
@@ -182,6 +196,7 @@ You can create complex tree decisions using the field ``depends``. The following
           "type": "circle-list",
           "depends": "sample_11",
           "mandatory": "TRUE",
+          "disabled": "",
           "used": false,
           "childs": []
          },
@@ -192,6 +207,7 @@ You can create complex tree decisions using the field ``depends``. The following
           "type": "circle-list",
           "depends": "sample_11",
           "mandatory": "TRUE",
+          "disabled": "",
           "used": false,
           "childs": []
          }
@@ -210,6 +226,7 @@ You can create complex tree decisions using the field ``depends``. The following
   "type": "numeric-list",
   "depends": "",
   "mandatory": "TRUE",
+  "disabled": "",
   "used": false,
   "childs": []
  },
@@ -220,6 +237,7 @@ You can create complex tree decisions using the field ``depends``. The following
   "type": "paragraph",
   "depends": "",
   "mandatory": "TRUE",
+  "disabled": "",
   "used": false,
   "childs": []
  },
@@ -230,6 +248,7 @@ You can create complex tree decisions using the field ``depends``. The following
   "type": "square-list",
   "depends": "",
   "mandatory": "FALSE",
+  "disabled": "",
   "used": false,
   "childs": []
  },
@@ -250,6 +269,7 @@ You can create complex tree decisions using the field ``depends``. The following
   "type": "paragraph",
   "depends": "",
   "mandatory": "TRUE",
+  "disabled": "",
   "used": false,
   "childs": []
  }
@@ -268,8 +288,9 @@ You can create complex tree decisions using the field ``depends``. The following
 
 ## Release Notes
 - **v0.0.2:**
-	- Fix mandatory children glitch
-	- Fix sheetId always equals to 0
+	- [Feature] Add option to disable row in the Spreadsheet
+	- [Bugfix] Fix mandatory children glitch
+	- [Bugfix] Fix sheetId always equals to 0
 - **v0.0.1:**
 	- First working version
 

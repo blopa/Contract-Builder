@@ -61,9 +61,13 @@ var sheetCallback = function (error, options, response) {
 		var typeIndex = response.rows[0].labels.indexOf('type');
 		var dependsIndex = response.rows[0].labels.indexOf('depends');
 		var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
+		var disabledIndex = response.rows[0].labels.indexOf('disabled');
+		//debugger;
 
-		//collection = response.rows.slice(1, response.rows.length); // remove labels
-		collection = response.rows; // remove labels
+		if (arraysEqual(response.rows[0].cellsArray, response.rows[0].labels))
+			collection = response.rows.slice(1, response.rows.length); // remove labels
+		else
+			collection = response.rows; // remove labels
 		collection.filter(function(item){ // get all objects that has no dependency
 			if (item.cellsArray[dependsIndex] === "")
 			{
@@ -74,15 +78,19 @@ var sheetCallback = function (error, options, response) {
 				tempObject.type = item.cellsArray[typeIndex];
 				tempObject.depends = item.cellsArray[dependsIndex];
 				tempObject.mandatory = item.cellsArray[mandatoryIndex];
+				tempObject.disabled = item.cellsArray[disabledIndex];
 				tempObject.used = false;
 				tempObject.childs = [];
+				if (tempObject.disabled.toLowerCase() === "false") // ignore disabled rows
+					return;
 
 				docObject.push(tempObject);
 			}
 		});
 		collDependency = collection.filter(function(item){ // get all objects that has dependency
-			return (item.cellsArray[dependsIndex] !== "");
+			return ((item.cellsArray[dependsIndex] !== "") && (item.cellsArray[disabledIndex].toLowerCase() !== "false"));
 		});
+		//debugger;
 		// TODO add while to deep decision tree
 		var tempColl = [];
 		var i = 0;
@@ -101,6 +109,7 @@ var sheetCallback = function (error, options, response) {
 					tempObject.type = this.cellsArray[typeIndex];
 					tempObject.depends = this.cellsArray[dependsIndex];
 					tempObject.mandatory = this.cellsArray[mandatoryIndex];
+					tempObject.disabled = this.cellsArray[disabledIndex];
 					tempObject.used = false;
 					tempObject.childs = [];
 
@@ -164,6 +173,16 @@ else{
 }
 
 // FUNCTIONS
+function arraysEqual(arr1, arr2) {
+	if(arr1.length !== arr2.length)
+		return false;
+	for(var i = arr1.length; i--;) {
+		if(arr1[i] !== arr2[i])
+			return false;
+	}
+	return true;
+}
+
 function parseSpreadsheet()
 {
 	//debugger;
