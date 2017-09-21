@@ -13,7 +13,7 @@
 Contract Builder is a free open-source project that allows anyone to easily maintain and build any kind of contract (legal documents, lawsuit, rent, agreements, construction and so on) using Google Spreadsheets. This was develop as a personal project to help a friend who was struggling spending up to an hour to make a custom contract, now she is able to do it in less than 5 minutes. Hooray! **[TRY IT NOW](https://blopa.github.io/contract/index.html).**
 
 ## Libraries
-For this project I'm using [Jquery](https://github.com/jquery/jquery), [Sheetrock](https://github.com/chriszarate/sheetrock), [html-docx-js](https://github.com/evidenceprime/html-docx-js) and [Bootstrap](https://github.com/twbs/bootstrap), so a big thanks to all the developers that worked really hard on these libs and make our day easier :D and also a big thanks to [cdnjs.com](https://cdnjs.com/) and [jsdelivr.com](https://www.jsdelivr.com/) for hosting those libs for us.
+For this project I'm using [Jquery](https://github.com/jquery/jquery), [Sheetrock](https://github.com/chriszarate/sheetrock), [html-docx-js](https://github.com/evidenceprime/html-docx-js), [Bootstrap](https://github.com/twbs/bootstrap) and [startbootstrap-freelancer](https://github.com/BlackrockDigital/startbootstrap-freelancer), so a big thanks to all the developers that worked really hard on these libs and make our day easier :D and also a big thanks to [cdnjs.com](https://cdnjs.com/) and [jsdelivr.com](https://www.jsdelivr.com/) for hosting those libs for us.
 
 ## Features
 - Parse data from Google Spreadsheet
