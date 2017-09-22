@@ -216,12 +216,13 @@ function startDecisions()
 	content.css('background-color', '#ffffff');
 	//var ids = [];
 	//debugger;
-	JSONPath(decisionsTree); // first call to genHTML and choices
+	JSONPath(decisionsTree, 0); // first call to genHTML and choices
 }
 
 // search for a choice on the decisionsTree
-function JSONPath(json)
+function JSONPath(json, currentNode)
 {
+	console.log("Current node: " + currentNode);
 	var pickOption = $('#pick-option');
 	pickOption.show();
 	//$('#sheet-effect').show();
@@ -241,7 +242,7 @@ function JSONPath(json)
 				// generate HTML
 				generateHTMLContent(this);
 				if (this.childs.length > 0)
-					JSONPath(this);
+					JSONPath(this, currentNode + 1);
 			}
 			else
 			{
@@ -257,13 +258,20 @@ function JSONPath(json)
 		}
 	});
 	if (tempPaths.length > 0)
-		decisionPath = tempPaths.concat(decisionPath); // merges arrays
+	{
+		//decisionPath = tempPaths.concat(decisionPath); // merges arrays
+	}
 	if ((!found) && (decisionPath.length > 0))
 	{
 		debugger;
-		JSONPath(decisionPath);
+		JSONPath(decisionPath, currentNode + 1);
 	}
-	localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath));
+	if (currentNode == 0)
+	{
+		localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath));
+	}
+
+	return tempPaths;
 }
 
 function choiceMade(choosed)
@@ -288,7 +296,7 @@ function choiceMade(choosed)
 		localStorage.setItem('CG-decisionPath', JSON.stringify(pickedPath.splice(1, pickedPath.length))); // remove picked node
 	}
 
-	JSONPath(pickedPath);
+	JSONPath(pickedPath, 0);
 }
 
 function generateChoice(item)
