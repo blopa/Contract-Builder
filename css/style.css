@@ -1,5 +1,6 @@
 body {
-    background-color: #e3f5df;
+    background-color: #18BC9C;
+    padding-top: 108px;
 }
 #start-btn{
     margin-top: 200px !important;
@@ -31,7 +32,7 @@ body {
     left: 0;
     border-width: 0 0 80px 80px;
     border-style: solid;
-    border-color: #dcd5d5 #e3f5df;
+    border-color: #dcd5d5 #18BC9C;
     box-shadow: 4px 4px 7px #888888;
 }
 #sheet-effect {
@@ -59,9 +60,11 @@ body {
     display: none;
     width: 400px;
     padding: 5px;
-    background: rgb(221, 221, 221);
+    background: #1d4c7b;
     margin-left: 210mm;
     position: absolute;
+    right: 0;
+    color: #ffffff;
 }
 #print, #download {
     width: 100%;
@@ -135,4 +138,12 @@ body {
     {
         display: none !important;
     }
+}
+
+#main-menu{
+    width: 100%;
+    position: fixed;
+    height: 108px;
+    background: #2C3E50;
+    margin-top: -108px;
 }
