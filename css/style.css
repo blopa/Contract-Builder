@@ -37,9 +37,9 @@ body {
 }
 #sheet-effect {
     display: none;
-    margin-top: -183px;
-    margin-left: -114px;
-    position: fixed;
+    margin-top: -21px;
+    margin-left: 270px;
+    position: absolute;
 }
 #content {
     width: 210mm;
