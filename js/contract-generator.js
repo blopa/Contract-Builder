@@ -141,12 +141,8 @@ var sheetCallback = function (error, options, response) {
 		}
 
 		localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
-		//localStorage.setItem('CG-decisionPath', JSON.stringify(docObject));
-		localStorage.removeItem('CG-brothersIds');
-		localStorage.removeItem('CG-vueVars');
-		localStorage.removeItem('CG-listStyles');
+		localStorage.setItem('CG-currentNode', JSON.stringify(docObject));
 		localStorage.removeItem('CG-decisionPath');
-		//localStorage.removeItem('CG-savedVueVars');
 
 		var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
 		$("#content").append(startBtn);
@@ -207,6 +203,7 @@ function parseSpreadsheet()
 
 function startDecisions()
 {
+	debugger;
 	$("#start-btn").toggle();
 	$("#main-message").html("").toggle();
 	$("#vars-menu").show();
@@ -219,52 +216,38 @@ function startDecisions()
 	content.css('background-color', '#ffffff');
 	//var ids = [];
 	//debugger;
-	generateChoices(decisionsTree); // first call to genHTML
+	JSONPath(decisionsTree); // first call to genHTML and choices
 }
 
-function generateChoices(json)
+// search for a choice on the decisionsTree
+function JSONPath(json)
 {
-	//window.alert("hello world");
 	var pickOption = $('#pick-option');
 	pickOption.show();
 	//$('#sheet-effect').show();
 	pickOption.html("");
 	var found = false;
-	var decisionPath = JSON.parse(localStorage.getItem('CG-decisionPath'));
 	var tempPaths = [];
-	var mandCount = 0;
-	var jsonCount = json.length;
-	if (decisionPath instanceof Array)
-	{
-
-	}
-	else
-	{
+	var decisionPath = JSON.parse(localStorage.getItem('CG-decisionPath'));
+	if (!(decisionPath instanceof Array))
 		decisionPath = [];
-	}
+
 	$(json).each(function(index){
 		debugger;
 		if (!found)
 		{
 			if (this.mandatory.toLowerCase() === "true")
 			{
+				// generate HTML
 				generateHTMLContent(this);
-				mandCount++;
 				if (this.childs.length > 0)
-				{
-					localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath));
-					found = !generateChoices(this.childs);
-				}
+					JSONPath(this);
 			}
 			else
 			{
-				var innerDiv = $('<div/>').attr({id:'pick-inner'});
-				var paragraph = $('<p>').html('<b>Use "' + this.description + '"?</b>');
-				var btnYes = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + this.id, type: 'button', value:'Yes', onClick:"parseJson(true, '" + this.id + "', '')"});
-				var btnNo = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + this.id, type: 'button', value:'No', onClick:"parseJson(false, '" + this.id + "', '')"});
-				innerDiv.append(paragraph).append(btnYes).append(btnNo);
-				pickOption.append(innerDiv);
-				this.used = true;
+				// generate choices
+				localStorage.setItem('CG-currentNode', JSON.stringify(this));
+				generateChoice(this);
 				found = true;
 			}
 		}
@@ -275,51 +258,45 @@ function generateChoices(json)
 	});
 	if (tempPaths.length > 0)
 		decisionPath = tempPaths.concat(decisionPath); // merges arrays
+	if ((!found) && (decisionPath.length > 0))
+		JSONPath(decisionPath);
 	localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath));
-	if (mandCount >= jsonCount)
-		found = generateChoices(decisionPath);
-
-	return found;
 }
 
-function parseJson(add, item, json)
+function choiceMade(choosed)
 {
-	//debugger;
-	$("#pick-option").html("");
-	var found = false;
-	var hasChoice = false;
-	if (json === "")
-		json = JSON.parse(localStorage.getItem('CG-decisionsTree'));
-	if (add)
+	debugger;
+	var pickedPath;
+	var hasChilds = false;
+	if (choosed)
 	{
-		$(json).each(function(index){
-			if (!found)
-			{
-				//debugger;
-				if (this.id === item)
-				{
-					found = generateHTMLContent(this);
-					this.used = true;
-					if (this.childs.length > 0)
-					{
-						//debugger;
-						hasChoice = generateChoices(this.childs, false);
-					}
-					else
-						hasChoice = generateChoices(json, true);
-				}
-				else if (this.childs.length > 0)
-				{
-					//debugger;
-					found = parseJson(add, item, this.childs);
-				}
-			}
-		});
+		pickedPath = JSON.parse(localStorage.getItem('CG-currentNode'));
+		generateHTMLContent(pickedPath);
+		if (pickedPath.childs.length > 0)
+		{
+			pickedPath = pickedPath.childs;
+			hasChilds = true;
+		}
 	}
-	else
-		hasChoice = generateChoices(json, true);
 
-	return found;
+	if (!hasChilds)
+	{
+		pickedPath = JSON.parse(localStorage.getItem('CG-decisionPath'));
+		localStorage.setItem('CG-decisionPath', JSON.stringify(pickedPath.splice(1, pickedPath.length))); // remove picked node
+	}
+
+	JSONPath(pickedPath);
+}
+
+function generateChoice(item)
+{
+	var pickOption = $('#pick-option');
+	var innerDiv = $('<div/>').attr({id:'pick-inner'});
+	var paragraph = $('<p>').html('<b>Use "' + item.description + '"?</b>');
+	var btnYes = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + item.id, type: 'button', value:'Yes', onClick:"choiceMade(true)"});
+	var btnNo = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + item.id, type: 'button', value:'No', onClick:"choiceMade(false)"});
+	innerDiv.append(paragraph).append(btnYes).append(btnNo);
+	pickOption.append(innerDiv);
 }
 
 function generateHTMLContent(item)
