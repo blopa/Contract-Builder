@@ -39,6 +39,7 @@ body {
     display: none;
     margin-top: -183px;
     margin-left: -114px;
+    position: fixed;
 }
 #content {
     width: 210mm;
@@ -83,7 +84,7 @@ body {
     display: grid;
 }
 #pick-option {
-    background-color: rgba(221, 221, 221, 0.72);
+    background-color: rgba(32, 140, 119, 0.58);
     /* margin: 0 auto; */
     z-index: 999 !important;
     /* display: table-cell; */
@@ -95,8 +96,9 @@ body {
     left: 50%;
     width: 400px;
     text-align: center;
-    border: 2px solid #847777;
+    border: 2px solid #06776d;
     display: none;
+    color: #ffffff;
 }
 #sheet-input {
     width: 100%;
@@ -117,6 +119,7 @@ body {
 }
 #main-message{
     text-align: center;
+    color: #ffffff;
 }
 .margin-top, .margin-right, .margin-bottom, .margin-left{
     float: right;
@@ -146,4 +149,11 @@ body {
     height: 108px;
     background: #2C3E50;
     margin-top: -108px;
+    z-index: 99;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

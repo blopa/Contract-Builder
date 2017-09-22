@@ -403,18 +403,37 @@ function generateHTMLContent(item)
 	return true;
 }
 
+function pxToMm(px){
+	var mm = $('#my_mm');
+	mm.show();
+	var math = Math.floor(px/mm.height());
+	mm.hide();
+	return math; // JQuery returns sizes in PX
+};
+
 function updateMargin(data){
 	var margin = data.className.split(' ')[0]; // get first class name
 	var content = $("#content");
 
 	if (margin === "margin-top")
+	{
+		debugger;
+		var sheet = $("#sheet-effect");
+		var margin = pxToMm(parseInt(sheet.css("margin-top"))) - (parseInt(data.value) - pxToMm(parseInt(content.css("padding-top"))));
+		sheet.css('margin-top', margin + "mm");
 		content.css('padding-top', data.value + "mm");
+	}
 	if (margin === "margin-right")
 		content.css('padding-right', data.value + "mm");
 	if (margin === "margin-bottom")
 		content.css('padding-bottom', data.value + "mm");
 	if (margin === "margin-left")
+	{
+		var sheet = $("#sheet-effect");
+		var margin = pxToMm(parseInt(sheet.css("margin-left"))) - (parseInt(data.value) - pxToMm(parseInt(content.css("padding-left"))));
+		sheet.css('margin-left', margin + "mm");
 		content.css('padding-left', data.value + "mm");
+	}
 }
 
 function preparePrint()
