@@ -203,7 +203,7 @@ function parseSpreadsheet()
 
 function startDecisions()
 {
-	debugger;
+	//debugger;
 	$("#start-btn").toggle();
 	$("#main-message").html("").toggle();
 	$("#vars-menu").show();
@@ -233,7 +233,7 @@ function JSONPath(json)
 		decisionPath = [];
 
 	$(json).each(function(index){
-		debugger;
+		//debugger;
 		if (!found)
 		{
 			if (this.mandatory.toLowerCase() === "true")
@@ -259,13 +259,16 @@ function JSONPath(json)
 	if (tempPaths.length > 0)
 		decisionPath = tempPaths.concat(decisionPath); // merges arrays
 	if ((!found) && (decisionPath.length > 0))
+	{
+		debugger;
 		JSONPath(decisionPath);
+	}
 	localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath));
 }
 
 function choiceMade(choosed)
 {
-	debugger;
+	//debugger;
 	var pickedPath;
 	var hasChilds = false;
 	if (choosed)
