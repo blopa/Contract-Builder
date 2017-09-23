@@ -143,6 +143,7 @@ var sheetCallback = function (error, options, response) {
 		localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
 		localStorage.setItem('CG-currentNode', JSON.stringify(docObject));
 		localStorage.removeItem('CG-decisionPath');
+		localStorage.removeItem('CG-tempPath');
 
 		var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
 		$("#content").append(startBtn);
@@ -234,7 +235,7 @@ function JSONPath(json, currentNode)
 		decisionPath = [];
 
 	$(json).each(function(index){
-		//debugger;
+		debugger;
 		if (!found)
 		{
 			if (this.mandatory.toLowerCase() === "true")
@@ -242,7 +243,7 @@ function JSONPath(json, currentNode)
 				// generate HTML
 				generateHTMLContent(this);
 				if (this.childs.length > 0)
-					JSONPath(this, currentNode + 1);
+					found = JSONPath(this.childs, currentNode + 1);
 			}
 			else
 			{
@@ -260,18 +261,32 @@ function JSONPath(json, currentNode)
 	if (tempPaths.length > 0)
 	{
 		//decisionPath = tempPaths.concat(decisionPath); // merges arrays
+		var tempPath = JSON.parse(localStorage.getItem('CG-tempPath'));
+		if (!(tempPath instanceof Array))
+			tempPath = [];
+		tempPath.push(tempPaths);
+		localStorage.setItem('CG-tempPath', JSON.stringify(tempPath));
 	}
 	if ((!found) && (decisionPath.length > 0))
 	{
 		debugger;
-		JSONPath(decisionPath, currentNode + 1);
+		found = JSONPath(decisionPath, currentNode + 1);
 	}
-	if (currentNode == 0)
+	if (currentNode === 0)
 	{
+		debugger;
+		var tempPath = JSON.parse(localStorage.getItem('CG-tempPath'));
+		if (!(tempPath instanceof Array))
+			tempPath = [];
+		var len = tempPath.length;
+		for (var i = (len - 1); i >= 0; i--)
+		{
+			decisionPath = tempPath[i].concat(decisionPath); // merges arrays
+		}
 		localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath));
+		localStorage.setItem('CG-tempPath', JSON.stringify([])); // clear CG-tempPath
 	}
-
-	return tempPaths;
+	return found;
 }
 
 function choiceMade(choosed)
