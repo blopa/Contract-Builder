@@ -285,14 +285,16 @@ function JSONPath(json, currentNode)
 		}
 		localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath));
 		localStorage.setItem('CG-tempPath', JSON.stringify([])); // clear CG-tempPath
+		if (decisionPath.length <= 0)
+			pickOption.hide();
 	}
 	return found;
 }
 
 function choiceMade(choosed)
 {
-	//debugger;
-	var pickedPath;
+	debugger;
+	var pickedPath = [];
 	var hasChilds = false;
 	if (choosed)
 	{
@@ -307,8 +309,14 @@ function choiceMade(choosed)
 
 	if (!hasChilds)
 	{
-		pickedPath = JSON.parse(localStorage.getItem('CG-decisionPath'));
-		localStorage.setItem('CG-decisionPath', JSON.stringify(pickedPath.splice(1, pickedPath.length))); // remove picked node
+		debugger;
+		var decisionPath = JSON.parse(localStorage.getItem('CG-decisionPath'));
+		if (decisionPath.length > 0)
+		{
+			pickedPath = decisionPath.slice(0); // dirty trick to make a copy of the object
+			//localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath.splice(1, decisionPath.length))); // remove picked node
+			localStorage.setItem('CG-decisionPath', JSON.stringify([])); // clear decisionPath
+		}
 	}
 
 	JSONPath(pickedPath, 0);
