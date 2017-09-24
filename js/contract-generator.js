@@ -144,6 +144,8 @@ var sheetCallback = function (error, options, response) {
 		localStorage.setItem('CG-currentNode', JSON.stringify(docObject));
 		localStorage.removeItem('CG-decisionPath');
 		localStorage.removeItem('CG-tempPath');
+		localStorage.removeItem('CG-vueVars');
+		//localStorage.removeItem('CG-savedVueVars');
 
 		var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
 		$("#content").append(startBtn);
@@ -200,6 +202,46 @@ function parseSpreadsheet()
 	}
 	else
 		window.alert("This isn't a valid Google Spreadsheet URL.");
+}
+
+function updateMargin(data){
+	var margin = data.className.split(' ')[0]; // get first class name
+	var content = $("#content");
+
+	if (margin === "margin-top")
+		content.css('padding-top', data.value + "mm");
+	if (margin === "margin-right")
+		content.css('padding-right', data.value + "mm");
+	if (margin === "margin-bottom")
+		content.css('padding-bottom', data.value + "mm");
+	if (margin === "margin-left")
+		content.css('padding-left', data.value + "mm");
+}
+
+function changeListType(value)
+{
+	//debugger;
+	var style = $('#custom-styles');
+	var listStyle = localStorage.getItem('CG-listStyles');
+	if (value === "1") // numbers
+	{
+		style.html(listStyle);
+		$(".list").css("list-style-type","none");
+	}
+	else if (value === "2") // circle
+	{
+		if (listStyle === null)
+			localStorage.setItem('CG-listStyles', style.html());
+		style.html("");
+		$(".list").css("list-style-type","disc");
+	}
+	else if (value === "3") // square
+	{
+		if (listStyle === null)
+			localStorage.setItem('CG-listStyles', style.html());
+		style.html("");
+		$(".list").css("list-style-type","square");
+	}
 }
 
 function startDecisions()
@@ -403,29 +445,84 @@ function generateHTMLContent(item)
 	decisionsDiv.append(innerDiv);
 	decisionsDiv.append(pickOption);
 
-	// var match = item.content.match(/{{\s*[\w\.]+\s*}}/g);
-	// if (match)
-	// {
-	// 	//debugger;
-	// 	var vueTemp = match.map(function(x) { return x.match(/[\w\.]+/)[0]; });
-	// 	if (vueTemp.length > 0)
-	// 		updateVarsMenu(vueTemp, item.id);
-	// }
+	var match = item.content.match(/{{\s*[\w\.]+\s*}}/g);
+	if (match)
+	{
+		//debugger;
+		var vueTemp = match.map(function(x) { return x.match(/[\w\.]+/)[0]; });
+		if (vueTemp.length > 0)
+			updateVarsMenu(vueTemp, item.id);
+	}
 	return true;
 }
 
-function updateMargin(data){
-	var margin = data.className.split(' ')[0]; // get first class name
-	var content = $("#content");
+function updateVarsValue(data)
+{
+	//debugger;
+	var savedVueVars = JSON.parse(localStorage.getItem('CG-savedVueVars'));
+	if (!(savedVueVars instanceof Object))
+		savedVueVars = {};
+	var content = document.getElementById("content");
+	var classes = content.getElementsByClassName(data.placeholder);
+	var len = Object.keys(classes).length;
+	var val = data.value;
+	savedVueVars[data.placeholder] = val; // update value on save vars
+	if (val === "")
+		val = data.placeholder;
+	for (var i = 0; i < len; i++)
+		classes[i].innerText = val;
+	localStorage.setItem('CG-savedVueVars', JSON.stringify(savedVueVars));
+}
 
-	if (margin === "margin-top")
-		content.css('padding-top', data.value + "mm");
-	if (margin === "margin-right")
-		content.css('padding-right', data.value + "mm");
-	if (margin === "margin-bottom")
-		content.css('padding-bottom', data.value + "mm");
-	if (margin === "margin-left")
-		content.css('padding-left', data.value + "mm");
+function updateVarsMenu(arr, id)
+{
+	//debugger;
+	var vueVars = JSON.parse(localStorage.getItem('CG-vueVars'));
+	var savedVueVars = JSON.parse(localStorage.getItem('CG-savedVueVars'));
+	if (!(vueVars instanceof Array))
+		vueVars = [];
+	if (!(savedVueVars instanceof Object))
+		savedVueVars = {};
+	//debugger;
+	var newVars = $(arr).not(vueVars).get();
+	if (newVars.length > 0) // means there's new vars
+	{
+		$(newVars).each(function(idx){
+			var varName = "{{" + this + "}}";
+			var varDiv = $('<div/>').attr({id:'var_' + this, class:'vars'});
+			var paragraph = $('<p>').text(varName);
+			var input = $('<input/>').attr({type:'text', class:'vue-var form-control', placeholder:varName, oninput:"updateVarsValue(this)"});
+			paragraph.append(input);
+			varDiv.append(paragraph);
+			$("#vars-menu").append(varDiv);
+		});
+	}
+	//debugger;
+	$(arr).each(function(index){
+		//debugger;
+		var varName = "{{" + this + "}}";
+		var text = varName;
+		if (savedVueVars[varName]) // !== "undefined"
+		{
+			text = savedVueVars[varName];
+			$('#var_' + this)
+		}
+		else
+			savedVueVars[varName] = "";
+
+		if (text !== varName)
+			$('#var_' + this).find('input').first().val(text);
+
+		// update var from HTML
+		var pattern = new RegExp(varName, 'g');
+		var content = $("#" + id);
+		var newHTML = content.html().replace(pattern, '<abbr class="' + varName + '">' + text + '</abbr>');
+		content.html(newHTML);
+	});
+	$.extend(vueVars, arr);
+	//debugger;
+	localStorage.setItem('CG-vueVars', JSON.stringify(vueVars));
+	localStorage.setItem('CG-savedVueVars', JSON.stringify(savedVueVars));
 }
 
 function preparePrint()
