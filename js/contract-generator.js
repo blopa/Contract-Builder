@@ -536,11 +536,14 @@ function preparePrint()
 function prepareDownload(contentId)
 {
 	//debugger;
+	var content = $("#content");
+	content.css("margin-top", "-108px");
 	var htmlDoc = $('#' + contentId).html();
 	htmlDoc = htmlDoc.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 	htmlDoc = htmlDoc.replace(/  /g, "&nbsp;&nbsp;"); // replace double whitespaces by double &nbsp;
 	var converted = htmlDocx.asBlob(htmlDoc);
 	saveAs(converted, 'contract.docx');
+	content.css("margin-top", "0px");
 	//downloadFile(htmlDoc, "sample.docx", "text/html");
 }
 
