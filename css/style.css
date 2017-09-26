@@ -84,7 +84,7 @@ body {
     display: grid;
 }
 #pick-option {
-    background-color: rgba(32, 140, 119, 0.58);
+    background-color: rgba(24, 113, 96, 0.72);
     /* margin: 0 auto; */
     z-index: 999 !important;
     /* display: table-cell; */
@@ -99,6 +99,8 @@ body {
     border: 2px solid #06776d;
     display: none;
     color: #ffffff;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.47);
+    border-radius: 20px;
 }
 #sheet-input {
     width: 100%;
