@@ -527,7 +527,10 @@ function updateVarsMenu(arr, id)
 
 function preparePrint()
 {
+	var content = $("#content");
+	content.css("margin-top", "-108px");
 	window.print();
+	content.css("margin-top", "0px");
 }
 
 function prepareDownload(contentId)
