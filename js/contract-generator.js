@@ -29,6 +29,16 @@ document.addEventListener('mousemove', function(event) {
 	}
 }, true);
 
+function arraysEqual(arr1, arr2) {
+	if(arr1.length !== arr2.length)
+		return false;
+	for(var i = arr1.length; i--;) {
+		if(arr1[i] !== arr2[i])
+			return false;
+	}
+	return true;
+}
+
 function findFather(objSearch, objAdd, idx)
 {
 	var found = false;
@@ -90,8 +100,6 @@ var sheetCallback = function (error, options, response) {
 		collDependency = collection.filter(function(item){ // get all objects that has dependency
 			return ((item.cellsArray[dependsIndex] !== "") && (item.cellsArray[disabledIndex].toLowerCase() !== "false"));
 		});
-		//debugger;
-		// TODO add while to deep decision tree
 		var tempColl = [];
 		var i = 0;
 		var stop = false;
@@ -133,9 +141,10 @@ var sheetCallback = function (error, options, response) {
 		}
 
 		localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
-		localStorage.removeItem('CG-brothersIds');
+		localStorage.setItem('CG-currentNode', JSON.stringify(docObject));
+		localStorage.removeItem('CG-decisionPath');
+		localStorage.removeItem('CG-tempPath');
 		localStorage.removeItem('CG-vueVars');
-		localStorage.removeItem('CG-listStyles');
 		//localStorage.removeItem('CG-savedVueVars');
 
 		var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
@@ -173,16 +182,6 @@ else{
 }
 
 // FUNCTIONS
-function arraysEqual(arr1, arr2) {
-	if(arr1.length !== arr2.length)
-		return false;
-	for(var i = arr1.length; i--;) {
-		if(arr1[i] !== arr2[i])
-			return false;
-	}
-	return true;
-}
-
 function parseSpreadsheet()
 {
 	//debugger;
@@ -204,9 +203,6 @@ function parseSpreadsheet()
 	else
 		window.alert("This isn't a valid Google Spreadsheet URL.");
 }
-//			function toggleItem(id){
-//				$('#' + id).toggle();
-//			}
 
 function updateMargin(data){
 	var margin = data.className.split(' ')[0]; // get first class name
@@ -250,6 +246,7 @@ function changeListType(value)
 
 function startDecisions()
 {
+	//debugger;
 	$("#start-btn").toggle();
 	$("#main-message").html("").toggle();
 	$("#vars-menu").show();
@@ -262,14 +259,124 @@ function startDecisions()
 	content.css('background-color', '#ffffff');
 	//var ids = [];
 	//debugger;
-	var hasMand = genChoices(decisionsTree, false); // first call to genHTML
+	JSONPath(decisionsTree, 0); // first call to genHTML and choices
 }
 
-function genHTMLContent(item)
+// search for a choice on the decisionsTree
+function JSONPath(json, currentNode)
 {
-	//debugger;
-//	if (item.used) // .toLowerCase() === "true"
-//		return;
+	console.log("Current node: " + currentNode);
+	var pickOption = $('#pick-option');
+	pickOption.show();
+	//$('#sheet-effect').show();
+	pickOption.html("");
+	var found = false;
+	var tempPaths = [];
+	var decisionPath = JSON.parse(localStorage.getItem('CG-decisionPath'));
+	if (!(decisionPath instanceof Array))
+		decisionPath = [];
+
+	$(json).each(function(index){
+		debugger;
+		if (!found)
+		{
+			if (this.mandatory.toLowerCase() === "true")
+			{
+				// generate HTML
+				generateHTMLContent(this);
+				if (this.childs.length > 0)
+					found = JSONPath(this.childs, currentNode + 1);
+			}
+			else
+			{
+				// generate choices
+				localStorage.setItem('CG-currentNode', JSON.stringify(this));
+				generateChoice(this);
+				found = true;
+			}
+		}
+		else
+		{
+			tempPaths.push(this);
+		}
+	});
+	if (tempPaths.length > 0)
+	{
+		//decisionPath = tempPaths.concat(decisionPath); // merges arrays
+		var tempPath = JSON.parse(localStorage.getItem('CG-tempPath'));
+		if (!(tempPath instanceof Array))
+			tempPath = [];
+		tempPath.push(tempPaths);
+		localStorage.setItem('CG-tempPath', JSON.stringify(tempPath));
+	}
+	if ((!found) && (decisionPath.length > 0))
+	{
+		debugger;
+		found = JSONPath(decisionPath, currentNode + 1);
+	}
+	if (currentNode === 0)
+	{
+		debugger;
+		var tempPath = JSON.parse(localStorage.getItem('CG-tempPath'));
+		if (!(tempPath instanceof Array))
+			tempPath = [];
+		var len = tempPath.length;
+		for (var i = (len - 1); i >= 0; i--)
+		{
+			decisionPath = tempPath[i].concat(decisionPath); // merges arrays
+		}
+		localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath));
+		localStorage.setItem('CG-tempPath', JSON.stringify([])); // clear CG-tempPath
+		if (decisionPath.length <= 0)
+			pickOption.hide();
+	}
+	return found;
+}
+
+function choiceMade(choosed)
+{
+	debugger;
+	var pickedPath = [];
+	var hasChilds = false;
+	if (choosed)
+	{
+		pickedPath = JSON.parse(localStorage.getItem('CG-currentNode'));
+		generateHTMLContent(pickedPath);
+		if (pickedPath.childs.length > 0)
+		{
+			pickedPath = pickedPath.childs;
+			hasChilds = true;
+		}
+	}
+
+	if (!hasChilds)
+	{
+		debugger;
+		var decisionPath = JSON.parse(localStorage.getItem('CG-decisionPath'));
+		if (decisionPath.length > 0)
+		{
+			pickedPath = decisionPath.slice(0); // dirty trick to make a copy of the object
+			//localStorage.setItem('CG-decisionPath', JSON.stringify(decisionPath.splice(1, decisionPath.length))); // remove picked node
+			localStorage.setItem('CG-decisionPath', JSON.stringify([])); // clear decisionPath
+		}
+	}
+
+	JSONPath(pickedPath, 0);
+}
+
+function generateChoice(item)
+{
+	var pickOption = $('#pick-option');
+	var innerDiv = $('<div/>').attr({id:'pick-inner'});
+	var paragraph = $('<p>').html('<b>Use "' + item.description + '"?</b>');
+	var btnYes = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + item.id, type: 'button', value:'Yes', onClick:"choiceMade(true)"});
+	var btnNo = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + item.id, type: 'button', value:'No', onClick:"choiceMade(false)"});
+	innerDiv.append(paragraph).append(btnYes).append(btnNo);
+	pickOption.append(innerDiv);
+}
+
+function generateHTMLContent(item)
+{
 	var exists = $('#' + item.id);
 	var pickOption = $("#pick-option");
 	//pickOption.html("");
@@ -376,6 +483,7 @@ function updateVarsMenu(arr, id)
 		vueVars = [];
 	if (!(savedVueVars instanceof Object))
 		savedVueVars = {};
+	//debugger;
 	var newVars = $(arr).not(vueVars).get();
 	if (newVars.length > 0) // means there's new vars
 	{
@@ -415,139 +523,6 @@ function updateVarsMenu(arr, id)
 	//debugger;
 	localStorage.setItem('CG-vueVars', JSON.stringify(vueVars));
 	localStorage.setItem('CG-savedVueVars', JSON.stringify(savedVueVars));
-}
-
-function genChoices(json, replaceJson)
-{
-	//debugger;
-	var decisionsDiv = $("#decisions");
-//	var pickOption = $("#pick-option");
-//	if (pickOption)
-//		pickOption.remove();
-	var pickOption = $('#pick-option');
-	pickOption.show();
-	$('#sheet-effect').show();
-	pickOption.html("");
-	var ids = JSON.parse(localStorage.getItem('CG-brothersIds'));
-	var replaced = false;
-	var buildNewIds = false;
-	if (ids instanceof Array)
-	{
-		if ((ids.length > 0) && (replaceJson))
-		{
-			json = ids;
-			replaced = true;
-		}
-	}
-	else
-	{
-		ids = [];
-		buildNewIds = true;
-	}
-	//var pickOption = $('<div/>').attr({id:'pick-option', class:'no-print'});
-	var found = false;
-	var inner = false;
-	var hasMand = false;
-	//debugger;
-	var mandCount = 0;
-	var jsonCount = json.length;
-	var i = 0;
-	$(json).each(function(index){
-		//debugger;
-		if (!found)
-		{
-			if (this.mandatory.toLowerCase() === "true")
-			{
-				//debugger;
-				hasMand = genHTMLContent(this); // returns true if built a HTML
-				this.used = true;
-				mandCount++;
-				if (this.childs.length > 0)
-				{
-					//debugger;
-					hasMand = genChoices(this.childs, replaceJson);
-					inner = true;
-				}
-				found = !hasMand; // reverse response to keep building blocks
-			}
-			else // TODO when brothers, must be able to choose all of them
-			{
-				//debugger;
-				//ids.push(this.id);
-				//this.description
-				var innerDiv = $('<div/>').attr({id:'pick-inner'});
-				var paragraph = $('<p>').html('<b>Use "' + this.description + '"?</b>');
-				var btnYes = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + this.id, type: 'button', value:'Yes', onClick:"parseJson(true, '" + this.id + "', '')"});
-				var btnNo = $('<input/>').attr({class:'btn btn-primary btn-pick no-print', id:'btn_' + this.id, type: 'button', value:'No', onClick:"parseJson(false, '" + this.id + "', '')"});
-				innerDiv.append(paragraph).append(btnYes).append(btnNo);
-				pickOption.append(innerDiv);
-				found = true;
-			}
-			if (replaced)
-			{
-				ids.splice(index - i, 1); // remove current item
-				i++;
-			}
-		}
-		else if (buildNewIds)
-			ids.push(this);
-		else if (!replaceJson) // if it's not replacing the json, means that it's not using ids, so increment
-			ids.unshift(this);
-	});
-	if (found)
-		decisionsDiv.append(pickOption);
-	else if ((mandCount >= jsonCount) && (ids.length > 0))
-	{
-		//debugger;
-		hasMand = genChoices(ids, true);
-		localStorage.setItem('CG-brothersIds', JSON.stringify(ids.slice(1, ids.length)));
-	}
-	else if (!inner)
-		pickOption.hide();
-	//debugger;
-	if (mandCount < jsonCount)
-		localStorage.setItem('CG-brothersIds', JSON.stringify(ids));
-	return hasMand;
-}
-
-function parseJson(add, item, json)
-{
-	//debugger;
-	$("#pick-option").html("");
-	var found = false;
-	var hasMand = false;
-	if (json === "")
-		json = JSON.parse(localStorage.getItem('CG-decisionsTree'));
-	if (add)
-	{
-		$(json).each(function(index){
-			if (!found)
-			{
-				//debugger;
-				if (this.id === item)
-				{
-					found = genHTMLContent(this);
-					this.used = true;
-					if (this.childs.length > 0)
-					{
-						//debugger;
-						hasMand = genChoices(this.childs, false);
-					}
-					else
-						hasMand = genChoices(json, true);
-				}
-				else if (this.childs.length > 0)
-				{
-					//debugger;
-					found = parseJson(add, item, this.childs);
-				}
-			}
-		});
-	}
-	else
-		hasMand = genChoices(json, true);
-
-	return found;
 }
 
 function preparePrint()
