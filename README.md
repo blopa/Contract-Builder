@@ -287,6 +287,9 @@ You can create complex tree decisions using the field ``depends``. The following
 ![ScreenShot](https://raw.githubusercontent.com/blopa/Contract-Builder/master/screenshots/screenshot_3.png)
 
 ## Release Notes
+- **v0.0.3:**
+	- [Bugfix] Fix decision tree algorithm
+	- [Feature] New layout
 - **v0.0.2:**
 	- [Feature] Add option to disable row in the Spreadsheet
 	- [Bugfix] Fix mandatory children glitch
