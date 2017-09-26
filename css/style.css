@@ -3,7 +3,7 @@ body {
     padding-top: 108px;
 }
 #start-btn{
-    margin-top: 200px !important;
+    /*margin-top: 200px !important;*/
     height: 100px;
     width: 200px;
 }
@@ -76,7 +76,7 @@ body {
     margin: 0 auto;
 }
 #parse-sheet {
-    margin-top: 200px;
+    /*margin-top: 200px;*/
 }
 #pick-inner {
     margin: 0 auto;
@@ -158,4 +158,43 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.menu-links a:hover{
+    background-color: #25313e;
+}
+
+.menu-links a{
+    width: 100%;
+    height: 100%;
+    display: block;
+    padding: 38px;
+    font-size: 20px;
+    text-decoration: none;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    text-align: center;
+    background: #2c3e50;
+}
+
+.menu-links ul{
+    height: 100%;
+}
+
+.menu-links li{
+    display: inline-block;
+    height: 100%;
+    width: 240px;
+}
+
+.menu-links{
+    height: 100%;
+}
+
+#menu-right{
+    float: right;
+}
+
+#menu-left{
+    float: left;
 }
