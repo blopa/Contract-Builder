@@ -183,6 +183,40 @@ else{
 }
 
 // FUNCTIONS
+function parseUpload(item)
+{
+	debugger;
+	var reader = new FileReader();
+	reader.readAsText(item.files[0]);
+	reader.onload = function (event){
+		debugger;
+		//event.target.result
+	};
+}
+
+function parseMethod(method)
+{
+	//debugger;
+	var url = $("#spread-url");
+	var upload = $("#spread-upload");
+	var urlBtn = $("#btn-url");
+	var uploadBtn = $("#btn-upload");
+	if (method === 0)
+	{
+		url.show();
+		upload.hide();
+		uploadBtn.css("background", "#2c3e50");
+		urlBtn.css("background", "#25313e");
+	}
+	else //if (method === 1)
+	{
+		url.hide();
+		upload.show();
+		urlBtn.css("background", "#2c3e50");
+		uploadBtn.css("background", "#25313e");
+	}
+}
+
 function parseSpreadsheet()
 {
 	//debugger;
