@@ -221,3 +221,7 @@ input::-webkit-inner-spin-button {
     color: #FFFFFF;
     padding: 0 10px;
 }
+
+.item-selected{
+    background: #25313e !important;
+}

@@ -205,15 +205,19 @@ function parseMethod(method)
 	{
 		url.show();
 		upload.hide();
-		uploadBtn.css("background", "#2c3e50");
-		urlBtn.css("background", "#25313e");
+		// uploadBtn.css("background", "#2c3e50");
+		// urlBtn.css("background", "#25313e");
+		urlBtn.addClass("item-selected");
+		uploadBtn.removeClass("item-selected");
 	}
 	else //if (method === 1)
 	{
 		url.hide();
 		upload.show();
-		urlBtn.css("background", "#2c3e50");
-		uploadBtn.css("background", "#25313e");
+		// urlBtn.css("background", "#2c3e50");
+		// uploadBtn.css("background", "#25313e");
+		uploadBtn.addClass("item-selected");
+		urlBtn.removeClass("item-selected");
 	}
 }
 
