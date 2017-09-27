@@ -172,19 +172,21 @@ if ((spreadsheetId) && (sheetId))
 }
 else{
 	$("#main-message").text("Contract Generator");
-	var innerDiv = $('<div/>').attr({id:'parse-sheet'});
-	var paragraph = $('<p>').text("Paste your Google Spreadsheet URL").attr({class:'align-center'});
-	var input = $('<input/>').attr({type:'text', id:'sheet-input', class:'form-control', placeholder:'Paste your Google Spreadsheet URL here.', value:'https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/'});
-	var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'sheet-btn', type: 'button', value:'Go!', onClick:'parseSpreadsheet()'});
-	paragraph.append(input);
-	innerDiv.append(paragraph).append(startBtn);
-	$("#content").append(innerDiv);
+	$("#parse-sheet").show();
+	// var innerDiv = $('<div/>').attr({id:'parse-sheet'});
+	// var paragraph = $('<p>').text("Paste your Google Spreadsheet URL").attr({class:'align-center'});
+	// var input = $('<input/>').attr({type:'text', id:'sheet-input', class:'form-control', placeholder:'Paste your Google Spreadsheet URL here.', value:'https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/'});
+	// var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'sheet-btn', type: 'button', value:'Go!', onClick:'parseSpreadsheet()'});
+	// paragraph.append(input);
+	// innerDiv.append(paragraph).append(startBtn);
+	// $("#content").append(innerDiv);
 }
 
 // FUNCTIONS
 function parseSpreadsheet()
 {
 	//debugger;
+	$("#parse-sheet").hide();
 	var resourceUrl = $("#sheet-input").val();
 	var spreadsheetId = new RegExp("/spreadsheets/d/([a-zA-Z0-9-_]+)").exec(resourceUrl);
 	if (spreadsheetId)

@@ -47,9 +47,22 @@
 		<div id="main">
 			<!--all content goes here-->
 			<div id="content">
-				<h2 id="main-message">Loading...</h2>
+				<h2 id="main-message" class="no-print">Loading...</h2>
 				<div id="pick-option" class="no-print">
 
+				</div>
+				<div id="parse-sheet" class="no-print">
+					<div id="spread-type" class="no-print">
+						<input class="btn btn-primary" type="button" value="Spreadsheet URL" onclick="parseSpreadsheet()" checked="checked">
+						<input class="btn btn-primary" type="button" value="Upload Spreadsheet" onclick="parseSpreadsheet()">
+					</div>
+					<br/>
+					<br/>
+					<div id="spread-url">
+						<p class="align-center">Paste your Google Spreadsheet URL</p>
+						<input type="text" id="sheet-input" class="form-control" placeholder="Paste your Google Spreadsheet URL here." value="https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/">
+						<input class="btn btn-primary" id="sheet-btn" type="button" value="Go!" onclick="parseSpreadsheet()">
+					</div>
 				</div>
 			</div>
 			<div id="vars-menu" class="no-print">

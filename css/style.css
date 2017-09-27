@@ -75,9 +75,6 @@ body {
     width: 900px;
     margin: 0 auto;
 }
-#parse-sheet {
-    /*margin-top: 200px;*/
-}
 #pick-inner {
     margin: 0 auto;
     width: 80%;
@@ -197,4 +194,30 @@ input::-webkit-inner-spin-button {
 
 #menu-left{
     float: left;
+}
+
+#parse-sheet{
+    display: none;
+    line-height: 0.2em;
+}
+
+#spread-type input:hover{
+    background-color: #25313e;
+}
+#spread-type input{
+    width: 50%;
+    height: 100%;
+    background-color: #2c3e50;
+    border-color: #25313e;
+}
+#spread-type{
+    display: flex;
+    height: 100px;
+}
+
+#parse-sheet {
+    /*margin-top: 200px;*/
+    background-color: #25313e;
+    color: #FFFFFF;
+    padding: 0 10px;
 }
