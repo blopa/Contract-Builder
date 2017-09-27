@@ -186,12 +186,16 @@ else{
 function parseUpload(item)
 {
 	debugger;
+	var file = item.files[0];
+	if (!file) {
+		return;
+	}
 	var reader = new FileReader();
-	reader.readAsText(item.files[0]);
-	reader.onload = function (event){
+	reader.onload = function(event) {
+		var contents = event.target.result;
 		debugger;
-		//event.target.result
 	};
+	reader.readAsText(file);
 }
 
 function parseMethod(method)
