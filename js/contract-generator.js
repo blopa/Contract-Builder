@@ -72,7 +72,7 @@ var sheetCallback = function (error, options, response) {
 		var dependsIndex = response.rows[0].labels.indexOf('depends');
 		var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
 		var disabledIndex = response.rows[0].labels.indexOf('disabled');
-		//debugger;
+		debugger;
 
 		if (arraysEqual(response.rows[0].cellsArray, response.rows[0].labels))
 			collection = response.rows.slice(1, response.rows.length); // remove labels
@@ -185,17 +185,45 @@ else{
 // FUNCTIONS
 function parseUpload(item)
 {
-	debugger;
+	//debugger;
 	var file = item.files[0];
 	if (!file) {
 		return;
 	}
 	var reader = new FileReader();
 	reader.onload = function(event) {
-		var contents = event.target.result;
-		debugger;
+		//debugger;
+		var data = event.target.result;
+		var workbook = XLSX.read(data, {type: 'binary'});
+		workbook.SheetNames.forEach(function(sheetName) {
+			debugger;
+			// var XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
+			// var json_object = JSON.stringify(XL_row_object);
+			var json_object = workbook.Sheets[sheetName];
+			var len = Object.keys(workbook.Sheets[sheetName]).length;
+			var firstKey;
+			var currentKey;
+			for (var i = 0; i < len; i++)
+			{
+				debugger;
+				if (i === 0)
+				{
+					firstKey = Object.keys(json_object)[i];
+					// build first index
+				}
+				else{
+					currentKey = Object.keys(json_object)[i];
+					if (firstKey[0] === pastKey[0])
+					{
+						//json_object[Object.keys(json_object)[0]];
+						// start row again
+					}
+				}
+			}
+		})
 	};
-	reader.readAsText(file);
+	//reader.readAsText(file);
+	reader.readAsBinaryString(file);
 }
 
 function parseMethod(method)
