@@ -5,6 +5,23 @@ var collection;
 var draggableDiv = document.getElementById("pick-option");
 var isDown = false;
 
+// Object.filter = function (obj, ignore, invert) {
+// 	if (ignore === undefined) {
+// 		return obj;
+// 	}
+// 	invert = invert || false;
+// 	var not = function(condition, yes) { return yes ? !condition : condition; };
+// 	var isArray = Ext.isArray(ignore);
+// 	for (var key in obj) {
+// 		if (obj.hasOwnProperty(key) &&
+// 			(isArray && not(!Ext.Array.contains(ignore, key), invert)) ||
+// 			(!isArray && not(!ignore.call(undefined, key, obj[key]), invert))) {
+// 			delete obj[key];
+// 		}
+// 	}
+// 	return obj;
+// };
+
 draggableDiv.addEventListener('mousedown', function(e) {
 	isDown = true;
 	offset = [
@@ -78,20 +95,17 @@ var sheetCallback = function (error, options, response) {
 			collection = response.rows.slice(1, response.rows.length); // remove labels
 		else
 			collection = response.rows; // remove labels
-		var len = Object.keys(collection).length;
-		for (var i = 0; i < len; i++)// get all objects that has no dependency
-		{
-			debugger;
-			if (collection[i].cellsArray[dependsIndex] === "")
+		collection.filter(function(item){ // get all objects that has no dependency
+			if (item.cellsArray[dependsIndex] === "")
 			{
 				var tempObject = Object();
-				tempObject.id = collection[i].cellsArray[idIndex];
-				tempObject.description = collection[i].cellsArray[descriptionIndex];
-				tempObject.content = collection[i].cellsArray[contentIndex];
-				tempObject.type = collection[i].cellsArray[typeIndex];
-				tempObject.depends = collection[i].cellsArray[dependsIndex];
-				tempObject.mandatory = collection[i].cellsArray[mandatoryIndex];
-				tempObject.disabled = collection[i].cellsArray[disabledIndex];
+				tempObject.id = item.cellsArray[idIndex];
+				tempObject.description = item.cellsArray[descriptionIndex];
+				tempObject.content = item.cellsArray[contentIndex];
+				tempObject.type = item.cellsArray[typeIndex];
+				tempObject.depends = item.cellsArray[dependsIndex];
+				tempObject.mandatory = item.cellsArray[mandatoryIndex];
+				tempObject.disabled = item.cellsArray[disabledIndex];
 				tempObject.used = false;
 				tempObject.childs = [];
 				if (tempObject.disabled.toLowerCase() === "false") // ignore disabled rows
@@ -99,9 +113,14 @@ var sheetCallback = function (error, options, response) {
 
 				docObject.push(tempObject);
 			}
-		}
+		});
 		collDependency = collection.filter(function(item){ // get all objects that has dependency
-			return ((item.cellsArray[dependsIndex] !== "") && (item.cellsArray[disabledIndex].toLowerCase() !== "false"));
+			debugger;
+			var depends = item.cellsArray[dependsIndex];
+			var disabled = item.cellsArray[disabledIndex];
+			if (!disabled)
+				disabled = "";
+			return ((depends !== "") && (disabled.toLowerCase() !== "false"));
 		});
 		var tempColl = [];
 		var i = 0;
@@ -143,6 +162,7 @@ var sheetCallback = function (error, options, response) {
 			}
 		}
 
+		debugger;
 		localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
 		localStorage.setItem('CG-currentNode', JSON.stringify(docObject));
 		localStorage.removeItem('CG-decisionPath');
@@ -225,7 +245,9 @@ function parseUpload(item)
 		var tempObj = {};
 		var j =0;
 		// create object with same pattern as sheetrock
+		debugger;
 		$(finalJsonObj).each(function(index){
+			debugger;
 			var tmpCells = [];
 			var tmpLabels = [];
 			var len = Object.keys(this).length;
@@ -240,7 +262,7 @@ function parseUpload(item)
 			//debugger;
 			tempObj.cellsArray = tmpCells;
 			tempObj.labels = tmpLabels;
-			finalObj[j] = tempObj;
+			finalObj[j] = JSON.parse(JSON.stringify(tempObj));
 			j++;
 		});
 		debugger;
