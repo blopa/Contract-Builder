@@ -5,6 +5,23 @@ var collection;
 var draggableDiv = document.getElementById("pick-option");
 var isDown = false;
 
+// Object.filter = function (obj, ignore, invert) {
+// 	if (ignore === undefined) {
+// 		return obj;
+// 	}
+// 	invert = invert || false;
+// 	var not = function(condition, yes) { return yes ? !condition : condition; };
+// 	var isArray = Ext.isArray(ignore);
+// 	for (var key in obj) {
+// 		if (obj.hasOwnProperty(key) &&
+// 			(isArray && not(!Ext.Array.contains(ignore, key), invert)) ||
+// 			(!isArray && not(!ignore.call(undefined, key, obj[key]), invert))) {
+// 			delete obj[key];
+// 		}
+// 	}
+// 	return obj;
+// };
+
 draggableDiv.addEventListener('mousedown', function(e) {
 	isDown = true;
 	offset = [
@@ -60,102 +77,117 @@ function findFather(objSearch, objAdd, idx)
 	return found;
 }
 
+function contractObjParser(collection)
+{
+	collection.filter(function(item){ // get all objects that has no dependency
+		debugger;
+		if (item.cellsArray[item.labels.indexOf('depends')] === "")
+		{
+			var tempObject = Object();
+			tempObject.id = item.cellsArray[item.labels.indexOf('id')];
+			tempObject.description = item.cellsArray[item.labels.indexOf('description')];
+			tempObject.content = item.cellsArray[item.labels.indexOf('content')];
+			tempObject.type = item.cellsArray[item.labels.indexOf('type')];
+			tempObject.depends = item.cellsArray[item.labels.indexOf('depends')];
+			tempObject.mandatory = item.cellsArray[item.labels.indexOf('mandatory')];
+			tempObject.disabled = item.cellsArray[item.labels.indexOf('disabled')];
+			tempObject.used = false;
+			tempObject.childs = [];
+			if (tempObject.disabled.toLowerCase() === "false") // ignore disabled rows
+				return;
+
+			docObject.push(tempObject);
+		}
+	});
+	collDependency = collection.filter(function(item){ // get all objects that has dependency
+		debugger;
+		var depends = item.cellsArray[item.labels.indexOf('depends')];
+		var disabled = item.cellsArray[item.labels.indexOf('disabled')];
+		if (!disabled)
+			disabled = "";
+		return ((depends !== "") && (disabled.toLowerCase() !== "false"));
+	});
+	var tempColl = [];
+	var i = 0;
+	var stop = false;
+	var message = "";
+	debugger;
+	//while (collDependency.length > 0) {
+	while ((!stop) && (collDependency.length > 0)) {
+		tempColl = collDependency;
+		$(tempColl).each(function(index){
+			debugger;
+			if (!stop)
+			{
+				var tempObject = Object();
+				tempObject.id = this.cellsArray[this.labels.indexOf('id')];
+				tempObject.description = this.cellsArray[this.labels.indexOf('description')];
+				tempObject.content = this.cellsArray[this.labels.indexOf('content')];
+				tempObject.type = this.cellsArray[this.labels.indexOf('type')];
+				tempObject.depends = this.cellsArray[this.labels.indexOf('depends')];
+				tempObject.mandatory = this.cellsArray[this.labels.indexOf('mandatory')];
+				tempObject.disabled = this.cellsArray[this.labels.indexOf('disabled')];
+				tempObject.used = false;
+				tempObject.childs = [];
+
+				if (tempObject.id === tempObject.depends)
+				{
+					//stop = true;
+					message = "an item cannot depend of itself";
+					window.location.href = window.location.href.split("?")[0]; // return to start
+					//return;
+				}
+
+				stop = !findFather(docObject, tempObject, index - i);
+				i++;
+			}
+		});
+
+		if (stop)
+		{
+			if (message !== "")
+				window.alert(message);
+		}
+	}
+
+	debugger;
+	localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
+	localStorage.setItem('CG-currentNode', JSON.stringify(docObject));
+	localStorage.removeItem('CG-decisionPath');
+	localStorage.removeItem('CG-tempPath');
+	localStorage.removeItem('CG-vueVars');
+	//localStorage.removeItem('CG-savedVueVars');
+
+	var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
+	$("#content").append(startBtn);
+	$("#main-message").text("Let's get started :D");
+}
+
 var sheetCallback = function (error, options, response) {
 	if (!error) {
 		//debugger;
 		//console.log(response.rows);
 		// making sure it will work even if order changes
-		var idIndex = response.rows[0].labels.indexOf('id');
-		var descriptionIndex = response.rows[0].labels.indexOf('description');
-		var contentIndex = response.rows[0].labels.indexOf('content');
-		var typeIndex = response.rows[0].labels.indexOf('type');
-		var dependsIndex = response.rows[0].labels.indexOf('depends');
-		var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
-		var disabledIndex = response.rows[0].labels.indexOf('disabled');
-		//debugger;
+		// var idIndex = response.rows[0].labels.indexOf('id');
+		// var descriptionIndex = response.rows[0].labels.indexOf('description');
+		// var contentIndex = response.rows[0].labels.indexOf('content');
+		// var typeIndex = response.rows[0].labels.indexOf('type');
+		// var dependsIndex = response.rows[0].labels.indexOf('depends');
+		// var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
+		// var disabledIndex = response.rows[0].labels.indexOf('disabled');
 
 		if (arraysEqual(response.rows[0].cellsArray, response.rows[0].labels))
 			collection = response.rows.slice(1, response.rows.length); // remove labels
 		else
 			collection = response.rows; // remove labels
-		collection.filter(function(item){ // get all objects that has no dependency
-			if (item.cellsArray[dependsIndex] === "")
-			{
-				var tempObject = Object();
-				tempObject.id = item.cellsArray[idIndex];
-				tempObject.description = item.cellsArray[descriptionIndex];
-				tempObject.content = item.cellsArray[contentIndex];
-				tempObject.type = item.cellsArray[typeIndex];
-				tempObject.depends = item.cellsArray[dependsIndex];
-				tempObject.mandatory = item.cellsArray[mandatoryIndex];
-				tempObject.disabled = item.cellsArray[disabledIndex];
-				tempObject.used = false;
-				tempObject.childs = [];
-				if (tempObject.disabled.toLowerCase() === "false") // ignore disabled rows
-					return;
-
-				docObject.push(tempObject);
-			}
-		});
-		collDependency = collection.filter(function(item){ // get all objects that has dependency
-			return ((item.cellsArray[dependsIndex] !== "") && (item.cellsArray[disabledIndex].toLowerCase() !== "false"));
-		});
-		var tempColl = [];
-		var i = 0;
-		var stop = false;
-		var message = "";
-		//while (collDependency.length > 0) {
-		while ((!stop) && (collDependency.length > 0)) {
-			tempColl = collDependency;
-			$(tempColl).each(function(index){
-				if (!stop)
-				{
-					var tempObject = Object();
-					tempObject.id = this.cellsArray[idIndex];
-					tempObject.description = this.cellsArray[descriptionIndex];
-					tempObject.content = this.cellsArray[contentIndex];
-					tempObject.type = this.cellsArray[typeIndex];
-					tempObject.depends = this.cellsArray[dependsIndex];
-					tempObject.mandatory = this.cellsArray[mandatoryIndex];
-					tempObject.disabled = this.cellsArray[disabledIndex];
-					tempObject.used = false;
-					tempObject.childs = [];
-
-					if (tempObject.id === tempObject.depends)
-					{
-						stop = true;
-						message = "an item cannot depend of itself";
-						return;
-					}
-
-					stop = !findFather(docObject, tempObject, index - i);
-					i++;
-				}
-			});
-
-			if (stop)
-			{
-				if (message !== "")
-					window.alert(message);
-			}
-		}
-
-		localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
-		localStorage.setItem('CG-currentNode', JSON.stringify(docObject));
-		localStorage.removeItem('CG-decisionPath');
-		localStorage.removeItem('CG-tempPath');
-		localStorage.removeItem('CG-vueVars');
-		//localStorage.removeItem('CG-savedVueVars');
-
-		var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
-		$("#content").append(startBtn);
-		$("#main-message").text("Let's get started :D");
+		debugger;
+		contractObjParser(collection);
 	}
 	else
 	{
 		//$("#main-message").text("Connection error. Please try again.");
 		window.alert("Connection error. Please try again.");
-		window.location.href = window.location.href.split("?")[0];
+		window.location.href = window.location.href.split("?")[0]; // return to start
 	}
 };
 
@@ -172,19 +204,128 @@ if ((spreadsheetId) && (sheetId))
 }
 else{
 	$("#main-message").text("Contract Generator");
-	var innerDiv = $('<div/>').attr({id:'parse-sheet'});
-	var paragraph = $('<p>').text("Paste your Google Spreadsheet URL").attr({class:'align-center'});
-	var input = $('<input/>').attr({type:'text', id:'sheet-input', class:'form-control', placeholder:'Paste your Google Spreadsheet URL here.', value:'https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/'});
-	var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'sheet-btn', type: 'button', value:'Go!', onClick:'parseSpreadsheet()'});
-	paragraph.append(input);
-	innerDiv.append(paragraph).append(startBtn);
-	$("#content").append(innerDiv);
+	$("#parse-sheet").show();
+	// var innerDiv = $('<div/>').attr({id:'parse-sheet'});
+	// var paragraph = $('<p>').text("Paste your Google Spreadsheet URL").attr({class:'align-center'});
+	// var input = $('<input/>').attr({type:'text', id:'sheet-input', class:'form-control', placeholder:'Paste your Google Spreadsheet URL here.', value:'https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/'});
+	// var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'sheet-btn', type: 'button', value:'Go!', onClick:'parseSpreadsheet()'});
+	// paragraph.append(input);
+	// innerDiv.append(paragraph).append(startBtn);
+	// $("#content").append(innerDiv);
 }
 
 // FUNCTIONS
+function parseUpload(item)
+{
+	//debugger;
+	$("#parse-sheet").hide();
+	var file = item.files[0];
+	if (!file) {
+		return;
+	}
+	var reader = new FileReader();
+	reader.onload = function(event) {
+		//debugger;
+		var data = event.target.result;
+		var finalJsonObj = {};
+		var workbook = XLSX.read(data, {type: 'binary'});
+		workbook.SheetNames.forEach(function(sheetName) {
+			//debugger;
+			// var XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
+			// var json_object = JSON.stringify(XL_row_object);
+			var jsonObject = workbook.Sheets[sheetName];
+			var len = Object.keys(jsonObject).length;
+			var cloneObj = JSON.parse(JSON.stringify(jsonObject));
+			// create JSON
+			for (var i = 0; i < len; i++)
+			{
+				var objKey = Object.keys(jsonObject)[i];
+				if (objKey !== "!ref")
+				{
+					var tmp = jsonObject[objKey].h;
+					if (!tmp)
+						tmp = jsonObject[objKey].w;
+					cloneObj[objKey].w = tmp;
+				}
+			}
+			finalJsonObj = XLSX.utils.sheet_to_row_object_array(cloneObj);
+			//debugger;
+		});
+		var finalObj = {};
+		var tempObj = {};
+		var j =0;
+		// create object with same pattern as sheetrock
+		debugger;
+		$(finalJsonObj).each(function(index){
+			debugger;
+			var tmpCells = [];
+			var tmpLabels = [];
+			var len = Object.keys(this).length;
+			var i;
+			var arrOfIndexes = ["id", "description", "content", "type", "depends", "mandatory", "disabled"];
+			if (len < arrOfIndexes.length)
+			{
+				for (i = 0; i < arrOfIndexes.length; i++)
+				{
+					if (typeof(this[arrOfIndexes[i]]) === 'undefined')
+						this[arrOfIndexes[i]] = "";
+				}
+				len = Object.keys(this).length;
+			}
+			debugger;
+			for (i = 0; i < len; i++)
+			{
+				//debugger;
+				var key = Object.keys(this)[i];
+				var value = this[key];
+				tmpLabels.push(key);
+				tmpCells.push(value);
+			}
+			//debugger;
+			tempObj.cellsArray = tmpCells;
+			tempObj.labels = tmpLabels;
+			finalObj[j] = JSON.parse(JSON.stringify(tempObj));
+			j++;
+		});
+		debugger;
+		//localStorage.setItem("CG-tempJsonTests", JSON.stringify(finalObj));
+		contractObjParser(Object.values(finalObj));
+	};
+	//reader.readAsText(file);
+	reader.readAsBinaryString(file);
+}
+
+function parseMethod(method)
+{
+	//debugger;
+	var url = $("#spread-url");
+	var upload = $("#spread-upload");
+	var urlBtn = $("#btn-url");
+	var uploadBtn = $("#btn-upload");
+	if (method === 0)
+	{
+		url.show();
+		upload.hide();
+		// uploadBtn.css("background", "#2c3e50");
+		// urlBtn.css("background", "#25313e");
+		urlBtn.addClass("item-selected");
+		uploadBtn.removeClass("item-selected");
+	}
+	else //if (method === 1)
+	{
+		url.hide();
+		upload.show();
+		// urlBtn.css("background", "#2c3e50");
+		// uploadBtn.css("background", "#25313e");
+		uploadBtn.addClass("item-selected");
+		urlBtn.removeClass("item-selected");
+	}
+}
+
 function parseSpreadsheet()
 {
 	//debugger;
+	$("#parse-sheet").hide();
 	var resourceUrl = $("#sheet-input").val();
 	var spreadsheetId = new RegExp("/spreadsheets/d/([a-zA-Z0-9-_]+)").exec(resourceUrl);
 	if (spreadsheetId)
@@ -536,11 +677,14 @@ function preparePrint()
 function prepareDownload(contentId)
 {
 	//debugger;
+	var content = $("#content");
+	content.css("margin-top", "-108px");
 	var htmlDoc = $('#' + contentId).html();
 	htmlDoc = htmlDoc.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 	htmlDoc = htmlDoc.replace(/  /g, "&nbsp;&nbsp;"); // replace double whitespaces by double &nbsp;
 	var converted = htmlDocx.asBlob(htmlDoc);
 	saveAs(converted, 'contract.docx');
+	content.css("margin-top", "0px");
 	//downloadFile(htmlDoc, "sample.docx", "text/html");
 }
 
