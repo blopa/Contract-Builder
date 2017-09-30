@@ -77,110 +77,117 @@ function findFather(objSearch, objAdd, idx)
 	return found;
 }
 
+function contractObjParser(collection)
+{
+	collection.filter(function(item){ // get all objects that has no dependency
+		debugger;
+		if (item.cellsArray[item.labels.indexOf('depends')] === "")
+		{
+			var tempObject = Object();
+			tempObject.id = item.cellsArray[item.labels.indexOf('id')];
+			tempObject.description = item.cellsArray[item.labels.indexOf('description')];
+			tempObject.content = item.cellsArray[item.labels.indexOf('content')];
+			tempObject.type = item.cellsArray[item.labels.indexOf('type')];
+			tempObject.depends = item.cellsArray[item.labels.indexOf('depends')];
+			tempObject.mandatory = item.cellsArray[item.labels.indexOf('mandatory')];
+			tempObject.disabled = item.cellsArray[item.labels.indexOf('disabled')];
+			tempObject.used = false;
+			tempObject.childs = [];
+			if (tempObject.disabled.toLowerCase() === "false") // ignore disabled rows
+				return;
+
+			docObject.push(tempObject);
+		}
+	});
+	collDependency = collection.filter(function(item){ // get all objects that has dependency
+		debugger;
+		var depends = item.cellsArray[item.labels.indexOf('depends')];
+		var disabled = item.cellsArray[item.labels.indexOf('disabled')];
+		if (!disabled)
+			disabled = "";
+		return ((depends !== "") && (disabled.toLowerCase() !== "false"));
+	});
+	var tempColl = [];
+	var i = 0;
+	var stop = false;
+	var message = "";
+	debugger;
+	//while (collDependency.length > 0) {
+	while ((!stop) && (collDependency.length > 0)) {
+		tempColl = collDependency;
+		$(tempColl).each(function(index){
+			debugger;
+			if (!stop)
+			{
+				var tempObject = Object();
+				tempObject.id = this.cellsArray[this.labels.indexOf('id')];
+				tempObject.description = this.cellsArray[this.labels.indexOf('description')];
+				tempObject.content = this.cellsArray[this.labels.indexOf('content')];
+				tempObject.type = this.cellsArray[this.labels.indexOf('type')];
+				tempObject.depends = this.cellsArray[this.labels.indexOf('depends')];
+				tempObject.mandatory = this.cellsArray[this.labels.indexOf('mandatory')];
+				tempObject.disabled = this.cellsArray[this.labels.indexOf('disabled')];
+				tempObject.used = false;
+				tempObject.childs = [];
+
+				if (tempObject.id === tempObject.depends)
+				{
+					//stop = true;
+					message = "an item cannot depend of itself";
+					window.location.href = window.location.href.split("?")[0]; // return to start
+					//return;
+				}
+
+				stop = !findFather(docObject, tempObject, index - i);
+				i++;
+			}
+		});
+
+		if (stop)
+		{
+			if (message !== "")
+				window.alert(message);
+		}
+	}
+
+	debugger;
+	localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
+	localStorage.setItem('CG-currentNode', JSON.stringify(docObject));
+	localStorage.removeItem('CG-decisionPath');
+	localStorage.removeItem('CG-tempPath');
+	localStorage.removeItem('CG-vueVars');
+	//localStorage.removeItem('CG-savedVueVars');
+
+	var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
+	$("#content").append(startBtn);
+	$("#main-message").text("Let's get started :D");
+}
+
 var sheetCallback = function (error, options, response) {
 	if (!error) {
 		//debugger;
 		//console.log(response.rows);
 		// making sure it will work even if order changes
-		var idIndex = response.rows[0].labels.indexOf('id');
-		var descriptionIndex = response.rows[0].labels.indexOf('description');
-		var contentIndex = response.rows[0].labels.indexOf('content');
-		var typeIndex = response.rows[0].labels.indexOf('type');
-		var dependsIndex = response.rows[0].labels.indexOf('depends');
-		var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
-		var disabledIndex = response.rows[0].labels.indexOf('disabled');
-		debugger;
+		// var idIndex = response.rows[0].labels.indexOf('id');
+		// var descriptionIndex = response.rows[0].labels.indexOf('description');
+		// var contentIndex = response.rows[0].labels.indexOf('content');
+		// var typeIndex = response.rows[0].labels.indexOf('type');
+		// var dependsIndex = response.rows[0].labels.indexOf('depends');
+		// var mandatoryIndex = response.rows[0].labels.indexOf('mandatory');
+		// var disabledIndex = response.rows[0].labels.indexOf('disabled');
 
 		if (arraysEqual(response.rows[0].cellsArray, response.rows[0].labels))
 			collection = response.rows.slice(1, response.rows.length); // remove labels
 		else
 			collection = response.rows; // remove labels
-		collection.filter(function(item){ // get all objects that has no dependency
-			if (item.cellsArray[dependsIndex] === "")
-			{
-				var tempObject = Object();
-				tempObject.id = item.cellsArray[idIndex];
-				tempObject.description = item.cellsArray[descriptionIndex];
-				tempObject.content = item.cellsArray[contentIndex];
-				tempObject.type = item.cellsArray[typeIndex];
-				tempObject.depends = item.cellsArray[dependsIndex];
-				tempObject.mandatory = item.cellsArray[mandatoryIndex];
-				tempObject.disabled = item.cellsArray[disabledIndex];
-				tempObject.used = false;
-				tempObject.childs = [];
-				if (tempObject.disabled.toLowerCase() === "false") // ignore disabled rows
-					return;
-
-				docObject.push(tempObject);
-			}
-		});
-		collDependency = collection.filter(function(item){ // get all objects that has dependency
-			debugger;
-			var depends = item.cellsArray[dependsIndex];
-			var disabled = item.cellsArray[disabledIndex];
-			if (!disabled)
-				disabled = "";
-			return ((depends !== "") && (disabled.toLowerCase() !== "false"));
-		});
-		var tempColl = [];
-		var i = 0;
-		var stop = false;
-		var message = "";
 		debugger;
-		//while (collDependency.length > 0) {
-		while ((!stop) && (collDependency.length > 0)) {
-			tempColl = collDependency;
-			$(tempColl).each(function(index){
-				debugger;
-				if (!stop)
-				{
-					var tempObject = Object();
-					tempObject.id = this.cellsArray[idIndex];
-					tempObject.description = this.cellsArray[descriptionIndex];
-					tempObject.content = this.cellsArray[contentIndex];
-					tempObject.type = this.cellsArray[typeIndex];
-					tempObject.depends = this.cellsArray[dependsIndex];
-					tempObject.mandatory = this.cellsArray[mandatoryIndex];
-					tempObject.disabled = this.cellsArray[disabledIndex];
-					tempObject.used = false;
-					tempObject.childs = [];
-
-					if (tempObject.id === tempObject.depends)
-					{
-						stop = true;
-						message = "an item cannot depend of itself";
-						return;
-					}
-
-					stop = !findFather(docObject, tempObject, index - i);
-					i++;
-				}
-			});
-
-			if (stop)
-			{
-				if (message !== "")
-					window.alert(message);
-			}
-		}
-
-		debugger;
-		localStorage.setItem('CG-decisionsTree', JSON.stringify(docObject));
-		localStorage.setItem('CG-currentNode', JSON.stringify(docObject));
-		localStorage.removeItem('CG-decisionPath');
-		localStorage.removeItem('CG-tempPath');
-		localStorage.removeItem('CG-vueVars');
-		//localStorage.removeItem('CG-savedVueVars');
-
-		var startBtn = $('<input/>').attr({class:'btn btn-primary', id:'start-btn', type: 'button', value:'Start', onClick:'startDecisions()'});
-		$("#content").append(startBtn);
-		$("#main-message").text("Let's get started :D");
+		contractObjParser(collection);
 	}
 	else
 	{
 		//$("#main-message").text("Connection error. Please try again.");
 		window.alert("Connection error. Please try again.");
-		window.location.href = window.location.href.split("?")[0];
+		window.location.href = window.location.href.split("?")[0]; // return to start
 	}
 };
 
@@ -211,6 +218,7 @@ else{
 function parseUpload(item)
 {
 	//debugger;
+	$("#parse-sheet").hide();
 	var file = item.files[0];
 	if (!file) {
 		return;
@@ -280,7 +288,8 @@ function parseUpload(item)
 			j++;
 		});
 		debugger;
-		localStorage.setItem("CG-tempJsonTests", JSON.stringify(finalObj));
+		//localStorage.setItem("CG-tempJsonTests", JSON.stringify(finalObj));
+		contractObjParser(Object.values(finalObj));
 	};
 	//reader.readAsText(file);
 	reader.readAsBinaryString(file);
