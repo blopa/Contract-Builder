@@ -200,14 +200,8 @@ function parseUpload(item)
 			// var XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
 			// var json_object = JSON.stringify(XL_row_object);
 			var jsonObject = workbook.Sheets[sheetName];
-			var len = Object.keys(workbook.Sheets[sheetName]).length;
-			var buildLabels = true;
-			var currentKey;
-			var tempObj = {};
-			tempObj.cellsArray = [];
-			tempObj.labels = [];
-			var finalObj = {}; // it's actually an array
-			var labels = [];
+			var len = Object.keys(jsonObject).length;
+			var cloneObj = JSON.parse(JSON.stringify(jsonObject));
 			for (var i = 0; i < len; i++)
 			{
 				var objKey = Object.keys(jsonObject)[i];
@@ -216,14 +210,10 @@ function parseUpload(item)
 					var tmp = jsonObject[objKey].h;
 					if (!tmp)
 						tmp = jsonObject[objKey].w;
-					finalObj[objKey] = {"t": tmp, "v": tmp, "r": tmp, "h": tmp, "w": tmp};
-				}
-				else
-				{
-					debugger;
-					finalObj["!ref"] = jsonObject[objKey];
+					cloneObj[objKey].w = tmp;
 				}
 			}
+			var finalObj = XLSX.utils.sheet_to_row_object_array(cloneObj);
 			debugger;
 		})
 	};
