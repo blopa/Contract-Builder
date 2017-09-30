@@ -78,17 +78,20 @@ var sheetCallback = function (error, options, response) {
 			collection = response.rows.slice(1, response.rows.length); // remove labels
 		else
 			collection = response.rows; // remove labels
-		collection.filter(function(item){ // get all objects that has no dependency
-			if (item.cellsArray[dependsIndex] === "")
+		var len = Object.keys(collection).length;
+		for (var i = 0; i < len; i++)// get all objects that has no dependency
+		{
+			debugger;
+			if (collection[i].cellsArray[dependsIndex] === "")
 			{
 				var tempObject = Object();
-				tempObject.id = item.cellsArray[idIndex];
-				tempObject.description = item.cellsArray[descriptionIndex];
-				tempObject.content = item.cellsArray[contentIndex];
-				tempObject.type = item.cellsArray[typeIndex];
-				tempObject.depends = item.cellsArray[dependsIndex];
-				tempObject.mandatory = item.cellsArray[mandatoryIndex];
-				tempObject.disabled = item.cellsArray[disabledIndex];
+				tempObject.id = collection[i].cellsArray[idIndex];
+				tempObject.description = collection[i].cellsArray[descriptionIndex];
+				tempObject.content = collection[i].cellsArray[contentIndex];
+				tempObject.type = collection[i].cellsArray[typeIndex];
+				tempObject.depends = collection[i].cellsArray[dependsIndex];
+				tempObject.mandatory = collection[i].cellsArray[mandatoryIndex];
+				tempObject.disabled = collection[i].cellsArray[disabledIndex];
 				tempObject.used = false;
 				tempObject.childs = [];
 				if (tempObject.disabled.toLowerCase() === "false") // ignore disabled rows
@@ -96,7 +99,7 @@ var sheetCallback = function (error, options, response) {
 
 				docObject.push(tempObject);
 			}
-		});
+		}
 		collDependency = collection.filter(function(item){ // get all objects that has dependency
 			return ((item.cellsArray[dependsIndex] !== "") && (item.cellsArray[disabledIndex].toLowerCase() !== "false"));
 		});
