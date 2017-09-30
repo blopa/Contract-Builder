@@ -199,27 +199,56 @@ function parseUpload(item)
 			debugger;
 			// var XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
 			// var json_object = JSON.stringify(XL_row_object);
-			var json_object = workbook.Sheets[sheetName];
+			var jsonObject = workbook.Sheets[sheetName];
 			var len = Object.keys(workbook.Sheets[sheetName]).length;
-			var firstKey;
+			var buildLabels = true;
 			var currentKey;
-			for (var i = 0; i < len; i++)
+			var tempObj = {};
+			tempObj.cellsArray = [];
+			tempObj.labels = [];
+			var finalObj = []; // it's actually an array
+			var labels = [];
+			var counter = 0;
+			var firstKey = Object.keys(jsonObject)[0];
+			labels.push(jsonObject[firstKey].h);
+			for (var i = 1; i < len; i++)
 			{
 				debugger;
-				if (i === 0)
+				currentKey = Object.keys(jsonObject)[i];
+				if (currentKey === "!ref")
+					currentKey = "";
+				if (currentKey[0] !== firstKey[0])
 				{
-					firstKey = Object.keys(json_object)[i];
-					// build first index
-				}
-				else{
-					currentKey = Object.keys(json_object)[i];
-					if (firstKey[0] === pastKey[0])
+					if (buildLabels)
+						labels.push(jsonObject[currentKey].h);
+					else
 					{
-						//json_object[Object.keys(json_object)[0]];
-						// start row again
+						counter++;
+						tempObj.cellsArray.push(jsonObject[currentKey].h);
+					}
+				}
+				else
+				{
+					if (labels.length > counter)
+					{
+
+					}
+					if (buildLabels)
+					{
+						buildLabels = false;
+						tempObj.cellsArray.push(jsonObject[currentKey].h);
+					}
+					else
+					{
+						//debugger;
+						tempObj.labels = labels;
+						finalObj.push(tempObj);
+						tempObj.cellsArray = [];
+						tempObj.labels = [];
 					}
 				}
 			}
+			debugger;
 		})
 	};
 	//reader.readAsText(file);
