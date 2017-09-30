@@ -194,14 +194,16 @@ function parseUpload(item)
 	reader.onload = function(event) {
 		//debugger;
 		var data = event.target.result;
+		var finalJsonObj = {};
 		var workbook = XLSX.read(data, {type: 'binary'});
 		workbook.SheetNames.forEach(function(sheetName) {
-			debugger;
+			//debugger;
 			// var XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: true});
 			// var json_object = JSON.stringify(XL_row_object);
 			var jsonObject = workbook.Sheets[sheetName];
 			var len = Object.keys(jsonObject).length;
 			var cloneObj = JSON.parse(JSON.stringify(jsonObject));
+			// create JSON
 			for (var i = 0; i < len; i++)
 			{
 				var objKey = Object.keys(jsonObject)[i];
@@ -213,9 +215,33 @@ function parseUpload(item)
 					cloneObj[objKey].w = tmp;
 				}
 			}
-			var finalObj = XLSX.utils.sheet_to_row_object_array(cloneObj);
-			debugger;
-		})
+			finalJsonObj = XLSX.utils.sheet_to_row_object_array(cloneObj);
+			//debugger;
+		});
+		var finalObj = {};
+		var tempObj = {};
+		var j =0;
+		// create object with same pattern as sheetrock
+		$(finalJsonObj).each(function(index){
+			var tmpCells = [];
+			var tmpLabels = [];
+			var len = Object.keys(this).length;
+			for (var i = 0; i < len; i++)
+			{
+				//debugger;
+				var key = Object.keys(this)[i];
+				var value = this[key];
+				tmpLabels.push(key);
+				tmpCells.push(value);
+			}
+			//debugger;
+			tempObj.cellsArray = tmpCells;
+			tempObj.labels = tmpLabels;
+			finalObj[j] = tempObj;
+			j++;
+		});
+		debugger;
+		localStorage.setItem("CG-tempJsonTests", JSON.stringify(finalObj));
 	};
 	//reader.readAsText(file);
 	reader.readAsBinaryString(file);
