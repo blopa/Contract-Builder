@@ -126,10 +126,12 @@ var sheetCallback = function (error, options, response) {
 		var i = 0;
 		var stop = false;
 		var message = "";
+		debugger;
 		//while (collDependency.length > 0) {
 		while ((!stop) && (collDependency.length > 0)) {
 			tempColl = collDependency;
 			$(tempColl).each(function(index){
+				debugger;
 				if (!stop)
 				{
 					var tempObject = Object();
@@ -251,7 +253,19 @@ function parseUpload(item)
 			var tmpCells = [];
 			var tmpLabels = [];
 			var len = Object.keys(this).length;
-			for (var i = 0; i < len; i++)
+			var i;
+			var arrOfIndexes = ["id", "description", "content", "type", "depends", "mandatory", "disabled"];
+			if (len < arrOfIndexes.length)
+			{
+				for (i = 0; i < arrOfIndexes.length; i++)
+				{
+					if (typeof(this[arrOfIndexes[i]]) === 'undefined')
+						this[arrOfIndexes[i]] = "";
+				}
+				len = Object.keys(this).length;
+			}
+			debugger;
+			for (i = 0; i < len; i++)
 			{
 				//debugger;
 				var key = Object.keys(this)[i];
