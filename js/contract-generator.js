@@ -206,46 +206,22 @@ function parseUpload(item)
 			var tempObj = {};
 			tempObj.cellsArray = [];
 			tempObj.labels = [];
-			var finalObj = []; // it's actually an array
+			var finalObj = {}; // it's actually an array
 			var labels = [];
-			var counter = 0;
-			var firstKey = Object.keys(jsonObject)[0];
-			labels.push(jsonObject[firstKey].h);
-			for (var i = 1; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
-				debugger;
-				currentKey = Object.keys(jsonObject)[i];
-				if (currentKey === "!ref")
-					currentKey = "";
-				if (currentKey[0] !== firstKey[0])
+				var objKey = Object.keys(jsonObject)[i];
+				if (objKey !== "!ref")
 				{
-					if (buildLabels)
-						labels.push(jsonObject[currentKey].h);
-					else
-					{
-						counter++;
-						tempObj.cellsArray.push(jsonObject[currentKey].h);
-					}
+					var tmp = jsonObject[objKey].h;
+					if (!tmp)
+						tmp = jsonObject[objKey].w;
+					finalObj[objKey] = {"t": tmp, "v": tmp, "r": tmp, "h": tmp, "w": tmp};
 				}
 				else
 				{
-					if (labels.length > counter)
-					{
-
-					}
-					if (buildLabels)
-					{
-						buildLabels = false;
-						tempObj.cellsArray.push(jsonObject[currentKey].h);
-					}
-					else
-					{
-						//debugger;
-						tempObj.labels = labels;
-						finalObj.push(tempObj);
-						tempObj.cellsArray = [];
-						tempObj.labels = [];
-					}
+					debugger;
+					finalObj["!ref"] = jsonObject[objKey];
 				}
 			}
 			debugger;
