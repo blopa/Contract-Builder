@@ -1,48 +1,11 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<!-- Load jQuery, Vue and Sheetrock from CDNJS -->
-		<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.js"></script>-->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/1.1.4/dist/sheetrock.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.11.4/xlsx.full.min.js"></script>
-		<!--<script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>-->
-		<!--<script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/test/vendor/FileSaver.js"></script>-->
-		<script src="http://evidenceprime.github.io/html-docx-js/build/html-docx.js"></script>
-		<script src="http://evidenceprime.github.io/html-docx-js/test/vendor/FileSaver.js"></script>
-		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.css">
-		<link rel="stylesheet" type="text/css" href="css/style.css">
-
-		<link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAEQklEQVRoge1aPUvrUBh+Yq2itdgqlqqL1kUXF7WIk2hBcVFx0dFNHHSo4CIu/oHOjuIn6KBoN4W6tH4UVERBEYoR/Eao1BakzR0u6U2Tk+SkOfbe4T5QePOe9ysnT96Tk5TLZDICGOLj4wNvb28KfV1dHWw2G8tUAIBijuOYBjw8PMTq6ioEQYA09uzsLNra2pjmAoAiABCEPxeBlSwek8alerNysfRAxPn5Oc7Ozohn7PV60dzcDEEQsLS0pBi/u7tT6ARBwMHBAS4vL3P0lZWVGBwcBACEw2Hc3NwofC0WC7q6utDY2EicDAWFtre3sbKykjUSx0W5pqYGLS0tyGQy2NvbI9qIkMonJyeK4urr6zE0NAQAuLi4wP7+vsIGAHZ3d+H3+9HR0aEYU1BobW2NGEQKOVW07FhQJZ1OY2Njg2ijoBCJx0bgdrvR39+v0K+vryOZTFLFM3K/6XYhKT2kOrVCqqqqMDAwoNBvbW0hlUqpxpfLWrVIUSwWZ6Sd6s1iJpNhFkvNXpxEYheSo7W1FWNjYwCA6upqzQRXV1cYHR01XNjw8DB8Ph8AIBAI4OnpSbV4qUy1kNlsNjQ1NeXoOI6D1+vF0dGRqp9e7M7OzqyNy+WCy+UCAFitVqKvKQqJNrFYDMlkEgAwPj4Oq9WK4+NjQ7QpKSlBb28vfD4frq+vAQAOhwNut1vX1zCF5JdtcXERt7e34DgOk5OTmJqaoi5cjuXlZezs7AAAenp6MDExQcyrVgsAFHEcB+lPDlFHGg8Gg0ilUpDHoPm9v78jFArlxCXJWjqO44xTSIpYLAa/3w+v1wuHw6HpL8XLywvC4TASiYRiJSflI8183hSS4/X1FcFgUDOpHmhyq9VCvZDl89ht1EdvUWPShaTo7u6G0+k0VKQU9/f3iEajOTn0wJRCfX198Hg8hgsXEQqFcHp6qptXqxbTFDK7o1OjTUEotLCwAIvFYqxiCb6/v/9uF/r6+lLd0PzvQoWg0Pz8PBoaGqiKm56eRjwe17xapBmX52RKobKyMsPvevQWRvkYsx0ZyS4ajYLneYqyf9+wRnZcBaHQ5uYm1U0s3YKqyXIfPRtDOzJSAiOg2aTn60v9apFk197eDrvdTuUvIplMIhKJ6OYoCIVGRkbg8XhUX2yRaPD4+IhIJPJvdCFaG7UF6a93oUAgAKvVqukvRzqdpnquKgiFnp+f/3chs76muhBrn3wopHg7rYafnH0pC2gagtTecBcqLy9HRUVFPueiidLSUmJe5l1obm7OfLUU+FEK0d6U8sttRlaLSdWFeJ7PfiEpBOLxeFZm0oUeHh7A87xqv9eT8wFzCuULo9T7kS6U70zSdhIzsoJCdrs9h4OsaZAv7HY7HYVmZmYMP+OrgVUXqq2tzX47kNtwAoE7iUQCn5+fTE6CBZxOp2KhE8Gx/rdKoVGk9XXEjEzzzpOF/AspYYvTtx7s2AAAAABJRU5ErkJggg==" rel="icon" type="image/x-icon" />
-		<title>Contract Generator</title>
-	</head>
-	<body>
-		<div id="main-menu" class="no-print">
-			<!--<div id="menu-left" class="menu-links">-->
-			<!--<ul>-->
-			<!--<li>-->
-			<!--<a href="#home">Home</a>-->
-			<!--</li>-->
-			<!--</ul>-->
-			<!--</div>-->
-			<div id="menu-left" class="menu-links">
-				<ul>
-					<li>
-						<a href="index.html" class="item-selected">Home</a>
-					</li>
-					<li>
-						<a href="generator.html">Build Contract</a>
-					</li>
-					<li>
-						<a href="index.html#about">About</a>
-					</li>
-					<li>
-						<a href="index.html#contact">Contact</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div id="main">
-			<!--all content goes here-->
-		</div>
-	</body>
+  <head>
+    <meta charset="utf-8">
+    <title>contract-builder</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>
