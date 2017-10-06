@@ -215,6 +215,25 @@ else{
 }
 
 // FUNCTIONS
+function downloadGSS()
+{
+  $.ajax('https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=357738096',{
+    contentType: "arraybuffer",
+    success: function(e){
+      var data = xhr.responseText;
+      var file = new File([], 'sample.xlsx', {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var workbook;
+        workbook = XLSX.read(data, {type: 'binary'});
+        console.log(workbook);
+      };
+      reader.readAsBinaryString(file);
+    }
+  });
+}
+
 function parseUpload(item)
 {
 	//debugger;
