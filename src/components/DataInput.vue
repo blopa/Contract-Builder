@@ -24,7 +24,9 @@ export default {
   data () {
     return {
       parseText: 'Paste your Google Spreadsheet URL',
-      parseURL: ''
+      parseURL: '',
+      decisionsTree: [],
+      currentNode: []
     }
   },
   watch: {
@@ -53,6 +55,7 @@ export default {
     },
     parseDataFromURL (spreadsheetId, sheetId) {
       debugger
+      var $this = this
       // https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=357738096
       var url = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/export?format=xlsx&gid=' + sheetId
       console.log(url)
@@ -74,7 +77,7 @@ export default {
             var jsonObject = workbook.Sheets[sheetName]
             var len = Object.keys(jsonObject).length
             var cloneObj = JSON.parse(JSON.stringify(jsonObject))
-            // create JSON
+            // dirty code to get the rich text values
             for (var i = 0; i < len; i++) {
               var objKey = Object.keys(jsonObject)[i]
               if (objKey !== '!ref') {
@@ -86,7 +89,9 @@ export default {
               }
             }
             finalJsonObj = _XLSX.utils.sheet_to_row_object_array(cloneObj)
+            debugger
             console.log(finalJsonObj)
+            $this.contractObjParser(finalJsonObj)
           })
         }
         reader.readAsBinaryString(f)
@@ -94,6 +99,67 @@ export default {
       xhr.send(null)
 
       debugger
+    },
+    contractObjParser (collection) {
+      var $this = this
+      var collDependency = []
+      collection.filter(function (item) { // get all objects that has no dependency
+        debugger
+        var tempObject = []
+        tempObject.id = item.id
+        tempObject.description = item.description
+        tempObject.content = item.content
+        tempObject.type = item.type
+        tempObject.depends = item.depends
+        if (tempObject.depends === undefined) {
+          tempObject.depends = ''
+        }
+        tempObject.mandatory = item.mandatory
+        if (tempObject.mandatory.toLowerCase() === 'true') {
+          tempObject.mandatory = true
+        } else { // if (tempObject.mandatory.toLowerCase() === 'true')
+          tempObject.mandatory = false
+        }
+        tempObject.disabled = item.disabled
+        if (tempObject.disabled === undefined) {
+          tempObject.disabled = ''
+        } else if (tempObject.disabled.toLowerCase() === 'true') { // ignore disabled rows
+          return
+        }
+        tempObject.used = false
+        tempObject.childs = []
+        debugger
+        $this.decisionsTree.push(tempObject)
+      })
+      collDependency = $this.decisionsTree.filter(function (item) { // get all objects that has dependency
+        // debugger
+        return (item.depends)
+      })
+      console.log(collDependency)
+      debugger
+      var stop = false
+      var i = 0
+      var index = 0
+      while (!stop) {
+        collDependency.forEach(function (item) {
+          stop = !this.findFather($this.decisionsTree, item, index - i)
+          i++
+        })
+      }
+    },
+    findFather (objSearch, objAdd, index) {
+      var found = false
+      objSearch.filter(function (item) { // find item father of the dependency
+        if (!found) {
+          if (item.id === objAdd.depends) {
+            item.childs.push(objAdd)
+            found = true
+          } else if (item.childs.length > 0) {
+            found = this.findFather(item.childs, objAdd, index)
+          }
+        }
+      })
+      return found
     }
   }
 }
