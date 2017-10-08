@@ -143,7 +143,7 @@ export default {
         // debugger
         return (item.depends)
       })
-      this.decisions = this.decisions.filter(function (item) { // get all objects that no has dependency
+      this.$store.state.decisionsTree = this.decisions.filter(function (item) { // get all objects that no has dependency
         // debugger
         return (!item.depends)
       })

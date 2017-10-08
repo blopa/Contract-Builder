@@ -71,10 +71,12 @@
         if (nodeIndex === 0) {
           debugger
           var len = this.auxPath.length
+          var aux = []
           for (var i = (len - 1); i >= 0; i--) {
-            this.decisions = this.auxPath[i].concat(this.decisions) // merges arrays
+            aux = this.auxPath[i].concat(aux) // merges arrays
           }
           this.auxPath = []
+          this.decisions = aux
           if (this.decisions.length <= 0) {
             pickOption.hide()
           }
