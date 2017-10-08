@@ -9,7 +9,7 @@ export const store = new Vuex.Store({
     currentNode: [],
     contract: [],
     contractName: '',
-    variables: []
+    variables: {}
   },
   getters: {
     getDecisionsTree (state) {
@@ -46,10 +46,19 @@ export const store = new Vuex.Store({
     },
     addVariables (state, variables) {
       // state.variables.push(variable)
-      var aux = state.variables.concat(variables)
-      state.variables = aux.filter(function (item, pos) {
-        return aux.indexOf(item) === pos
+      // var aux = state.variables.concat(variables)
+      // aux = aux.filter(function (item, pos) { // get uniques
+      //   return aux.indexOf(item) === pos
+      // })
+      var $stateVar = state.variables
+      variables.forEach(function (v) {
+        if ($stateVar[v] === undefined) {
+          $stateVar[v] = ''
+        }
       })
+    },
+    updateVariableContent (state, payload) {
+      state.variables[payload[0]] = payload[1]
     }
   }
 })

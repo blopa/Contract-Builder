@@ -2,11 +2,22 @@
   <div>
     <h1>{{ contractName }}</h1>
     <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
-    <section id="contract-section" v-if="showContract">
-      <div v-for="section in contract">
-        <p v-html="section.content"></p>
-      </div>
-    </section>
+    <div class="left-content">
+
+    </div>
+    <div>
+      <section id="contract-section" v-if="showContract">
+        <div v-for="section in contract">
+          <p v-html="section.content"></p>
+        </div>
+      </section>
+      <section id="variables-menu">
+        <p>Variables</p>
+        <div v-for="(value, key, index) in variables">
+          <p>{{ key }} <input type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)"></p>
+        </div>
+      </section>
+    </div>
     <div v-show="showContract && (decisions.length > 0)" id="pick-option">
       <p>Add "{{current.description}}"?</p>
       <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
@@ -58,8 +69,14 @@
       addContractSection (section) {
         this.$store.commit('addContractSection', section)
       },
+      updateContract (contract) {
+        this.$store.commit('updateContract', contract)
+      },
       addVariables (variables) {
         this.$store.commit('addVariables', variables)
+      },
+      updateVariableContent (key, content) {
+        this.$store.commit('updateVariableContent', [key, content])
       },
       updateDecisions (decisions) {
         this.$store.commit('updateDecisionsTree', decisions)
@@ -168,6 +185,33 @@
         }
         return found
       },
+      updateVarValue (value, variable) {
+        if (value === '') {
+          value = '{{' + variable + '}}'
+        }
+        debugger
+        this.updateVariableContent(variable, value)
+        var contract = this.contract.slice(0)
+        contract.forEach(function (section) {
+          debugger
+          var changed = false
+          var wrapper = document.createElement('div')
+          wrapper.innerHTML = section.content
+          var elements = wrapper.getElementsByTagName('abbr')
+          var len = elements.length
+          for (var i = 0; i < len; i++) {
+            var varName = elements[i].getAttribute('data-bind')
+            if (varName === variable) {
+              elements[i].innerHTML = value
+              changed = true
+            }
+          }
+          if (changed) {
+            section.content = wrapper.innerHTML
+          }
+        })
+        this.updateContract(contract)
+      },
       generateHTMLContent (item) {
         debugger
         var match = item.content.match(/{{\s*[\w.]+\s*}}/g)
@@ -177,6 +221,16 @@
           })
           this.addVariables(vueTemp)
           console.log(this.variables)
+          var $this = this
+          vueTemp.forEach(function (variable) {
+            var varName = '{{' + variable + '}}'
+            var varContent = $this.variables[variable]
+            if ((varContent === undefined) || (varContent === '')) {
+              varContent = varName
+            }
+            var pattern = new RegExp(varName, 'g')
+            item.content = item.content.replace(pattern, '<abbr data-bind="' + variable + '">' + varContent + '</abbr>')
+          })
         }
         this.addContractSection(item)
         if (!item.mandatory) {
@@ -198,6 +252,7 @@
     width: 210mm;
     margin: 0 auto;
     text-align: justify;
+    float: left;
   }
   #pick-option {
     background-color: rgba(24, 113, 96, 0.72);
@@ -217,5 +272,8 @@
     color: #ffffff;
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.47);
     border-radius: 20px;
+  }
+  .left-content{
+    float: left;
   }
 </style>
