@@ -97,27 +97,28 @@ export default {
           debugger
           var finalJsonObj = {}
           var workbook = _XLSX.read(data, {type: 'binary'})
+          var sheetName = workbook.SheetNames[0]
           $this.updateContractName(workbook.SheetNames[0])
-          workbook.SheetNames.forEach(function (sheetName) {
-            var jsonObject = workbook.Sheets[sheetName]
-            var len = Object.keys(jsonObject).length
-            var cloneObj = JSON.parse(JSON.stringify(jsonObject))
-            // dirty code to get the rich text values
-            for (var i = 0; i < len; i++) {
-              var objKey = Object.keys(jsonObject)[i]
-              if (objKey !== '!ref') {
-                var tmp = jsonObject[objKey].h
-                if (!tmp) {
-                  tmp = jsonObject[objKey].w
-                }
-                cloneObj[objKey].w = tmp
+//          workbook.SheetNames.forEach(function (sheetName) { // TODO process multiple sheets
+          var jsonObject = workbook.Sheets[sheetName]
+          var len = Object.keys(jsonObject).length
+          var cloneObj = JSON.parse(JSON.stringify(jsonObject))
+          // dirty code to get the rich text values
+          for (var i = 0; i < len; i++) {
+            var objKey = Object.keys(jsonObject)[i]
+            if (objKey !== '!ref') {
+              var tmp = jsonObject[objKey].h
+              if (!tmp) {
+                tmp = jsonObject[objKey].w
               }
+              cloneObj[objKey].w = tmp
             }
-            finalJsonObj = _XLSX.utils.sheet_to_row_object_array(cloneObj)
-            debugger
-            console.log(finalJsonObj)
-            $this.contractObjParser(finalJsonObj)
-          })
+          }
+          finalJsonObj = _XLSX.utils.sheet_to_row_object_array(cloneObj)
+          debugger
+          console.log(finalJsonObj)
+          $this.contractObjParser(finalJsonObj)
+//          })
           $this.$router.push('contract')
         }
         reader.readAsBinaryString(f)
