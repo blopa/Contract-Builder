@@ -1,6 +1,10 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
+    <hr>
+    <router-link to="/">Home</router-link>
+    <router-link to="/builder">Build a Contract</router-link>
+    <hr>
     <router-view></router-view>
   </div>
 </template>
