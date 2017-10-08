@@ -1,24 +1,23 @@
 <template>
   <div>
-    <h1>{{ contractName }}</h1>
-    <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
-    <div class="left-content">
-
+    <div class="no-print">
+      <h1>{{ contractName }}</h1>
+      <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
     </div>
     <div>
+      <section id="variables-menu" class="no-print">
+        <p>Variables</p>
+        <div v-for="(value, key, index) in variables">
+          <label>{{<abbr>{{ key }}</abbr>}}</label> <input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">
+        </div>
+      </section>
       <section id="contract-section" v-if="showContract">
         <div v-for="section in contract">
           <p v-html="section.content"></p>
         </div>
       </section>
-      <section id="variables-menu">
-        <p>Variables</p>
-        <div v-for="(value, key, index) in variables">
-          <p>{{ key }} <input type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)"></p>
-        </div>
-      </section>
     </div>
-    <div v-show="showContract && (decisions.length > 0)" id="pick-option">
+    <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print">
       <p>Add "{{current.description}}"?</p>
       <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
       <button type="button" class="btn btn-danger" v-on:click="JSONPath(decisions, 0)">No</button>
@@ -252,7 +251,7 @@
     width: 210mm;
     margin: 0 auto;
     text-align: justify;
-    float: left;
+    /*float: left;*/
   }
   #pick-option {
     background-color: rgba(24, 113, 96, 0.72);
@@ -275,5 +274,11 @@
   }
   .left-content{
     float: left;
+  }
+  #variables-menu{
+    width: 400px;
+    float: right;
+    position: absolute;
+    right: 0;
   }
 </style>

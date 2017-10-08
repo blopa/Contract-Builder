@@ -1,10 +1,12 @@
 <template>
   <div id="app">
-    <hr>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/builder">Build a Contract</router-link> |
-    <router-link v-if="contract.length > 0" to="/contract">Built Contract</router-link>
-    <hr>
+    <div class="no-print">
+      <hr>
+      <router-link to="/">Home</router-link> |
+      <router-link to="/builder">Build a Contract</router-link> |
+      <router-link v-if="contract.length > 0" to="/contract">Built Contract</router-link>
+      <hr>
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -28,5 +30,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+@media print
+{
+  .no-print, .no-print * {
+    display: none !important;
+  }
 }
 </style>
