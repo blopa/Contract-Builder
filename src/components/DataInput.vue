@@ -135,7 +135,7 @@ export default {
         // debugger
         return (item.depends)
       })
-      this.decisionsTree = this.decisionsTree.filter(function (item) { // get all objects that has dependency
+      this.decisionsTree = this.decisionsTree.filter(function (item) { // get all objects that no has dependency
         // debugger
         return (!item.depends)
       })
@@ -148,8 +148,8 @@ export default {
       debugger
       while (!stop) {
         collDependency.forEach(function (item) {
-          debugger
-          found = !$this.findFather($this.decisionsTree, item)
+          // debugger
+          found = $this.findFather($this.decisionsTree, item)
           if (found) {
             i++
             if (i >= len) {
@@ -158,16 +158,18 @@ export default {
           }
         })
       }
+      debugger
     },
     findFather (objSearch, objAdd) {
       var found = false
+      var $this = this
       objSearch.filter(function (item) { // find item father of the dependency
         if (!found) {
           if (item.id === objAdd.depends) {
             item.childs.push(objAdd)
             found = true
           } else if (item.childs.length > 0) {
-            found = this.findFather(item.childs, objAdd)
+            found = $this.findFather(item.childs, objAdd)
           }
         }
       })
