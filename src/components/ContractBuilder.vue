@@ -1,7 +1,12 @@
 <template>
   <div>
     <h1>Title Here</h1>
-    <button v-if="button" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
+    <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
+    <section v-if="showContract">
+      <div v-for="section in contract">
+        {{ section.content }}
+      </div>
+    </section>
   </div>
 </template>
 
@@ -10,24 +15,31 @@
     name: 'ContractBuilder',
     created: function () {
       if (this.decisions.length > 0) {
-        this.button = true
+        this.showButton = true
       }
     },
     computed: { // get data from store.js
       decisions () {
-        return this.$store.getters.getDecisionsTree // method from store.js
+        return this.$store.getters.getDecisionsTree // method from store.js (Vuex)
       },
       current () {
-        return this.$store.getters.getCurrentNode // method from store.js
+        return this.$store.getters.getCurrentNode // method from store.js (Vuex)
+      },
+      contract () {
+        return this.$store.getters.getContract // method from store.js (Vuex)
       }
     },
     data () {
       return {
         auxPath: [],
-        button: false
+        showButton: false,
+        showContract: false
       }
     },
     methods: {
+      addContractSection (section) {
+        this.$store.commit('addContractSection', section)
+      },
       updateDecisions (decisions) {
         this.$store.commit('updateDecisionsTree', decisions)
       },
@@ -35,6 +47,7 @@
         this.$store.commit('updateCurrentNode', current)
       },
       startDecisions () {
+        this.showContract = true
         debugger
         this.JSONPath(this.decisions, 0) // first call to genHTML and choices
       },
@@ -45,19 +58,23 @@
         var pickOption = ''
         var found = false
         var tempPaths = []
+        var mandatoryCount = 0
+        var len = json.length
 
         json.forEach(function (item) {
           debugger
           if (!found) {
             if (item.mandatory) {
               // generate HTML
+              mandatoryCount++
               $this.generateHTMLContent(item)
+              $this.addContractSection(item)
               if (item.childs.length > 0) {
                 found = $this.JSONPath(item.childs, nodeIndex + 1)
               }
             } else {
               // generate choices
-              $this.current = item
+              $this.updateCurrent(item)
               $this.generateChoice(item)
               found = true
             }
@@ -65,6 +82,9 @@
             tempPaths.push(item)
           }
         })
+        if (mandatoryCount >= len) {
+          found = true
+        }
         if (tempPaths.length > 0) {
           this.auxPath.push(tempPaths)
         }
@@ -74,13 +94,13 @@
         }
         if (nodeIndex === 0) {
           debugger
-          var len = this.auxPath.length
+          len = this.auxPath.length
           var aux = []
           for (var i = (len - 1); i >= 0; i--) {
             aux = this.auxPath[i].concat(aux) // merges arrays
           }
           this.auxPath = []
-          this.decisions = aux
+          this.updateDecisions(aux)
           if (this.decisions.length <= 0) {
             pickOption.hide()
           }

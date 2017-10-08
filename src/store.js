@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     decisionsTree: [],
-    currentNode: []
+    currentNode: [],
+    contract: []
   },
   getters: {
     getDecisionsTree (state) {
@@ -14,6 +15,9 @@ export const store = new Vuex.Store({
     },
     getCurrentNode (state) {
       return state.currentNode
+    },
+    getContract (state) {
+      return state.contract
     }
   },
   mutations: {
@@ -22,6 +26,9 @@ export const store = new Vuex.Store({
     },
     updateCurrentNode (state, current) {
       state.currentNode = current
+    },
+    addContractSection (state, section) {
+      state.contract.push(section)
     }
   }
 })

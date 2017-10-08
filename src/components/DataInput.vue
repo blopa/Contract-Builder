@@ -23,10 +23,10 @@ export default {
   name: 'DataInput',
   computed: { // get data from store.js
     decisions () {
-      return this.$store.getters.getDecisionsTree // method from store.js
+      return this.$store.getters.getDecisionsTree // method from store.js (Vuex)
     },
     current () {
-      return this.$store.getters.getCurrentNode // method from store.js
+      return this.$store.getters.getCurrentNode // method from store.js (Vuex)
     }
   },
   data () {
