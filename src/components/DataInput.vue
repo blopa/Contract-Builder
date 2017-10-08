@@ -21,12 +21,20 @@
 const _XLSX = require('xlsx')
 export default {
   name: 'DataInput',
+  computed: {
+    decisionsTree () {
+      return this.$store.state.decisionsTree
+    },
+    currentNode () {
+      return this.$store.state.currentNode
+    }
+  },
   data () {
     return {
       parseText: 'Paste your Google Spreadsheet URL',
       parseURL: '',
-      decisionsTree: [],
-      currentNode: []
+      decisions: this.$store.state.decisionsTree,
+      current: this.$store.state.currentNode
     }
   },
   watch: {
@@ -129,13 +137,13 @@ export default {
         tempObject.used = false
         tempObject.childs = []
         debugger
-        $this.decisionsTree.push(tempObject)
+        $this.decisions.push(tempObject)
       })
-      collDependency = this.decisionsTree.filter(function (item) { // get all objects that has dependency
+      collDependency = this.decisions.filter(function (item) { // get all objects that has dependency
         // debugger
         return (item.depends)
       })
-      this.decisionsTree = this.decisionsTree.filter(function (item) { // get all objects that no has dependency
+      this.decisions = this.decisions.filter(function (item) { // get all objects that no has dependency
         // debugger
         return (!item.depends)
       })
@@ -149,7 +157,7 @@ export default {
       while (!stop) {
         collDependency.forEach(function (item) {
           // debugger
-          found = $this.findFather($this.decisionsTree, item)
+          found = $this.findFather($this.decisions, item)
           if (found) {
             i++
             if (i >= len) {
