@@ -8,8 +8,9 @@
       </div>
     </section>
     <div v-show="showContract && (decisions.length > 0)" id="pick-option">
-      <button type="button" class="btn btn-success" v-on:click="startDecisions()">Yes</button>
-      <button type="button" class="btn btn-danger" v-on:click="startDecisions()">No</button>
+      <p>Add "{{current.description}}"?</p>
+      <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
+      <button type="button" class="btn btn-danger" v-on:click="JSONPath(decisions, 0)">No</button>
     </div>
   </div>
 </template>
@@ -20,9 +21,11 @@
     mounted: function () {
       if (this.decisions.length > 0) {
         this.showButton = true
+        this.pickOptionListener(1)
+      } else if (this.contract.length > 0) {
+        this.showContract = true
       }
       debugger
-      this.pickOptionListener(1)
     },
     computed: { // get data from store.js
       decisions () {
@@ -56,7 +59,7 @@
         this.$store.commit('updateCurrentNode', current)
       },
       draggableDivMouseDown (event) {
-        debugger
+        // debugger
         var draggableDiv = document.getElementById('pick-option')
         this.isMouseButtonDown = true
         this.mousePositionOffset = [
@@ -65,11 +68,11 @@
         ]
       },
       draggableDivMouseUp () {
-        debugger
+        // debugger
         this.isMouseButtonDown = false
       },
       draggableDivMouseMove (event) {
-        debugger
+        // debugger
         var draggableDiv = document.getElementById('pick-option')
         event.preventDefault()
         if (this.isMouseButtonDown) {
@@ -82,7 +85,7 @@
         }
       },
       pickOptionListener (opt) {
-        debugger
+        // debugger
         var draggableDiv = document.getElementById('pick-option')
         if (opt === 1) {
           draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
@@ -96,6 +99,7 @@
       },
       startDecisions () {
         this.showContract = true
+        this.showButton = false
         debugger
         this.JSONPath(this.decisions, 0) // first call to genHTML and choices
       },
@@ -117,7 +121,6 @@
               $this.generateHTMLContent(item)
               // $this.updateCurrent(item)
               item.content = item.content.replace(/&#x000a;/g, '<br/>')
-              $this.addContractSection(item)
               if (item.childs.length > 0) {
                 found = $this.JSONPath(item.childs, nodeIndex + 1)
               }
@@ -158,6 +161,10 @@
       },
       generateHTMLContent (item) {
         debugger
+        this.addContractSection(item)
+        if (!item.mandatory) {
+          this.JSONPath(this.decisions, 0)
+        }
       },
       generateChoice (item) {
         debugger
@@ -170,6 +177,10 @@
 <style scoped>
   #contract-section{
     white-space: pre-wrap;
+    padding: 30mm 20mm 20mm 30mm;
+    width: 210mm;
+    margin: 0 auto;
+    text-align: justify;
   }
   #pick-option {
     background-color: rgba(24, 113, 96, 0.72);

@@ -2,7 +2,8 @@
   <div id="app">
     <hr>
     <router-link to="/">Home</router-link> |
-    <router-link to="/builder">Build a Contract</router-link>
+    <router-link to="/builder">Build a Contract</router-link> |
+    <router-link v-if="contract.length > 0" to="/contract">Built Contract</router-link>
     <hr>
     <router-view></router-view>
   </div>
@@ -10,7 +11,12 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  computed: { // get data from store.js
+    contract () {
+      return this.$store.getters.getContract // method from store.js (Vuex)
+    }
+  }
 }
 </script>
 

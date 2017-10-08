@@ -27,6 +27,9 @@ export const store = new Vuex.Store({
     updateCurrentNode (state, current) {
       state.currentNode = current
     },
+    updateContract (state, contract) {
+      state.contract = contract
+    },
     addContractSection (state, section) {
       state.contract.push(section)
     }

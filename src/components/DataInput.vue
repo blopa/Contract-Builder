@@ -48,6 +48,15 @@ export default {
     updateCurrent (current) {
       this.$store.commit('updateCurrentNode', current)
     },
+    clearDecisions () {
+      this.$store.commit('updateDecisionsTree', [])
+    },
+    clearCurrent () {
+      this.$store.commit('updateCurrentNode', [])
+    },
+    clearContract () {
+      this.$store.commit('updateContract', [])
+    },
     validateURL () {
       debugger
       var spreadsheetId = new RegExp('/spreadsheets/d/([a-zA-Z0-9-_]+)').exec(this.parseURL)
@@ -105,14 +114,18 @@ export default {
             console.log(finalJsonObj)
             $this.contractObjParser(finalJsonObj)
           })
+          $this.$router.push('contract')
         }
         reader.readAsBinaryString(f)
       }
       xhr.send(null)
-
+      // TODO add processing message here
       debugger
     },
     contractObjParser (collection) {
+      this.clearDecisions()
+      this.clearCurrent()
+      this.clearContract()
       var $this = this
       var collDependency = []
       collection.filter(function (item) { // get all objects that has no dependency
