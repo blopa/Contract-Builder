@@ -64,7 +64,8 @@
         showContract: false,
         isMouseButtonDown: false,
         mousePositionOffset: [],
-        mousePosition: {}
+        mousePosition: {},
+        lastItemType: ''
       }
     },
     methods: {
@@ -88,6 +89,9 @@
       },
       incrementNumericListCount () {
         this.$store.commit('incrementNumericListCount')
+      },
+      updateNumericListCount (value) {
+        this.$store.commit('updateNumericListCount', value)
       },
       draggableDivMouseDown (event) {
         // debugger
@@ -250,6 +254,9 @@
           wrapper.appendChild(innerWrapper)
           item.content = wrapper.innerHTML
         } else if (item.type === 'numeric-list') {
+          if (this.lastItemType !== item.type) {
+            this.updateNumericListCount(1)
+          }
           var styleDiv = document.getElementById('custom-styles')
           var className = 'number-' + this.numericListCount
           styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
@@ -291,6 +298,7 @@
           wrapper.appendChild(innerWrapper)
           item.content = wrapper.innerHTML
         }
+        this.lastItemType = item.type
         this.addContractSection(item)
         if (!item.mandatory) {
           this.JSONPath(this.decisions, 0)

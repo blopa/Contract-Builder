@@ -36,6 +36,9 @@ export const store = new Vuex.Store({
     incrementNumericListCount (state) {
       state.numericListCount++
     },
+    updateNumericListCount (state, value) {
+      state.numericListCount = value
+    },
     updateDecisionsTree (state, decisions) {
       state.decisionsTree = decisions
     },
