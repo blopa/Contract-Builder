@@ -44,6 +44,12 @@ export default {
     }
   },
   methods: {
+    updateDecisions (decisions) {
+      this.$store.commit('updateDecisionsTree', decisions)
+    },
+    updateCurrent (current) {
+      this.$store.commit('updateCurrentNode', current)
+    },
     validateURL () {
       debugger
       var spreadsheetId = new RegExp('/spreadsheets/d/([a-zA-Z0-9-_]+)').exec(this.parseURL)
@@ -143,10 +149,11 @@ export default {
         // debugger
         return (item.depends)
       })
-      this.$store.state.decisionsTree = this.decisions.filter(function (item) { // get all objects that no has dependency
+      var auxObj = this.decisions.filter(function (item) { // get all objects that no has dependency
         // debugger
         return (!item.depends)
       })
+      this.updateDecisions(auxObj)
       console.log(collDependency)
       debugger
       var stop = false

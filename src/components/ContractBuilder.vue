@@ -30,6 +30,12 @@
       }
     },
     methods: {
+      updateDecisions (decisions) {
+        this.$store.commit('updateDecisionsTree', decisions)
+      },
+      updateCurrent (current) {
+        this.$store.commit('updateCurrentNode', current)
+      },
       startDecisions () {
         debugger
         this.JSONPath(this.decisions, 0) // first call to genHTML and choices
