@@ -9,7 +9,8 @@ export const store = new Vuex.Store({
     currentNode: [],
     contract: [],
     contractName: '',
-    variables: {}
+    variables: {},
+    numericListCount: 1
   },
   getters: {
     getDecisionsTree (state) {
@@ -26,9 +27,15 @@ export const store = new Vuex.Store({
     },
     getVariables (state) {
       return state.variables
+    },
+    getNumericListCount (state) {
+      return state.numericListCount
     }
   },
   mutations: {
+    incrementNumericListCount (state) {
+      state.numericListCount++
+    },
     updateDecisionsTree (state, decisions) {
       state.decisionsTree = decisions
     },

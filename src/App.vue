@@ -14,6 +14,12 @@
 <script>
 export default {
   name: 'app',
+  mounted: function () {
+    var style = document.createElement('style')
+    style.id = 'custom-styles'
+    var app = document.getElementById('app')
+    app.appendChild(style)
+  },
   computed: { // get data from store.js
     contract () {
       return this.$store.getters.getContract // method from store.js (Vuex)
@@ -36,5 +42,18 @@ export default {
   .no-print, .no-print * {
     display: none !important;
   }
+}
+.list{
+  list-style-type: none;
+}
+.numeric-list{
+  list-style-type: none;
+  text-indent: 20px;
+}
+.circle-list{
+  list-style-type: circle;
+}
+.square-list{
+  list-style-type: square;
 }
 </style>

@@ -5,7 +5,7 @@
       <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
     </div>
     <div>
-      <section id="variables-menu" class="no-print">
+      <section id="variables-menu" class="no-print" v-show="showContract">
         <p>Variables</p>
         <div v-for="(value, key, index) in variables">
           <label>{{<abbr>{{ key }}</abbr>}}</label> <input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">
@@ -18,7 +18,7 @@
       </section>
     </div>
     <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print">
-      <p>Add "{{current.description}}"?</p>
+      <p>Add "{{ current.description }}"?</p>
       <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
       <button type="button" class="btn btn-danger" v-on:click="JSONPath(decisions, 0)">No</button>
     </div>
@@ -52,6 +52,9 @@
       },
       variables () {
         return this.$store.getters.getVariables // method from store.js (Vuex)
+      },
+      numericListCount () {
+        return this.$store.getters.getNumericListCount // method from store.js (Vuex)
       }
     },
     data () {
@@ -82,6 +85,9 @@
       },
       updateCurrent (current) {
         this.$store.commit('updateCurrentNode', current)
+      },
+      incrementNumericListCount () {
+        this.$store.commit('incrementNumericListCount')
       },
       draggableDivMouseDown (event) {
         // debugger
@@ -211,8 +217,7 @@
         })
         this.updateContract(contract)
       },
-      generateHTMLContent (item) {
-        debugger
+      parseContractVariables (item) {
         var match = item.content.match(/{{\s*[\w.]+\s*}}/g)
         if (match) {
           var vueTemp = match.map(function (x) {
@@ -230,6 +235,61 @@
             var pattern = new RegExp(varName, 'g')
             item.content = item.content.replace(pattern, '<abbr data-bind="' + variable + '">' + varContent + '</abbr>')
           })
+        }
+        return item
+      },
+      generateHTMLContent (item) {
+        debugger
+        var wrapper = document.createElement('div')
+        var innerWrapper
+        item = this.parseContractVariables(item)
+        if (item.type === 'list') {
+          innerWrapper = document.createElement('li')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'numeric-list') {
+          var styleDiv = document.getElementById('custom-styles')
+          var className = 'number-' + this.numericListCount
+          styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
+          // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
+          innerWrapper = document.createElement('li')
+          innerWrapper.className = item.type + ' ' + className
+          innerWrapper.innerHTML = item.content
+          this.incrementNumericListCount()
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'circle-list') {
+          innerWrapper = document.createElement('li')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'square-list') {
+          innerWrapper = document.createElement('li')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'title') {
+          innerWrapper = document.createElement('h1')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'subtitle') {
+          innerWrapper = document.createElement('h2')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else { // if (item.type === 'paragraph') {
+          innerWrapper = document.createElement('p')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
         }
         this.addContractSection(item)
         if (!item.mandatory) {
