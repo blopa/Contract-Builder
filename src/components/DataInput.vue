@@ -48,6 +48,9 @@ export default {
     updateCurrent (current) {
       this.$store.commit('updateCurrentNode', current)
     },
+    updateContractName (contractName) {
+      this.$store.commit('updateContractName', contractName)
+    },
     clearDecisions () {
       this.$store.commit('updateDecisionsTree', [])
     },
@@ -94,6 +97,7 @@ export default {
           debugger
           var finalJsonObj = {}
           var workbook = _XLSX.read(data, {type: 'binary'})
+          $this.updateContractName(workbook.SheetNames[0])
           workbook.SheetNames.forEach(function (sheetName) {
             var jsonObject = workbook.Sheets[sheetName]
             var len = Object.keys(jsonObject).length

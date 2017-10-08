@@ -8,6 +8,7 @@ export const store = new Vuex.Store({
     decisionsTree: [],
     currentNode: [],
     contract: [],
+    contractName: '',
     variables: []
   },
   getters: {
@@ -19,6 +20,9 @@ export const store = new Vuex.Store({
     },
     getContract (state) {
       return state.contract
+    },
+    getContractName (state) {
+      return state.contractName
     },
     getVariables (state) {
       return state.variables
@@ -33,6 +37,9 @@ export const store = new Vuex.Store({
     },
     updateContract (state, contract) {
       state.contract = contract
+    },
+    updateContractName (state, contractName) {
+      state.contractName = contractName
     },
     addContractSection (state, section) {
       state.contract.push(section)

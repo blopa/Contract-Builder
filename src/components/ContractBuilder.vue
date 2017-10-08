@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Title Here</h1>
+    <h1>{{ contractName }}</h1>
     <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
     <section id="contract-section" v-if="showContract">
       <div v-for="section in contract">
@@ -36,6 +36,9 @@
       },
       contract () {
         return this.$store.getters.getContract // method from store.js (Vuex)
+      },
+      contractName () {
+        return this.$store.getters.getContractName // method from store.js (Vuex)
       },
       variables () {
         return this.$store.getters.getVariables // method from store.js (Vuex)
