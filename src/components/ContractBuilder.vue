@@ -2,11 +2,17 @@
   <div>
     <h1>Title Here</h1>
     <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
-    <section v-if="showContract">
+    <section id="contract-section" v-if="showContract">
       <div v-for="section in contract">
-        {{ section.content }}
+        <p v-html="section.content"></p>
       </div>
     </section>
+    <div id="pick-option">
+      <div v-if="showContract">
+        <button type="button" class="btn btn-success" v-on:click="startDecisions()">Yes</button>
+        <button type="button" class="btn btn-danger" v-on:click="startDecisions()">No</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -68,6 +74,8 @@
               // generate HTML
               mandatoryCount++
               $this.generateHTMLContent(item)
+              // $this.updateCurrent(item)
+              item.content = item.content.replace(/&#x000a;/g, '<br/>')
               $this.addContractSection(item)
               if (item.childs.length > 0) {
                 found = $this.JSONPath(item.childs, nodeIndex + 1)
@@ -119,5 +127,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+  #contract-section{
+    white-space: pre-wrap;
+  }
 </style>
