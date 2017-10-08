@@ -18,23 +18,21 @@
 </template>
 
 <script>
-const _XLSX = require('xlsx')
+const _XLSX = require('xlsx') // import xlsx lib
 export default {
   name: 'DataInput',
-  computed: {
-    decisionsTree () {
-      return this.$store.state.decisionsTree
+  computed: { // get data from store.js
+    decisions () {
+      return this.$store.getters.getDecisionsTree // method from store.js
     },
-    currentNode () {
-      return this.$store.state.currentNode
+    current () {
+      return this.$store.getters.getCurrentNode // method from store.js
     }
   },
   data () {
     return {
       parseText: 'Paste your Google Spreadsheet URL',
-      parseURL: '',
-      decisions: this.$store.state.decisionsTree,
-      current: this.$store.state.currentNode
+      parseURL: ''
     }
   },
   watch: {

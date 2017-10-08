@@ -8,6 +8,14 @@ export const store = new Vuex.Store({
     decisionsTree: [],
     currentNode: []
   },
+  getters: {
+    getDecisionsTree (state) {
+      return state.decisionsTree
+    },
+    getCurrentNode (state) {
+      return state.currentNode
+    }
+  },
   mutations: {
     updateDecisionsTree (state, decisions) {
       state.decisionsTree = decisions

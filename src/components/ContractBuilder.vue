@@ -13,18 +13,16 @@
         this.button = true
       }
     },
-    computed: {
-      decisionsTree () {
-        return this.$store.state.decisionsTree
+    computed: { // get data from store.js
+      decisions () {
+        return this.$store.getters.getDecisionsTree // method from store.js
       },
-      currentNode () {
-        return this.$store.state.currentNode
+      current () {
+        return this.$store.getters.getCurrentNode // method from store.js
       }
     },
     data () {
       return {
-        decisions: this.$store.state.decisionsTree,
-        current: this.$store.state.currentNode,
         auxPath: [],
         button: false
       }
