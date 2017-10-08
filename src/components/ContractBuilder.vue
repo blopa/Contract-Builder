@@ -21,33 +21,8 @@
       if (this.decisions.length > 0) {
         this.showButton = true
       }
-      var draggableDiv = document.getElementById('pick-option')
-      var isDown = false
-      var offset = []
-      var mousePosition = {}
-      draggableDiv.addEventListener('mousedown', function (e) {
-        isDown = true
-        offset = [
-          draggableDiv.offsetLeft - e.clientX,
-          draggableDiv.offsetTop - e.clientY
-        ]
-      }, true)
-
-      document.addEventListener('mouseup', function () {
-        isDown = false
-      }, true)
-
-      document.addEventListener('mousemove', function (event) {
-        event.preventDefault()
-        if (isDown) {
-          mousePosition = {
-            x: event.clientX,
-            y: event.clientY
-          }
-          draggableDiv.style.left = (mousePosition.x + offset[0]) + 'px'
-          draggableDiv.style.top = (mousePosition.y + offset[1]) + 'px'
-        }
-      }, true)
+      debugger
+      this.pickOptionListener(1)
     },
     computed: { // get data from store.js
       decisions () {
@@ -64,7 +39,10 @@
       return {
         auxPath: [],
         showButton: false,
-        showContract: false
+        showContract: false,
+        isMouseButtonDown: false,
+        mousePositionOffset: [],
+        mousePosition: {}
       }
     },
     methods: {
@@ -77,6 +55,45 @@
       updateCurrent (current) {
         this.$store.commit('updateCurrentNode', current)
       },
+      draggableDivMouseDown (event) {
+        debugger
+        var draggableDiv = document.getElementById('pick-option')
+        this.isMouseButtonDown = true
+        this.mousePositionOffset = [
+          draggableDiv.offsetLeft - event.clientX,
+          draggableDiv.offsetTop - event.clientY
+        ]
+      },
+      draggableDivMouseUp () {
+        debugger
+        this.isMouseButtonDown = false
+      },
+      draggableDivMouseMove (event) {
+        debugger
+        var draggableDiv = document.getElementById('pick-option')
+        event.preventDefault()
+        if (this.isMouseButtonDown) {
+          this.mousePosition = {
+            x: event.clientX,
+            y: event.clientY
+          }
+          draggableDiv.style.left = (this.mousePosition.x + this.mousePositionOffset[0]) + 'px'
+          draggableDiv.style.top = (this.mousePosition.y + this.mousePositionOffset[1]) + 'px'
+        }
+      },
+      pickOptionListener (opt) {
+        debugger
+        var draggableDiv = document.getElementById('pick-option')
+        if (opt === 1) {
+          draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
+          document.addEventListener('mouseup', this.draggableDivMouseUp, true)
+          document.addEventListener('mousemove', this.draggableDivMouseMove, true)
+        } else {
+          draggableDiv.removeEventListener('mousedown', this.draggableDivMouseDown, true)
+          document.removeEventListener('mouseup', this.draggableDivMouseUp, true)
+          document.removeEventListener('mousemove', this.draggableDivMouseMove, true)
+        }
+      },
       startDecisions () {
         this.showContract = true
         debugger
@@ -86,7 +103,6 @@
         var $this = this
         debugger
         console.log('Current node: ' + nodeIndex)
-        var pickOption = ''
         var found = false
         var tempPaths = []
         var mandatoryCount = 0
@@ -135,7 +151,7 @@
           this.auxPath = []
           this.updateDecisions(aux)
           if (this.decisions.length <= 0) {
-            pickOption.hide()
+            this.pickOptionListener(0)
           }
         }
         return found
