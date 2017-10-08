@@ -7,11 +7,9 @@
         <p v-html="section.content"></p>
       </div>
     </section>
-    <div id="pick-option">
-      <div v-if="showContract">
-        <button type="button" class="btn btn-success" v-on:click="startDecisions()">Yes</button>
-        <button type="button" class="btn btn-danger" v-on:click="startDecisions()">No</button>
-      </div>
+    <div v-show="showContract && (decisions.length > 0)" id="pick-option">
+      <button type="button" class="btn btn-success" v-on:click="startDecisions()">Yes</button>
+      <button type="button" class="btn btn-danger" v-on:click="startDecisions()">No</button>
     </div>
   </div>
 </template>
@@ -19,10 +17,37 @@
 <script>
   export default {
     name: 'ContractBuilder',
-    created: function () {
+    mounted: function () {
       if (this.decisions.length > 0) {
         this.showButton = true
       }
+      var draggableDiv = document.getElementById('pick-option')
+      var isDown = false
+      var offset = []
+      var mousePosition = {}
+      draggableDiv.addEventListener('mousedown', function (e) {
+        isDown = true
+        offset = [
+          draggableDiv.offsetLeft - e.clientX,
+          draggableDiv.offsetTop - e.clientY
+        ]
+      }, true)
+
+      document.addEventListener('mouseup', function () {
+        isDown = false
+      }, true)
+
+      document.addEventListener('mousemove', function (event) {
+        event.preventDefault()
+        if (isDown) {
+          mousePosition = {
+            x: event.clientX,
+            y: event.clientY
+          }
+          draggableDiv.style.left = (mousePosition.x + offset[0]) + 'px'
+          draggableDiv.style.top = (mousePosition.y + offset[1]) + 'px'
+        }
+      }, true)
     },
     computed: { // get data from store.js
       decisions () {
@@ -129,5 +154,24 @@
 <style scoped>
   #contract-section{
     white-space: pre-wrap;
+  }
+  #pick-option {
+    background-color: rgba(24, 113, 96, 0.72);
+    /* margin: 0 auto; */
+    z-index: 999 !important;
+    /* display: table-cell; */
+    padding: 15px;
+    /* margin-top: auto; */
+    /* margin-bottom: auto; */
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    width: 400px;
+    text-align: center;
+    border: 2px solid #06776d;
+    /*display: none;*/
+    color: #ffffff;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.47);
+    border-radius: 20px;
   }
 </style>
