@@ -36,6 +36,9 @@
       },
       contract () {
         return this.$store.getters.getContract // method from store.js (Vuex)
+      },
+      variables () {
+        return this.$store.getters.getVariables // method from store.js (Vuex)
       }
     },
     data () {
@@ -51,6 +54,9 @@
     methods: {
       addContractSection (section) {
         this.$store.commit('addContractSection', section)
+      },
+      addVariables (variables) {
+        this.$store.commit('addVariables', variables)
       },
       updateDecisions (decisions) {
         this.$store.commit('updateDecisionsTree', decisions)
@@ -161,6 +167,14 @@
       },
       generateHTMLContent (item) {
         debugger
+        var match = item.content.match(/{{\s*[\w.]+\s*}}/g)
+        if (match) {
+          var vueTemp = match.map(function (x) {
+            return x.match(/[\w.]+/)[0]
+          })
+          this.addVariables(vueTemp)
+          console.log(this.variables)
+        }
         this.addContractSection(item)
         if (!item.mandatory) {
           this.JSONPath(this.decisions, 0)

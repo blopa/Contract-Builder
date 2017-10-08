@@ -7,7 +7,8 @@ export const store = new Vuex.Store({
   state: {
     decisionsTree: [],
     currentNode: [],
-    contract: []
+    contract: [],
+    variables: []
   },
   getters: {
     getDecisionsTree (state) {
@@ -18,6 +19,9 @@ export const store = new Vuex.Store({
     },
     getContract (state) {
       return state.contract
+    },
+    getVariables (state) {
+      return state.variables
     }
   },
   mutations: {
@@ -32,6 +36,13 @@ export const store = new Vuex.Store({
     },
     addContractSection (state, section) {
       state.contract.push(section)
+    },
+    addVariables (state, variables) {
+      // state.variables.push(variable)
+      var aux = state.variables.concat(variables)
+      state.variables = aux.filter(function (item, pos) {
+        return aux.indexOf(item) === pos
+      })
     }
   }
 })
