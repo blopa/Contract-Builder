@@ -1,31 +1,6 @@
-<template>
-  <div>
-    <div class="no-print">
-      <h1>{{ contractName }}</h1>
-      <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
-    </div>
-    <div>
-      <section id="variables-menu" class="no-print" v-show="showContract">
-        <p>Variables</p>
-        <div v-for="(value, key, index) in variables">
-          <label>{{<abbr>{{ key }}</abbr>}}</label> <input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">
-        </div>
-      </section>
-      <section id="contract-section" v-if="showContract">
-        <div v-for="section in contract">
-          <p v-html="section.content"></p>
-        </div>
-      </section>
-    </div>
-    <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print">
-      <p>Add "{{ current.description }}"?</p>
-      <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
-      <button type="button" class="btn btn-danger" v-on:click="JSONPath(decisions, 0)">No</button>
-    </div>
-  </div>
-</template>
-
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'ContractBuilder',
     mounted: function () {
@@ -35,27 +10,17 @@
       } else if (this.contract.length > 0) {
         this.showContract = true
       }
-      debugger
+      // debugger
     },
     computed: { // get data from store.js
-      decisions () {
-        return this.$store.getters.getDecisionsTree // method from store.js (Vuex)
-      },
-      current () {
-        return this.$store.getters.getCurrentNode // method from store.js (Vuex)
-      },
-      contract () {
-        return this.$store.getters.getContract // method from store.js (Vuex)
-      },
-      contractName () {
-        return this.$store.getters.getContractName // method from store.js (Vuex)
-      },
-      variables () {
-        return this.$store.getters.getVariables // method from store.js (Vuex)
-      },
-      numericListCount () {
-        return this.$store.getters.getNumericListCount // method from store.js (Vuex)
-      }
+      ...mapGetters({
+        decisions: 'getDecisionsTree',
+        current: 'getCurrentNode',
+        contract: 'getContract',
+        contractName: 'getContractName',
+        variables: 'getVariables',
+        numericListCount: 'getNumericListCount'
+      })
     },
     data () {
       return {
@@ -97,7 +62,7 @@
         this.$store.commit('updateNumericListCount', value)
       },
       draggableDivMouseDown (event) {
-        // debugger
+        // // debugger
         var draggableDiv = document.getElementById('pick-option')
         this.isMouseButtonDown = true
         this.mousePositionOffset = [
@@ -106,11 +71,11 @@
         ]
       },
       draggableDivMouseUp () {
-        // debugger
+        // // debugger
         this.isMouseButtonDown = false
       },
       draggableDivMouseMove (event) {
-        // debugger
+        // // debugger
         var draggableDiv = document.getElementById('pick-option')
         event.preventDefault()
         if (this.isMouseButtonDown) {
@@ -123,7 +88,7 @@
         }
       },
       pickOptionListener (opt) {
-        // debugger
+        // // debugger
         var draggableDiv = document.getElementById('pick-option')
         if (opt === 1) {
           draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
@@ -138,12 +103,12 @@
       startDecisions () {
         this.showContract = true
         this.showButton = false
-        debugger
+        // debugger
         this.JSONPath(this.decisions, 0) // first call to genHTML and choices
       },
       JSONPath (json, nodeIndex) {
         var $this = this
-        debugger
+        // debugger
         console.log('Current node: ' + nodeIndex)
         var found = false
         var tempPaths = []
@@ -151,7 +116,7 @@
         var len = json.length
 
         json.forEach(function (item) {
-          debugger
+          // debugger
           if (!found) {
             if (item.mandatory) {
               // generate HTML
@@ -179,11 +144,11 @@
           this.auxPath.push(tempPaths)
         }
         if ((!found) && (this.decisions.length > 0)) {
-          debugger
+          // debugger
           found = this.JSONPath(this.decisions, nodeIndex + 1)
         }
         if (nodeIndex === 0) {
-          debugger
+          // debugger
           len = this.auxPath.length
           var aux = []
           for (var i = (len - 1); i >= 0; i--) {
@@ -201,11 +166,11 @@
         if (value === '') {
           value = '{{' + variable + '}}'
         }
-        debugger
+        // debugger
         this.updateVariableContent(variable, value)
         var contract = this.contract.slice(0)
         contract.forEach(function (section) {
-          debugger
+          // debugger
           var changed = false
           var wrapper = document.createElement('div')
           wrapper.innerHTML = section.content
@@ -246,7 +211,7 @@
         return item
       },
       generateHTMLContent (item) {
-        debugger
+        // debugger
         var wrapper = document.createElement('div')
         var innerWrapper
         item = this.parseContractVariables(item)
@@ -315,11 +280,39 @@
         }
       },
       generateChoice (item) {
-        debugger
+        // debugger
       }
     }
   }
 </script>
+
+<template>
+  <div>
+    <div class="no-print">
+      <h1>{{ contractName }}</h1>
+      <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
+    </div>
+    <div>
+      <section id="variables-menu" class="no-print" v-show="showContract">
+        <p>Variables</p>
+        <div v-for="(value, key, index) in variables">
+          <label>{{<abbr>{{ key }}</abbr>}}</label>
+          <input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">
+        </div>
+      </section>
+      <section id="contract-section" v-if="showContract">
+        <div v-for="section in contract">
+          <p v-html="section.content"></p>
+        </div>
+      </section>
+    </div>
+    <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print">
+      <p>Add "{{ current.description }}"?</p>
+      <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
+      <button type="button" class="btn btn-danger" v-on:click="JSONPath(decisions, 0)">No</button>
+    </div>
+  </div>
+</template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

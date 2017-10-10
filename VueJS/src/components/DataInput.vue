@@ -37,7 +37,7 @@ export default {
   },
   watch: {
     parseURL (e) {
-      debugger
+      // debugger
       this.validateURL()
     }
   },
@@ -61,7 +61,7 @@ export default {
       this.$store.commit('updateContract', [])
     },
     validateURL () {
-      debugger
+      // debugger
       var spreadsheetId = new RegExp('/spreadsheets/d/([a-zA-Z0-9-_]+)').exec(this.parseURL)
       if ((spreadsheetId !== null) && (spreadsheetId !== undefined)) {
         spreadsheetId = spreadsheetId[1]
@@ -78,7 +78,7 @@ export default {
       this.parseDataFromURL(spreadsheetId, sheetId)
     },
     parseDataFromURL (spreadsheetId, sheetId) {
-      debugger
+      // debugger
       var $this = this
       // https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=357738096
       var url = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/export?format=xlsx&gid=' + sheetId
@@ -94,7 +94,7 @@ export default {
 
         var reader = new FileReader()
         reader.onload = function (e) {
-          debugger
+          // debugger
           var finalJsonObj = {}
           var workbook = _XLSX.read(data, {type: 'binary'})
           var sheetName = workbook.SheetNames[0]
@@ -115,7 +115,7 @@ export default {
             }
           }
           finalJsonObj = _XLSX.utils.sheet_to_row_object_array(cloneObj)
-          debugger
+          // debugger
           console.log(finalJsonObj)
           $this.contractObjParser(finalJsonObj)
 //          })
@@ -125,7 +125,7 @@ export default {
       }
       xhr.send(null)
       // TODO add processing message here
-      debugger
+      // debugger
     },
     contractObjParser (collection) {
       this.clearDecisions()
@@ -134,7 +134,7 @@ export default {
       var $this = this
       var collDependency = []
       collection.filter(function (item) { // get all objects that has no dependency
-        debugger
+        // debugger
         var tempObject = []
         tempObject.id = item.id
         tempObject.description = item.description
@@ -158,28 +158,28 @@ export default {
         }
         tempObject.used = false
         tempObject.childs = []
-        debugger
+        // debugger
         $this.decisions.push(tempObject)
       })
       collDependency = this.decisions.filter(function (item) { // get all objects that has dependency
-        // debugger
+        // // debugger
         return (item.depends)
       })
       var auxObj = this.decisions.filter(function (item) { // get all objects that no has dependency
-        // debugger
+        // // debugger
         return (!item.depends)
       })
       this.updateDecisions(auxObj)
       console.log(collDependency)
-      debugger
+      // debugger
       var stop = false
       var found = false
       var i = 0
       var len = collDependency.length
-      debugger
+      // debugger
       while (!stop) {
         collDependency.forEach(function (item) {
-          // debugger
+          // // debugger
           found = $this.findFather($this.decisions, item)
           if (found) {
             i++
@@ -189,7 +189,7 @@ export default {
           }
         })
       }
-      debugger
+      // debugger
     },
     findFather (objSearch, objAdd) {
       var found = false
