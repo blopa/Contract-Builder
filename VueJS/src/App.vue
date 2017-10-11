@@ -9,29 +9,33 @@
     name: 'app',
     data () {
       return {
-        comps: [],
-        arr: ['var_1', 'var_2', 'var_3', 'var_4', 'var_5', 'var_6'],
-        variaveis: {
-        }
+        dynamicComponents: [],
+//        variables: [],
+        variables: ['var_1', 'var_2', 'var_3', 'var_4', 'var_5', 'var_6'],
+        inputVars: {}
       }
     },
-    mounted: function () {
-      let style = document.createElement('style')
-      style.id = 'custom-styles'
-      let app = document.getElementById('app')
-      app.appendChild(style)
+    methods: {
+      test () {
+        let style = document.createElement('style')
+        style.id = 'custom-styles'
+        let app = document.getElementById('app')
+        app.appendChild(style)
 
-      let arr = this.arr
-      for (let i = 0; i < arr.length; i++) {
-        Vue.component('comp_' + i, {
-          template: '<h3> eu sou uma string -> {{' + arr[i] + '}}</h3>',
-          props: ['dados'],
+        debugger
+        let arr = this.variables
+        let compName = 'comp_'
+        Vue.component(compName, {
+          template: '<h3>oi1 {{var_1}} oi2 {{var_2}} oi3 {{var_3}} oi4 {{var_4}} oi5 {{var_5}} oi6 {{var_6}} </h3>',
+          props: ['dynamicContent'],
           data () {
-            return this.dados
+            return this.dynamicContent
           }
         })
-        Vue.set(this.variaveis, arr[i], '')
-        this.comps.push({tipo: 'comp_' + i, campo: arr[i], d: this.$data.variaveis})
+        for (let i = 0; i < arr.length; i++) {
+          Vue.set(this.inputVars, arr[i], '')
+        }
+        this.dynamicComponents.push({name: compName, content: this.$data.inputVars})
       }
     },
     computed: { // get data from store.js
@@ -50,10 +54,11 @@
       <router-link to="/builder">Build a Contract</router-link> |
       <router-link v-if="contract.length > 0" to="/contract">Built Contract</router-link>
       <hr>
-      <div v-for="comp in comps">
-        <var-input v-model="variaveis" :campo="comp.campo"></var-input>
+      <button type="button" class="btn btn-danger" v-on:click="test()">GO GO GO</button>
+      <div v-for="variable in variables">
+        <var-input v-model="inputVars" :campo="variable"></var-input>
       </div>
-      <div v-for="comp in comps" :is="comp.tipo" :dados="comp.d"></div>
+      <div v-for="dynamicComponent in dynamicComponents" :is="dynamicComponent.name" :dynamicContent="dynamicComponent.content"></div>
     </div>
     <router-view></router-view>
   </div>

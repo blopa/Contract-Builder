@@ -58,11 +58,6 @@ export const store = new Vuex.Store({
       state.contract.push(section)
     },
     addVariables (state, variables) {
-      // state.variables.push(variable)
-      // var aux = state.variables.concat(variables)
-      // aux = aux.filter(function (item, pos) { // get uniques
-      //   return aux.indexOf(item) === pos
-      // })
       var $stateVar = state.variables
       variables.forEach(function (v) {
         if ($stateVar[v] === undefined) {

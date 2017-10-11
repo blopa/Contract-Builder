@@ -98,7 +98,7 @@
             let workbook = _XLSX.read(data, {type: 'binary'})
             let sheetName = workbook.SheetNames[0]
             $this.updateContractName(workbook.SheetNames[0])
-  //          workbook.SheetNames.forEach(function (sheetName) { // TODO process multiple sheets
+//            workbook.SheetNames.forEach(function (sheetName) { // TODO process multiple sheets
             let jsonObject = workbook.Sheets[sheetName]
             let len = Object.keys(jsonObject).length
             let cloneObj = JSON.parse(JSON.stringify(jsonObject))
@@ -117,7 +117,7 @@
             // debugger
             console.log(finalJsonObj)
             $this.contractObjParser(finalJsonObj)
-  //          })
+//            })
             $this.$router.push('contract')
           }
           reader.readAsBinaryString(f)

@@ -1,8 +1,13 @@
 <script>
+  import VarInput from '@/components/VarInput.vue'
   import { mapGetters } from 'vuex'
+  import Vue from 'vue'
 
   export default {
     name: 'ContractBuilder',
+    components: {
+      VarInput
+    },
     mounted: function () {
       if (this.decisions.length > 0) {
         this.showButton = true
@@ -30,7 +35,10 @@
         isMouseButtonDown: false,
         mousePositionOffset: [],
         mousePosition: {},
-        lastItemType: ''
+        lastItemType: '',
+        dynamicComponents: [],
+        inputVars: {},
+        compCount: 1
       }
     },
     methods: {
@@ -130,7 +138,6 @@
             } else {
               // generate choices
               $this.updateCurrent(item)
-              $this.generateChoice(item)
               found = true
             }
           } else {
@@ -211,60 +218,27 @@
         return item
       },
       generateHTMLContent (item) {
-        // debugger
-        let wrapper = document.createElement('div')
-        let innerWrapper
-        item = this.parseContractVariables(item)
-        if (item.type === 'list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
-        } else if (item.type === 'numeric-list') {
-          if (this.lastItemType !== item.type) {
-            this.updateNumericListCount(1)
-          }
-          let styleDiv = document.getElementById('custom-styles')
-          let className = 'number-' + this.numericListCount
-          styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
-          // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type + ' ' + className
-          innerWrapper.innerHTML = item.content
-          this.incrementNumericListCount()
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
-        } else if (item.type === 'circle-list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
-        } else if (item.type === 'square-list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
-        } else if (item.type === 'title') {
-          innerWrapper = document.createElement('h1')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
-        } else if (item.type === 'subtitle') {
-          innerWrapper = document.createElement('h2')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
-        } else { // if (item.type === 'paragraph') {
-          innerWrapper = document.createElement('p')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+        debugger
+        let $this = this
+        let match = item.content.match(/{{\s*[\w.]+\s*}}/g) // match variables {{var}}
+        if (match) {
+          let vueTemp = match.map(function (x) { // variables without mustache
+            return x.match(/[\w.]+/)[0]
+          })
+          this.addVariables(vueTemp)
+          let compName = 'dynamicComp_' + this.compCount
+          Vue.component(compName, {
+            template: '<h3>' + item.content + '</h3>',
+            props: ['dynamicContent'],
+            data () {
+              return this.dynamicContent
+            }
+          })
+          vueTemp.forEach(function (variable) {
+            Vue.set($this.inputVars, variable, '')
+          })
+          this.dynamicComponents.push({name: compName, content: this.$data.inputVars})
+          this.compCount++
         }
         this.lastItemType = item.type
         this.addContractSection(item)
@@ -278,9 +252,6 @@
           }
           this.JSONPath(this.decisions, 0)
         }
-      },
-      generateChoice (item) {
-        // debugger
       }
     }
   }
@@ -293,16 +264,23 @@
       <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
     </div>
     <div>
-      <section id="variables-menu" class="no-print" v-show="showContract">
+      <section id="variables-menu" class="no-print" v-if="decisions.length === 0">
         <p>Variables</p>
+        <!--<div v-for="(value, key, index) in variables">-->
+          <!--<label>{{<abbr>{{ key }}</abbr>}}</label>-->
+          <!--<input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">-->
+        <!--</div>-->
         <div v-for="(value, key, index) in variables">
           <label>{{<abbr>{{ key }}</abbr>}}</label>
-          <input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">
+          <var-input v-model="inputVars" :campo="key"></var-input>
         </div>
       </section>
-      <section id="contract-section" v-if="showContract">
-        <div v-for="section in contract">
-          <p v-html="section.content"></p>
+      <section id="contract-section" v-show="showContract">
+        <!--<div v-for="section in contract">-->
+          <!--<p v-html="section.content"></p>-->
+        <!--</div>-->
+        <div v-for="dynamicComponent in dynamicComponents">
+          <p :is="dynamicComponent.name" :dynamicContent="dynamicComponent.content"></p>
         </div>
       </section>
     </div>
