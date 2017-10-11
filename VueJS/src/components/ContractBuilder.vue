@@ -63,7 +63,7 @@
       },
       draggableDivMouseDown (event) {
         // // debugger
-        var draggableDiv = document.getElementById('pick-option')
+        let draggableDiv = document.getElementById('pick-option')
         this.isMouseButtonDown = true
         this.mousePositionOffset = [
           draggableDiv.offsetLeft - event.clientX,
@@ -76,7 +76,7 @@
       },
       draggableDivMouseMove (event) {
         // // debugger
-        var draggableDiv = document.getElementById('pick-option')
+        let draggableDiv = document.getElementById('pick-option')
         event.preventDefault()
         if (this.isMouseButtonDown) {
           this.mousePosition = {
@@ -89,7 +89,7 @@
       },
       pickOptionListener (opt) {
         // // debugger
-        var draggableDiv = document.getElementById('pick-option')
+        let draggableDiv = document.getElementById('pick-option')
         if (opt === 1) {
           draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
           document.addEventListener('mouseup', this.draggableDivMouseUp, true)
@@ -107,13 +107,13 @@
         this.JSONPath(this.decisions, 0) // first call to genHTML and choices
       },
       JSONPath (json, nodeIndex) {
-        var $this = this
+        let $this = this
         // debugger
         console.log('Current node: ' + nodeIndex)
-        var found = false
-        var tempPaths = []
-        var mandatoryCount = 0
-        var len = json.length
+        let found = false
+        let tempPaths = []
+        let mandatoryCount = 0
+        let len = json.length
 
         json.forEach(function (item) {
           // debugger
@@ -150,8 +150,8 @@
         if (nodeIndex === 0) {
           // debugger
           len = this.auxPath.length
-          var aux = []
-          for (var i = (len - 1); i >= 0; i--) {
+          let aux = []
+          for (let i = (len - 1); i >= 0; i--) {
             aux = this.auxPath[i].concat(aux) // merges arrays
           }
           this.auxPath = []
@@ -168,16 +168,16 @@
         }
         // debugger
         this.updateVariableContent(variable, value)
-        var contract = this.contract.slice(0)
+        let contract = this.contract.slice(0)
         contract.forEach(function (section) {
           // debugger
-          var changed = false
-          var wrapper = document.createElement('div')
+          let changed = false
+          let wrapper = document.createElement('div')
           wrapper.innerHTML = section.content
-          var elements = wrapper.getElementsByTagName('abbr')
-          var len = elements.length
-          for (var i = 0; i < len; i++) {
-            var varName = elements[i].getAttribute('data-bind')
+          let elements = wrapper.getElementsByTagName('abbr')
+          let len = elements.length
+          for (let i = 0; i < len; i++) {
+            let varName = elements[i].getAttribute('data-bind')
             if (varName === variable) {
               elements[i].innerHTML = value
               changed = true
@@ -190,21 +190,21 @@
         this.updateContract(contract)
       },
       parseContractVariables (item) {
-        var match = item.content.match(/{{\s*[\w.]+\s*}}/g)
+        let match = item.content.match(/{{\s*[\w.]+\s*}}/g)
         if (match) {
-          var vueTemp = match.map(function (x) {
+          let vueTemp = match.map(function (x) {
             return x.match(/[\w.]+/)[0]
           })
           this.addVariables(vueTemp)
           console.log(this.variables)
-          var $this = this
+          let $this = this
           vueTemp.forEach(function (variable) {
-            var varName = '{{' + variable + '}}'
-            var varContent = $this.variables[variable]
+            let varName = '{{' + variable + '}}'
+            let varContent = $this.variables[variable]
             if ((varContent === undefined) || (varContent === '')) {
               varContent = varName
             }
-            var pattern = new RegExp(varName, 'g')
+            let pattern = new RegExp(varName, 'g')
             item.content = item.content.replace(pattern, '<abbr data-bind="' + variable + '">' + varContent + '</abbr>')
           })
         }
@@ -212,8 +212,8 @@
       },
       generateHTMLContent (item) {
         // debugger
-        var wrapper = document.createElement('div')
-        var innerWrapper
+        let wrapper = document.createElement('div')
+        let innerWrapper
         item = this.parseContractVariables(item)
         if (item.type === 'list') {
           innerWrapper = document.createElement('li')
@@ -225,8 +225,8 @@
           if (this.lastItemType !== item.type) {
             this.updateNumericListCount(1)
           }
-          var styleDiv = document.getElementById('custom-styles')
-          var className = 'number-' + this.numericListCount
+          let styleDiv = document.getElementById('custom-styles')
+          let className = 'number-' + this.numericListCount
           styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
           // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
           innerWrapper = document.createElement('li')

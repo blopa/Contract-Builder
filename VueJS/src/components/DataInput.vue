@@ -18,196 +18,195 @@
 </template>
 
 <script>
-const _XLSX = require('xlsx') // import xlsx lib
-export default {
-  name: 'DataInput',
-  computed: { // get data from store.js
-    decisions () {
-      return this.$store.getters.getDecisionsTree // method from store.js (Vuex)
+  import { mapGetters } from 'vuex'
+  const _XLSX = require('xlsx') // import xlsx lib
+  export default {
+    name: 'DataInput',
+    computed: { // get data from store.js
+      ...mapGetters({
+        decisions: 'getDecisionsTree',
+        current: 'getCurrentNode'
+      })
     },
-    current () {
-      return this.$store.getters.getCurrentNode // method from store.js (Vuex)
-    }
-  },
-  data () {
-    return {
-      parseText: 'Paste your Google Spreadsheet URL',
-      parseURL: ''
-    }
-  },
-  watch: {
-    parseURL (e) {
-      // debugger
-      this.validateURL()
-    }
-  },
-  methods: {
-    updateDecisions (decisions) {
-      this.$store.commit('updateDecisionsTree', decisions)
-    },
-    updateCurrent (current) {
-      this.$store.commit('updateCurrentNode', current)
-    },
-    updateContractName (contractName) {
-      this.$store.commit('updateContractName', contractName)
-    },
-    clearDecisions () {
-      this.$store.commit('updateDecisionsTree', [])
-    },
-    clearCurrent () {
-      this.$store.commit('updateCurrentNode', [])
-    },
-    clearContract () {
-      this.$store.commit('updateContract', [])
-    },
-    validateURL () {
-      // debugger
-      var spreadsheetId = new RegExp('/spreadsheets/d/([a-zA-Z0-9-_]+)').exec(this.parseURL)
-      if ((spreadsheetId !== null) && (spreadsheetId !== undefined)) {
-        spreadsheetId = spreadsheetId[1]
-      } else {
-        return
+    data () {
+      return {
+        parseText: 'Paste your Google Spreadsheet URL',
+        parseURL: ''
       }
-      var sheetId = new RegExp('[#&]gid=([0-9]+)').exec(this.parseURL)
-      if (sheetId) {
-        sheetId = sheetId[1]
-      } else {
-        sheetId = '0'
-      }
-      // if valid
-      this.parseDataFromURL(spreadsheetId, sheetId)
     },
-    parseDataFromURL (spreadsheetId, sheetId) {
-      // debugger
-      var $this = this
-      // https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=357738096
-      var url = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/export?format=xlsx&gid=' + sheetId
-      console.log(url)
-
-      var xhr = new XMLHttpRequest()
-      xhr.open('GET', url, true)
-      xhr.overrideMimeType('text/plain; charset=x-user-defined')
-      xhr.onload = function (e) {
-        var data = xhr.responseText
-        // dummyObject
-        var f = new File([], 'sample.xlsx', {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
-
-        var reader = new FileReader()
-        reader.onload = function (e) {
-          // debugger
-          var finalJsonObj = {}
-          var workbook = _XLSX.read(data, {type: 'binary'})
-          var sheetName = workbook.SheetNames[0]
-          $this.updateContractName(workbook.SheetNames[0])
-//          workbook.SheetNames.forEach(function (sheetName) { // TODO process multiple sheets
-          var jsonObject = workbook.Sheets[sheetName]
-          var len = Object.keys(jsonObject).length
-          var cloneObj = JSON.parse(JSON.stringify(jsonObject))
-          // dirty code to get the rich text values
-          for (var i = 0; i < len; i++) {
-            var objKey = Object.keys(jsonObject)[i]
-            if (objKey !== '!ref') {
-              var tmp = jsonObject[objKey].h
-              if (!tmp) {
-                tmp = jsonObject[objKey].w
-              }
-              cloneObj[objKey].w = tmp
-            }
-          }
-          finalJsonObj = _XLSX.utils.sheet_to_row_object_array(cloneObj)
-          // debugger
-          console.log(finalJsonObj)
-          $this.contractObjParser(finalJsonObj)
-//          })
-          $this.$router.push('contract')
-        }
-        reader.readAsBinaryString(f)
-      }
-      xhr.send(null)
-      // TODO add processing message here
-      // debugger
-    },
-    contractObjParser (collection) {
-      this.clearDecisions()
-      this.clearCurrent()
-      this.clearContract()
-      var $this = this
-      var collDependency = []
-      collection.filter(function (item) { // get all objects that has no dependency
+    watch: {
+      parseURL (e) {
         // debugger
-        var tempObject = []
-        tempObject.id = item.id
-        tempObject.description = item.description
-        tempObject.content = item.content
-        tempObject.type = item.type
-        tempObject.depends = item.depends
-        if (tempObject.depends === undefined) {
-          tempObject.depends = ''
-        }
-        tempObject.mandatory = item.mandatory
-        if (tempObject.mandatory.toLowerCase() === 'true') {
-          tempObject.mandatory = true
-        } else { // if (tempObject.mandatory.toLowerCase() === 'true')
-          tempObject.mandatory = false
-        }
-        tempObject.disabled = item.disabled
-        if (tempObject.disabled === undefined) {
-          tempObject.disabled = ''
-        } else if (tempObject.disabled.toLowerCase() === 'true') { // ignore disabled rows
+        this.validateURL()
+      }
+    },
+    methods: {
+      updateDecisions (decisions) {
+        this.$store.commit('updateDecisionsTree', decisions)
+      },
+      updateCurrent (current) {
+        this.$store.commit('updateCurrentNode', current)
+      },
+      updateContractName (contractName) {
+        this.$store.commit('updateContractName', contractName)
+      },
+      clearDecisions () {
+        this.$store.commit('updateDecisionsTree', [])
+      },
+      clearCurrent () {
+        this.$store.commit('updateCurrentNode', [])
+      },
+      clearContract () {
+        this.$store.commit('updateContract', [])
+      },
+      validateURL () {
+        // debugger
+        let spreadsheetId = new RegExp('/spreadsheets/d/([a-zA-Z0-9-_]+)').exec(this.parseURL)
+        if ((spreadsheetId !== null) && (spreadsheetId !== undefined)) {
+          spreadsheetId = spreadsheetId[1]
+        } else {
           return
         }
-        tempObject.used = false
-        tempObject.childs = []
+        let sheetId = new RegExp('[#&]gid=([0-9]+)').exec(this.parseURL)
+        if (sheetId) {
+          sheetId = sheetId[1]
+        } else {
+          sheetId = '0'
+        }
+        // if valid
+        this.parseDataFromURL(spreadsheetId, sheetId)
+      },
+      parseDataFromURL (spreadsheetId, sheetId) {
         // debugger
-        $this.decisions.push(tempObject)
-      })
-      collDependency = this.decisions.filter(function (item) { // get all objects that has dependency
-        // // debugger
-        return (item.depends)
-      })
-      var auxObj = this.decisions.filter(function (item) { // get all objects that no has dependency
-        // // debugger
-        return (!item.depends)
-      })
-      this.updateDecisions(auxObj)
-      console.log(collDependency)
-      // debugger
-      var stop = false
-      var found = false
-      var i = 0
-      var len = collDependency.length
-      // debugger
-      while (!stop) {
-        collDependency.forEach(function (item) {
+        let $this = this
+        // https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=357738096
+        let url = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/export?format=xlsx&gid=' + sheetId
+        console.log(url)
+
+        let xhr = new XMLHttpRequest()
+        xhr.open('GET', url, true)
+        xhr.overrideMimeType('text/plain; charset=x-user-defined')
+        xhr.onload = function (e) {
+          let data = xhr.responseText
+          // dummyObject
+          let f = new File([], 'sample.xlsx', {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+
+          let reader = new FileReader()
+          reader.onload = function (e) {
+            // debugger
+            let finalJsonObj = {}
+            let workbook = _XLSX.read(data, {type: 'binary'})
+            let sheetName = workbook.SheetNames[0]
+            $this.updateContractName(workbook.SheetNames[0])
+  //          workbook.SheetNames.forEach(function (sheetName) { // TODO process multiple sheets
+            let jsonObject = workbook.Sheets[sheetName]
+            let len = Object.keys(jsonObject).length
+            let cloneObj = JSON.parse(JSON.stringify(jsonObject))
+            // dirty code to get the rich text values
+            for (let i = 0; i < len; i++) {
+              let objKey = Object.keys(jsonObject)[i]
+              if (objKey !== '!ref') {
+                let tmp = jsonObject[objKey].h
+                if (!tmp) {
+                  tmp = jsonObject[objKey].w
+                }
+                cloneObj[objKey].w = tmp
+              }
+            }
+            finalJsonObj = _XLSX.utils.sheet_to_row_object_array(cloneObj)
+            // debugger
+            console.log(finalJsonObj)
+            $this.contractObjParser(finalJsonObj)
+  //          })
+            $this.$router.push('contract')
+          }
+          reader.readAsBinaryString(f)
+        }
+        xhr.send(null)
+        // TODO add processing message here
+        // debugger
+      },
+      contractObjParser (collection) {
+        this.clearDecisions()
+        this.clearCurrent()
+        this.clearContract()
+        let $this = this
+        let collDependency = []
+        collection.filter(function (item) { // get all objects that has no dependency
+          // debugger
+          let tempObject = []
+          tempObject.id = item.id
+          tempObject.description = item.description
+          tempObject.content = item.content
+          tempObject.type = item.type
+          tempObject.depends = item.depends
+          if (tempObject.depends === undefined) {
+            tempObject.depends = ''
+          }
+          tempObject.mandatory = item.mandatory
+          if (tempObject.mandatory.toLowerCase() === 'true') {
+            tempObject.mandatory = true
+          } else { // if (tempObject.mandatory.toLowerCase() === 'true')
+            tempObject.mandatory = false
+          }
+          tempObject.disabled = item.disabled
+          if (tempObject.disabled === undefined) {
+            tempObject.disabled = ''
+          } else if (tempObject.disabled.toLowerCase() === 'true') { // ignore disabled rows
+            return
+          }
+          tempObject.used = false
+          tempObject.childs = []
+          // debugger
+          $this.decisions.push(tempObject)
+        })
+        collDependency = this.decisions.filter(function (item) { // get all objects that has dependency
           // // debugger
-          found = $this.findFather($this.decisions, item)
-          if (found) {
-            i++
-            if (i >= len) {
-              stop = true
+          return (item.depends)
+        })
+        let auxObj = this.decisions.filter(function (item) { // get all objects that no has dependency
+          // // debugger
+          return (!item.depends)
+        })
+        this.updateDecisions(auxObj)
+        console.log(collDependency)
+        // debugger
+        let stop = false
+        let found = false
+        let i = 0
+        let len = collDependency.length
+        // debugger
+        while (!stop) {
+          collDependency.forEach(function (item) {
+            // // debugger
+            found = $this.findFather($this.decisions, item)
+            if (found) {
+              i++
+              if (i >= len) {
+                stop = true
+              }
+            }
+          })
+        }
+        // debugger
+      },
+      findFather (objSearch, objAdd) {
+        let found = false
+        let $this = this
+        objSearch.filter(function (item) { // find item father of the dependency
+          if (!found) {
+            if (item.id === objAdd.depends) {
+              item.childs.push(objAdd)
+              found = true
+            } else if (item.childs.length > 0) {
+              found = $this.findFather(item.childs, objAdd)
             }
           }
         })
+        return found
       }
-      // debugger
-    },
-    findFather (objSearch, objAdd) {
-      var found = false
-      var $this = this
-      objSearch.filter(function (item) { // find item father of the dependency
-        if (!found) {
-          if (item.id === objAdd.depends) {
-            item.childs.push(objAdd)
-            found = true
-          } else if (item.childs.length > 0) {
-            found = $this.findFather(item.childs, objAdd)
-          }
-        }
-      })
-      return found
     }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
