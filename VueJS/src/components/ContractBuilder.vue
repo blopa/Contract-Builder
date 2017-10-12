@@ -220,26 +220,19 @@
       generateHTMLContent (item) {
         debugger
         let $this = this
-        let match = item.content.match(/{{\s*[\w.]+\s*}}/g) // match variables {{var}}
-        if (match) {
-          let vueTemp = match.map(function (x) { // variables without mustache
-            return x.match(/[\w.]+/)[0]
-          })
-          this.addVariables(vueTemp)
-          let compName = 'dynamicComp_' + this.compCount
-          Vue.component(compName, {
-            template: '<h3>' + item.content + '</h3>',
-            props: ['dynamicContent'],
-            data () {
-              return this.dynamicContent
-            }
-          })
-          Object.keys(this.variables).forEach(function (variable) {
-            Vue.set($this.inputVars, variable, '')
-          })
-          this.dynamicComponents.push({name: compName, content: this.$data.inputVars})
-          this.compCount++
-        }
+        let compName = 'dynamicComp_' + this.compCount
+        Vue.component(compName, {
+          template: '<div>' + item.content + '</div>',
+          props: ['dynamicContent'],
+          data () {
+            return this.dynamicContent
+          }
+        })
+        Object.keys(this.variables).forEach(function (variable) {
+          Vue.set($this.inputVars, variable, variable)
+        })
+        this.dynamicComponents.push({name: compName, content: this.$data.inputVars})
+        this.compCount++
         this.lastItemType = item.type
         this.addContractSection(item)
         if (!item.mandatory) {
