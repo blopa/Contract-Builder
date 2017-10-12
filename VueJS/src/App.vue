@@ -46,10 +46,13 @@
 }
 .list{
   list-style-type: none;
+  margin-left: 40px;
+  text-indent: -23px;
 }
+
 .numeric-list{
   list-style-type: none;
-  text-indent: 20px;
+  text-indent: -3px;
 }
 .circle-list{
   list-style-type: circle;

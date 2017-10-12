@@ -106,6 +106,7 @@
             let jsonObject = workbook.Sheets[sheetName]
             let len = Object.keys(jsonObject).length
             let cloneObj = JSON.parse(JSON.stringify(jsonObject))
+            debugger
             // dirty code to get the rich text values
             for (let i = 0; i < len; i++) {
               let objKey = Object.keys(jsonObject)[i]

@@ -203,18 +203,24 @@
           styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
           // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
           innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type + ' ' + className
+          innerWrapper.className = item.type + ' ' + className + ' list'
           innerWrapper.innerHTML = item.content
           this.incrementNumericListCount()
           wrapper.appendChild(innerWrapper)
           item.content = wrapper.innerHTML
         } else if (item.type === 'circle-list') {
           innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type
+          innerWrapper.className = item.type + ' list'
           innerWrapper.innerHTML = item.content
           wrapper.appendChild(innerWrapper)
           item.content = wrapper.innerHTML
         } else if (item.type === 'square-list') {
+          innerWrapper = document.createElement('li')
+          innerWrapper.className = item.type + ' list'
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'list') {
           innerWrapper = document.createElement('li')
           innerWrapper.className = item.type
           innerWrapper.innerHTML = item.content
