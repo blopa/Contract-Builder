@@ -44,6 +44,7 @@
         dynamicComponents: [],
         inputVars: {},
         showVariableInput: [],
+        hideMenu: true,
         compCount: 1
       }
     },
@@ -175,6 +176,14 @@
         }
         return found
       },
+      prettifyVarName (varName) {
+        return varName.replace(/_/g, ' ').toLowerCase().replace(/^.|\s\S/g, function (w) {
+          return w.toUpperCase()
+        })
+      },
+      toggleVariableMenu () {
+        this.hideMenu = !this.hideMenu
+      },
       toggleVariableInput (item) {
         let match = item.content.match(/{{\s*[\w.]+\s*}}/g)
         if (match) {
@@ -255,7 +264,8 @@
           }
         })
         Object.keys(this.variables).forEach(function (variable) {
-          Vue.set($this.inputVars, variable, variable)
+          debugger
+          Vue.set($this.inputVars, variable, variable.toUpperCase())
         })
         this.dynamicComponents.push({name: compName, content: this.$data.inputVars})
         this.compCount++
@@ -283,19 +293,19 @@
       <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
     </div>
     <div>
-      <section id="variables-container" class="no-print" v-if="decisions.length === 0">
-        <div id="variables-menu-toggle">
-          <button type="button" class="btn btn-success">Toggle</button>
+      <section id="variables-container" class="no-print" :class="{'hide-menu': hideMenu}" v-if="decisions.length === 0">
+        <div id="variables-menu-toggle" class="hide-menu">
+          <button type="button" class="btn btn-success" v-on:click="toggleVariableMenu()">Toggle Menu</button>
         </div>
-        <div id="variables-menu">
-          <p>Variables</p>
+        <div id="variables-menu" :class="{'hide-menu': hideMenu}">
+          <h3>Variables</h3>
           <!--<div v-for="(value, key, index) in variables">-->
           <!--<label>{{<abbr>{{ key }}</abbr>}}</label>-->
           <!--<input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">-->
           <!--</div>-->
           <div v-for="(value, key, index) in variables">
             <div v-show="showVariableInput[key]" class="variableEditor">
-              <label class="col-form-label" :for="key + index">{{<abbr>{{ key }}</abbr>}}</label>
+              <label class="col-form-label" :for="key + index">{{ prettifyVarName(key) }}</label>
               <var-input :id="key + index" class="form-control" v-model="inputVars" :inputField="key"></var-input>
             </div>
           </div>
@@ -350,27 +360,51 @@
   }
   #variables-menu{
     width: 400px;
-    background-color: #18BC9C;
+    background-color: #2c3e50;
     position: fixed;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
     height: 50%;
+    border: 1px solid #25313e;
+    padding: 5px;
   }
   #variables-menu-toggle {
     display: none;
+    width: 100px;
+    margin-left: 270px;
+    margin-bottom: 10px;
   }
   @media screen and (max-width: 1611px) {
-    #variables-menu{
-      display: none;
-      background-color: #2C3E50;
+    #variables-menu.hide-menu {
+      display: none !important;
+      background-color: #2C3E50 !important;
     }
-    #variables-container{
-      width: 100px;
+    #variables-container.hide-menu {
+      /*width: 100px !important;*/
     }
-    #variables-menu-toggle {
-      display: block;
+    #variables-menu-toggle.hide-menu {
+      display: block !important;
     }
   }
   .variableEditor label{
     font-weight: bold;
+  }
+  .variableEditor {
+    border-bottom: 1px solid #25313e;
+    padding-bottom: 5px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
   }
 </style>
