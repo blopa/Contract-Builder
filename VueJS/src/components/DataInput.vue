@@ -9,8 +9,8 @@
       </div>
       <div class="data-upload-input">
         <label class="custom-file">
-          <input type="file" class="custom-file-input">
-          <span class="custom-file-control" v-on:change="parseUpload()">Choose file...</span>
+          <input type="file" class="custom-file-input" v-on:change="parseUpload">
+          <span class="custom-file-control">Choose file...</span>
         </label>
       </div>
     </div>
@@ -80,6 +80,17 @@
         // if valid
         this.parseDataFromURL(spreadsheetId, sheetId)
       },
+      parseUpload (event) {
+        debugger
+        let file = event.target.files[0]
+        let reader = new FileReader()
+        let $this = this
+        reader.onload = function (e) {
+          debugger
+          $this.parseSpreadsheetData(e, e.target.result)
+        }
+        reader.readAsBinaryString(file)
+      },
       parseDataFromURL (spreadsheetId, sheetId) {
         // debugger
         let $this = this
@@ -91,39 +102,12 @@
         xhr.open('GET', url, true)
         xhr.overrideMimeType('text/plain; charset=x-user-defined')
         xhr.onload = function (e) {
+          debugger
           let data = xhr.responseText
-          // dummyObject
           let f = new File([], 'sample.xlsx', {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
-
           let reader = new FileReader()
           reader.onload = function (e) {
-            // debugger
-            let finalJsonObj = {}
-            let workbook = _XLSX.read(data, {type: 'binary'})
-            let sheetName = workbook.SheetNames[0]
-            $this.updateContractName(workbook.SheetNames[0])
-//            workbook.SheetNames.forEach(function (sheetName) { // TODO process multiple sheets
-            let jsonObject = workbook.Sheets[sheetName]
-            let len = Object.keys(jsonObject).length
-            let cloneObj = JSON.parse(JSON.stringify(jsonObject))
-            debugger
-            // dirty code to get the rich text values
-            for (let i = 0; i < len; i++) {
-              let objKey = Object.keys(jsonObject)[i]
-              if (objKey !== '!ref') {
-                let tmp = jsonObject[objKey].h
-                if (!tmp) {
-                  tmp = jsonObject[objKey].w
-                }
-                cloneObj[objKey].w = tmp
-              }
-            }
-            finalJsonObj = _XLSX.utils.sheet_to_row_object_array(cloneObj)
-            // debugger
-            console.log(finalJsonObj)
-            $this.contractObjParser(finalJsonObj)
-//            })
-            $this.$router.push('contract')
+            $this.parseSpreadsheetData(e, data)
           }
           reader.readAsBinaryString(f)
         }
@@ -131,8 +115,32 @@
         // TODO add processing message here
         // debugger
       },
-      parseUpload (collection) {
-
+      parseSpreadsheetData (e, data) {
+        // debugger
+        let finalJsonObj = {}
+        let workbook = _XLSX.read(data, {type: 'binary'})
+        let sheetName = workbook.SheetNames[0]
+        this.updateContractName(workbook.SheetNames[0])
+        let jsonObject = workbook.Sheets[sheetName]
+        let len = Object.keys(jsonObject).length
+        let cloneObj = JSON.parse(JSON.stringify(jsonObject))
+        // debugger
+        // dirty code to get the rich text values
+        for (let i = 0; i < len; i++) {
+          let objKey = Object.keys(jsonObject)[i]
+          if (objKey !== '!ref') {
+            let tmp = jsonObject[objKey].h
+            if (!tmp) {
+              tmp = jsonObject[objKey].w
+            }
+            cloneObj[objKey].w = tmp
+          }
+        }
+        finalJsonObj = _XLSX.utils.sheet_to_row_object_array(cloneObj)
+        // debugger
+        console.log(finalJsonObj)
+        this.contractObjParser(finalJsonObj)
+        this.$router.push('contract')
       },
       contractObjParser (collection) {
         this.clearDecisions()
