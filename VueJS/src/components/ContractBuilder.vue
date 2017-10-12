@@ -219,6 +219,59 @@
       },
       generateHTMLContent (item) {
         debugger
+        var wrapper = document.createElement('div')
+        var innerWrapper
+        if (item.type === 'list') {
+          innerWrapper = document.createElement('li')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'numeric-list') {
+          if (this.lastItemType !== item.type) {
+            this.updateNumericListCount(1)
+          }
+          var styleDiv = document.getElementById('custom-styles')
+          var className = 'number-' + this.numericListCount
+          styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
+          // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
+          innerWrapper = document.createElement('li')
+          innerWrapper.className = item.type + ' ' + className
+          innerWrapper.innerHTML = item.content
+          this.incrementNumericListCount()
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'circle-list') {
+          innerWrapper = document.createElement('li')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'square-list') {
+          innerWrapper = document.createElement('li')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'title') {
+          innerWrapper = document.createElement('h1')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else if (item.type === 'subtitle') {
+          innerWrapper = document.createElement('h2')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        } else { // if (item.type === 'paragraph') {
+          innerWrapper = document.createElement('p')
+          innerWrapper.className = item.type
+          innerWrapper.innerHTML = item.content
+          wrapper.appendChild(innerWrapper)
+          item.content = wrapper.innerHTML
+        }
         let $this = this
         let compName = 'dynamicComp_' + this.compCount
         Vue.component(compName, {
