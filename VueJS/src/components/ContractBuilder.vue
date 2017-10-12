@@ -69,6 +69,9 @@
       }
     },
     methods: {
+      addDecision (decision) {
+        this.$store.commit('addDecision', decision)
+      },
       addContractSection (section) {
         this.$store.commit('addContractSection', section)
       },
@@ -301,6 +304,13 @@
         this.lastItemType = item.type
         this.addContractSection(item)
         if (!item.mandatory) {
+          if (item.childs.length > 0) {
+            debugger
+            let len = item.childs.length
+            for (var i = (len - 1); i >= 0; i--) {
+              this.addDecision(item.childs[i])
+            }
+          }
           this.JSONPath(this.decisions, 0)
         }
       },

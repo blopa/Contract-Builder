@@ -42,6 +42,9 @@ export const store = new Vuex.Store({
     updateDecisionsTree (state, decisions) {
       state.decisionsTree = decisions
     },
+    addDecision (state, decision) {
+      state.decisionsTree.unshift(decision)
+    },
     updateCurrentNode (state, current) {
       state.currentNode = current
     },
