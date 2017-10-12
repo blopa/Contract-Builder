@@ -186,8 +186,10 @@
       generateHTMLContent (item) {
         debugger
         this.toggleVariableInput(item)
-        var wrapper = document.createElement('div')
-        var innerWrapper
+        let wrapper = document.createElement('div')
+        let innerWrapper
+        let element
+        let classes
         if (item.type === 'list') {
           innerWrapper = document.createElement('li')
           innerWrapper.className = item.type
@@ -198,53 +200,46 @@
           if (this.lastItemType !== item.type) {
             this.updateNumericListCount(1)
           }
-          var styleDiv = document.getElementById('custom-styles')
-          var className = 'number-' + this.numericListCount
+          let styleDiv = document.getElementById('custom-styles')
+          let className = 'number-' + this.numericListCount
           styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
           // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type + ' ' + className + ' list'
-          innerWrapper.innerHTML = item.content
+          element = 'li'
+          classes = item.type + ' ' + className + ' list'
           this.incrementNumericListCount()
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
         } else if (item.type === 'circle-list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type + ' list'
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'li'
+          classes = item.type + ' list'
         } else if (item.type === 'square-list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type + ' list'
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'li'
+          classes = item.type + ' list'
         } else if (item.type === 'list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'li'
+          classes = item.type
         } else if (item.type === 'title') {
-          innerWrapper = document.createElement('h1')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'h1'
+          classes = item.type
+        } else if (item.type === 'title-center') {
+          element = 'h1'
+          classes = item.type
+        } else if (item.type === 'subtitle-center') {
+          element = 'h2'
+          classes = item.type
         } else if (item.type === 'subtitle') {
-          innerWrapper = document.createElement('h2')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'h2'
+          classes = item.type
+        } else if (item.type === 'paragraph-center') {
+          element = 'p'
+          classes = item.type
         } else { // if (item.type === 'paragraph') {
-          innerWrapper = document.createElement('p')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'p'
+          classes = item.type
         }
+        innerWrapper = document.createElement(element)
+        innerWrapper.className = classes
+        innerWrapper.innerHTML = item.content
+        wrapper.appendChild(innerWrapper)
+        item.content = wrapper.innerHTML
         let $this = this
         let compName = 'dynamicComp_' + this.compCount
         Vue.component(compName, {
@@ -314,23 +309,7 @@
 </template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-  #contract-section {
-    /*font-family: 'Courier New', Courier, monospace;*/
-    /*font-family: 'Times New Roman', Times, serif;*/
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 12pt;
-    white-space: pre-wrap;
-    /*padding: 30mm 20mm 20mm 30mm;*/
-    padding: 20mm 20mm 20mm 40mm;
-    width: 210mm;
-    margin: 0 auto;
-    text-align: justify;
-    /*float: left;*/
-  }
-  #contract-section h1 {
-    font-size: 14pt;
-  }
+<style scoped>
   #pick-option {
     background-color: rgba(24, 113, 96, 0.72);
     /* margin: 0 auto; */

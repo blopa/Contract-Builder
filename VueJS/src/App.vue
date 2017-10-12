@@ -44,20 +44,47 @@
     display: none !important;
   }
 }
-.list{
+#contract-section {
+  /*font-family: 'Courier New', Courier, monospace;*/
+  /*font-family: 'Times New Roman', Times, serif;*/
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  white-space: pre-wrap;
+  /*padding: 30mm 20mm 20mm 30mm;*/
+  padding: 20mm 20mm 20mm 40mm;
+  width: 210mm;
+  margin: 0 auto;
+  text-align: justify;
+  /*float: left;*/
+}
+#contract-section h1 {
+  font-size: 14pt;
+}
+#contract-section h2 {
+  font-size: 13pt;
+}
+#contract-section .list{
   list-style-type: none;
   margin-left: 40px;
   text-indent: -23px;
+  margin-bottom: 1rem;
 }
-
-.numeric-list{
+#contract-section p {
+  margin-bottom: 1rem;
+}
+#contract-section .numeric-list{
   list-style-type: none;
   text-indent: -3px;
 }
-.circle-list{
+#contract-section .circle-list{
   list-style-type: circle;
 }
-.square-list{
+#contract-section .square-list{
   list-style-type: square;
+}
+#contract-section .title-center,
+#contract-section .subtitle-center,
+#contract-section .paragraph-center{
+  text-align: center;
 }
 </style>
