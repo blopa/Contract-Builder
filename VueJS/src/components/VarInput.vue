@@ -11,7 +11,7 @@ export default {
   },
   methods: {
     updateValue: function (value) {
-      debugger
+      // debugger
       this.valor[this.campo] = value
       this.$emit('input', this.valor)
     }
