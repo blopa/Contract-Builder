@@ -283,16 +283,21 @@
       <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
     </div>
     <div>
-      <section id="variables-menu" class="no-print" v-if="decisions.length === 0">
-        <p>Variables</p>
-        <!--<div v-for="(value, key, index) in variables">-->
+      <section id="variables-container" class="no-print" v-if="decisions.length === 0">
+        <div id="variables-menu-toggle">
+          <button type="button" class="btn btn-success">Toggle</button>
+        </div>
+        <div id="variables-menu">
+          <p>Variables</p>
+          <!--<div v-for="(value, key, index) in variables">-->
           <!--<label>{{<abbr>{{ key }}</abbr>}}</label>-->
           <!--<input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">-->
-        <!--</div>-->
-        <div v-for="(value, key, index) in variables">
-          <div v-show="showVariableInput[key]">
-            <label>{{<abbr>{{ key }}</abbr>}}</label>
-            <var-input v-model="inputVars" :inputField="key"></var-input>
+          <!--</div>-->
+          <div v-for="(value, key, index) in variables">
+            <div v-show="showVariableInput[key]" class="variableEditor">
+              <label class="col-form-label" :for="key + index">{{<abbr>{{ key }}</abbr>}}</label>
+              <var-input :id="key + index" class="form-control" v-model="inputVars" :inputField="key"></var-input>
+            </div>
           </div>
         </div>
       </section>
@@ -337,10 +342,35 @@
   .left-content{
     float: left;
   }
-  #variables-menu{
+  #variables-container{
     width: 400px;
     float: right;
     position: fixed;
     right: 0;
+  }
+  #variables-menu{
+    width: 400px;
+    background-color: #18BC9C;
+    position: fixed;
+    overflow: scroll;
+    height: 50%;
+  }
+  #variables-menu-toggle {
+    display: none;
+  }
+  @media screen and (max-width: 1611px) {
+    #variables-menu{
+      display: none;
+      background-color: #2C3E50;
+    }
+    #variables-container{
+      width: 100px;
+    }
+    #variables-menu-toggle {
+      display: block;
+    }
+  }
+  .variableEditor label{
+    font-weight: bold;
   }
 </style>
