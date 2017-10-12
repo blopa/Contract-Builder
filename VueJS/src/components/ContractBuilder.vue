@@ -38,6 +38,7 @@
         lastItemType: '',
         dynamicComponents: [],
         inputVars: {},
+        showVariableInput: [],
         compCount: 1
       }
     },
@@ -169,56 +170,9 @@
         }
         return found
       },
-      updateVarValue (value, variable) {
-        if (value === '') {
-          value = '{{' + variable + '}}'
-        }
-        // debugger
-        this.updateVariableContent(variable, value)
-        let contract = this.contract.slice(0)
-        contract.forEach(function (section) {
-          // debugger
-          let changed = false
-          let wrapper = document.createElement('div')
-          wrapper.innerHTML = section.content
-          let elements = wrapper.getElementsByTagName('abbr')
-          let len = elements.length
-          for (let i = 0; i < len; i++) {
-            let varName = elements[i].getAttribute('data-bind')
-            if (varName === variable) {
-              elements[i].innerHTML = value
-              changed = true
-            }
-          }
-          if (changed) {
-            section.content = wrapper.innerHTML
-          }
-        })
-        this.updateContract(contract)
-      },
-      parseContractVariables (item) {
-        let match = item.content.match(/{{\s*[\w.]+\s*}}/g)
-        if (match) {
-          let vueTemp = match.map(function (x) {
-            return x.match(/[\w.]+/)[0]
-          })
-          this.addVariables(vueTemp)
-          console.log(this.variables)
-          let $this = this
-          vueTemp.forEach(function (variable) {
-            let varName = '{{' + variable + '}}'
-            let varContent = $this.variables[variable]
-            if ((varContent === undefined) || (varContent === '')) {
-              varContent = varName
-            }
-            let pattern = new RegExp(varName, 'g')
-            item.content = item.content.replace(pattern, '<abbr data-bind="' + variable + '">' + varContent + '</abbr>')
-          })
-        }
-        return item
-      },
       generateHTMLContent (item) {
         debugger
+        this.toggleVariableInput(item)
         var wrapper = document.createElement('div')
         var innerWrapper
         if (item.type === 'list') {
@@ -317,8 +271,10 @@
           <!--<input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">-->
         <!--</div>-->
         <div v-for="(value, key, index) in variables">
-          <label>{{<abbr>{{ key }}</abbr>}}</label>
-          <var-input v-model="inputVars" :inputField="key"></var-input>
+          <div v-show="showVariableInput[key]">
+            <label>{{<abbr>{{ key }}</abbr>}}</label>
+            <var-input v-model="inputVars" :inputField="key"></var-input>
+          </div>
         </div>
       </section>
       <section id="contract-section" v-show="showContract">
