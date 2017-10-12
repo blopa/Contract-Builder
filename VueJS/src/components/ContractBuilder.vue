@@ -15,11 +15,29 @@
       } else if (this.contract.length > 0) {
         this.showContract = true
       }
-      // debugger
+      debugger
       Vue.component('the_contract', {
-        template: '<div><div v-for="section in contract"><p v-html="section.content"></p></div></div>',
+        template: `
+            <div>
+                <p>Variables</p>
+                <div v-for="(value, key, index) in variables">
+                  <label>{{<abbr>{{ key }}</abbr>}}</label>
+                  <input class="form-control" type="text" v-bind:placeholder="key" v-model="inputVars">
+                </div>
+                <div v-for="section in contract">
+                    <p v-html="section.content"></p>
+                </div>
+            </div>
+        `,
+        mounted: function () {
+          for (let i = 0; i < this.variables.length; i++) {
+            debugger
+            this.$set(this.inputVars, Object.keys(this.variables)[i], '')
+          }
+        },
         computed: { // get data from store.js
           ...mapGetters({
+            variables: 'getVariables',
             contract: 'getContract'
           })
         },
@@ -230,7 +248,7 @@
         return item
       },
       generateHTMLContent (item) {
-        debugger
+        // debugger
         var wrapper = document.createElement('div')
         var innerWrapper
         // item = this.parseContractVariables(item)
@@ -309,11 +327,11 @@
     </div>
     <div>
       <section id="variables-menu" class="no-print" v-show="showContract">
-        <p>Variables</p>
-        <div v-for="(value, key, index) in variables">
-          <label>{{<abbr>{{ key }}</abbr>}}</label>
-          <input class="form-control" type="text" v-bind:placeholder="key" v-model="key">
-        </div>
+        <!--<p>Variables</p>-->
+        <!--<div v-for="(value, key, index) in variables">-->
+          <!--<label>{{<abbr>{{ key }}</abbr>}}</label>-->
+          <!--<input class="form-control" type="text" v-bind:placeholder="key" v-model="key">-->
+        <!--</div>-->
       </section>
       <section id="contract-section" v-if="showContract">
         <!--<div v-for="section in contract">-->
