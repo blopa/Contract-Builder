@@ -8,12 +8,17 @@
     components: {
       VarInput
     },
+    destroyed: function () {
+      this.updateContract([])
+    },
     mounted: function () {
       if (this.decisions.length > 0) {
         this.showButton = true
         this.pickOptionListener(1)
       } else if (this.contract.length > 0) {
         this.showContract = true
+      } else {
+        this.$router.push('/')
       }
       // debugger
     },
