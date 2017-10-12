@@ -25,7 +25,8 @@
     computed: { // get data from store.js
       ...mapGetters({
         decisions: 'getDecisionsTree',
-        current: 'getCurrentNode'
+        current: 'getCurrentNode',
+        variables: 'getVariables'
       })
     },
     data () {
@@ -49,6 +50,9 @@
       },
       updateContractName (contractName) {
         this.$store.commit('updateContractName', contractName)
+      },
+      addVariables (variables) {
+        this.$store.commit('addVariables', variables)
       },
       clearDecisions () {
         this.$store.commit('updateDecisionsTree', [])
@@ -158,6 +162,7 @@
           tempObject.used = false
           tempObject.childs = []
           // debugger
+          $this.checkVariables(tempObject.content)
           $this.decisions.push(tempObject)
         })
         collDependency = this.decisions.filter(function (item) { // get all objects that has dependency
@@ -189,6 +194,16 @@
           })
         }
         // debugger
+      },
+      checkVariables (content) {
+        let match = content.match(/{{\s*[\w.]+\s*}}/g)
+        if (match) {
+          let vueTemp = match.map(function (x) {
+            return x.match(/[\w.]+/)[0]
+          })
+          this.addVariables(vueTemp)
+          console.log(this.variables)
+        }
       },
       findFather (objSearch, objAdd) {
         let found = false

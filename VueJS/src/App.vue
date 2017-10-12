@@ -15,13 +15,14 @@
         inputVars: {}
       }
     },
+    mounted: function () {
+      let style = document.createElement('style')
+      style.id = 'custom-styles'
+      let app = document.getElementById('app')
+      app.appendChild(style)
+    },
     methods: {
       test () {
-        let style = document.createElement('style')
-        style.id = 'custom-styles'
-        let app = document.getElementById('app')
-        app.appendChild(style)
-
         debugger
         let arr = this.variables
         let compName = 'comp_'
