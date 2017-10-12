@@ -318,7 +318,7 @@
         <!--</div>-->
         <div v-for="(value, key, index) in variables">
           <label>{{<abbr>{{ key }}</abbr>}}</label>
-          <var-input v-model="inputVars" :campo="key"></var-input>
+          <var-input v-model="inputVars" :inputField="key"></var-input>
         </div>
       </section>
       <section id="contract-section" v-show="showContract">
@@ -339,14 +339,22 @@
 </template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  #contract-section{
+<style>
+  #contract-section {
+    /*font-family: 'Courier New', Courier, monospace;*/
+    /*font-family: 'Times New Roman', Times, serif;*/
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
     white-space: pre-wrap;
-    padding: 30mm 20mm 20mm 30mm;
+    /*padding: 30mm 20mm 20mm 30mm;*/
+    padding: 20mm 20mm 20mm 40mm;
     width: 210mm;
     margin: 0 auto;
     text-align: justify;
     /*float: left;*/
+  }
+  #contract-section h1 {
+    font-size: 14pt;
   }
   #pick-option {
     background-color: rgba(24, 113, 96, 0.72);
@@ -373,7 +381,7 @@
   #variables-menu{
     width: 400px;
     float: right;
-    position: absolute;
+    position: fixed;
     right: 0;
   }
 </style>
