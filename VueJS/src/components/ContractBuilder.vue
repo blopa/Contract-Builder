@@ -170,6 +170,19 @@
         }
         return found
       },
+      toggleVariableInput (item) {
+        let match = item.content.match(/{{\s*[\w.]+\s*}}/g)
+        if (match) {
+          let $this = this
+          let vueTemp = match.map(function (x) {
+            return x.match(/[\w.]+/)[0]
+          })
+          vueTemp.forEach(function (variable) {
+            $this.showVariableInput[variable] = true
+          })
+        }
+        return item
+      },
       generateHTMLContent (item) {
         debugger
         this.toggleVariableInput(item)
