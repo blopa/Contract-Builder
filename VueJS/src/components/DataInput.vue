@@ -10,7 +10,7 @@
       <div class="data-upload-input">
         <label class="custom-file">
           <input type="file" class="custom-file-input">
-          <span class="custom-file-control">Choose file...</span>
+          <span class="custom-file-control" v-on:change="parseUpload()">Choose file...</span>
         </label>
       </div>
     </div>
@@ -130,6 +130,9 @@
         xhr.send(null)
         // TODO add processing message here
         // debugger
+      },
+      parseUpload (collection) {
+
       },
       contractObjParser (collection) {
         this.clearDecisions()

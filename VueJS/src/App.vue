@@ -26,9 +26,10 @@
         <li>
           <router-link to="/builder">Build a Contract</router-link> |
         </li>
-        <li>
-          <router-link v-if="contract.length > 0" to="/contract">Built Contract</router-link>
-        </li>
+        <!--<li>-->
+          <!--<router-link v-if="contract.length > 0" to="/contract">Built Contract</router-link>-->
+          <!--<a href="#" v-else class="nav-disabled">Built Contract</a>-->
+        <!--</li>-->
       </ul>
     </div>
     <router-view></router-view>
@@ -63,6 +64,11 @@
   }
   .nav-current {
     background-color: #25313e;
+  }
+  .nav-disabled {
+    background-color: rgb(57, 71, 82) !important;
+    color: #787d82 !important;
+    cursor: context-menu;
   }
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
