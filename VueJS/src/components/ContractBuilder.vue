@@ -85,6 +85,7 @@
       draggableDivMouseDown (event) {
         // // debugger
         let draggableDiv = document.getElementById('pick-option')
+        // let draggableDiv = this.$refs.pickOption
         this.isMouseButtonDown = true
         this.mousePositionOffset = [
           draggableDiv.offsetLeft - event.clientX,
@@ -98,6 +99,7 @@
       draggableDivMouseMove (event) {
         // // debugger
         let draggableDiv = document.getElementById('pick-option')
+        // let draggableDiv = this.$refs.pickOption
         event.preventDefault()
         if (this.isMouseButtonDown) {
           this.mousePosition = {
@@ -111,6 +113,7 @@
       pickOptionListener (opt) {
         // debugger
         let draggableDiv = document.getElementById('pick-option')
+        // let draggableDiv = this.$refs.pickOption
         if (opt === 1) {
           if (draggableDiv) {
             draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
@@ -219,6 +222,7 @@
             this.updateNumericListCount(1)
           }
           let styleDiv = document.getElementById('custom-styles')
+          // let styleDiv = this.$refs.customStyles
           let className = 'number-' + this.numericListCount
           styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
           // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
@@ -297,10 +301,13 @@
       },
       prepareDownload () {
         let app = document.getElementById('app')
+        // let app = this.$refs.app
         let content = document.getElementById('contract-section')
+        // let content = this.$refs.contractSection
         let htmlDoc = content.cloneNode(true)
         app.appendChild(htmlDoc)
         let styles = document.getElementById('custom-styles')
+        // let styles = this.$refs.customStyles
         let wrapper = document.createElement('div')
         let innerWrapper = document.createElement('div')
         computedToInline(htmlDoc, true) // add all styles to inline
@@ -348,7 +355,7 @@
           </div>
         </div>
       </section>
-      <section id="contract-section" v-show="showContract">
+      <section id="contract-section" v-show="showContract" ref="contractSection">
         <!--<div v-for="section in contract">-->
           <!--<p v-html="section.content"></p>-->
         <!--</div>-->
@@ -357,7 +364,7 @@
         </div>
       </section>
     </div>
-    <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print">
+    <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print" ref="pickOption">
       <p>Add "{{ current.description }}"?</p>
       <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
       <button type="button" class="btn btn-danger" v-on:click="JSONPath(decisions, 0)">No</button>
