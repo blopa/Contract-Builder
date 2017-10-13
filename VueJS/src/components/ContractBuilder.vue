@@ -295,23 +295,21 @@
       preparePrint () {
         window.print()
       },
-      prepareDownload (contentId) {
-        debugger
-        let htmlDoc = document.getElementById(contentId)
+      prepareDownload () {
+        let app = document.getElementById('app')
+        let content = document.getElementById('contract-section')
+        let htmlDoc = content.cloneNode(true)
+        app.appendChild(htmlDoc)
         let styles = document.getElementById('custom-styles')
         let wrapper = document.createElement('div')
         let innerWrapper = document.createElement('div')
-        let innerAux = htmlDoc.innerHTML
-        computedToInline(htmlDoc, true)
+        computedToInline(htmlDoc, true) // add all styles to inline
         wrapper.appendChild(styles.cloneNode(true))
         innerWrapper.innerHTML = htmlDoc.innerHTML
         wrapper.appendChild(innerWrapper)
-//        htmlDoc = htmlDoc.replace(/(?:\r\n|\r|\n)/g, '<br/>')
-//        htmlDoc = htmlDoc.replace(/ {2}/g, '&nbsp;&nbsp;') // replace double whitespaces by double &nbsp;
         let converted = _DOCX.asBlob(wrapper.innerHTML)
         saveAs(converted, 'contract.docx')
-        htmlDoc.innerHTML = innerAux
-        htmlDoc.removeAttribute('style')
+        app.removeChild(htmlDoc)
       }
     }
   }
@@ -330,7 +328,7 @@
             <button type="button" class="btn btn-info btn-menu" v-on:click="preparePrint()">Print</button>
           </div>
           <div>
-            <button type="button" class="btn btn-info btn-menu" v-on:click="prepareDownload('contract-section')">Download</button>
+            <button type="button" class="btn btn-info btn-menu" v-on:click="prepareDownload()">Download</button>
           </div>
         </div>
         <div id="variables-menu-toggle" class="hide-menu">
