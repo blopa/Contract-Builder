@@ -1,22 +1,3 @@
-<template>
-  <div class="data-input">
-    <h1>{{ parseText }}</h1>
-    <div class="input-container">
-      <div class="data-link-input">
-        <form v-on:submit="validateURL()">
-          <input type="text" class="form-control" placeholder="Paste your Google Spreadsheet URL here." v-model="parseURL">
-        </form>
-      </div>
-      <div class="data-upload-input">
-        <label class="custom-file">
-          <input type="file" class="custom-file-input" v-on:change="parseUpload">
-          <span class="custom-file-control">Choose file...</span>
-        </label>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
   import { mapGetters } from 'vuex'
   const _XLSX = require('xlsx') // import xlsx lib
@@ -31,7 +12,6 @@
     },
     data () {
       return {
-        parseText: 'Paste your Google Spreadsheet URL',
         parseURL: ''
       }
     },
@@ -94,7 +74,7 @@
       parseDataFromURL (spreadsheetId, sheetId) {
         // debugger
         let $this = this
-        // https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=357738096
+        // https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=0
         let url = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/export?format=xlsx&gid=' + sheetId
         console.log(url)
 
@@ -236,23 +216,53 @@
   }
 </script>
 
+<template>
+  <div id="data-input">
+    <h4>Paste your Google Spreadsheet URL...</h4>
+    <p>(<a href="https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/copy" target="_blank">make a copy</a>)</p>
+    <div class="input-container">
+      <div class="data-link-input">
+        <form v-on:submit="validateURL()">
+          <input type="text" class="form-control" placeholder="Paste your Google Spreadsheet URL here." v-model="parseURL">
+        </form>
+      </div>
+      <h4>... or choose a file from your computer</h4>
+      <p>(<a href="https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=0">download sample</a>)</p>
+      <div class="data-upload-input">
+        <label class="custom-file">
+          <input type="file" class="custom-file-input" v-on:change="parseUpload">
+          <span class="custom-file-control">Choose file...</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</template>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
+  h1, h2 {
+    font-weight: normal;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
 
-a {
-  color: #42b983;
-}
+  /*a {*/
+    /*color: #42b983;*/
+  /*}*/
+
+  #data-input{
+    margin: 0 auto;
+    width: 1024px;
+    background-color: rgba(44, 62, 80, 0.51);
+    padding: 20px;
+    color: #FFFFFF;
+  }
 </style>

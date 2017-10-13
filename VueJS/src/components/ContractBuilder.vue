@@ -330,6 +330,10 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  h1 {
+    color: #FFFFFF;
+    text-transform: uppercase;
+  }
   #pick-option {
     background-color: rgba(24, 113, 96, 0.72);
     /* margin: 0 auto; */
@@ -367,6 +371,7 @@
     height: 50%;
     border: 1px solid #25313e;
     padding: 5px;
+    color: #FFFFFF;
   }
   #variables-menu-toggle {
     display: none;
@@ -401,10 +406,12 @@
   ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     border-radius: 10px;
+    background-color: #2c3e50;
   }
 
   ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    background-color: #25313e;
   }
 </style>

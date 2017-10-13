@@ -21,6 +21,11 @@
     <div class="nav-menu no-print">
       <ul>
         <li>
+          <a href="#" class="nav-disabled">
+            <img class="logo" src="./assets/logo.png" title="Made with squarespace.com"/>
+          </a>
+        </li>
+        <li>
           <router-link to="/">Home</router-link> |
         </li>
         <li>
@@ -30,6 +35,9 @@
           <!--<router-link v-if="contract.length > 0" to="/contract">Built Contract</router-link>-->
           <!--<a href="#" v-else class="nav-disabled">Built Contract</a>-->
         <!--</li>-->
+        <li>
+          <router-link to="/contact">Contact</router-link> |
+        </li>
       </ul>
     </div>
     <router-view></router-view>
@@ -40,11 +48,25 @@
   body{
     background-color: #18BC9C;
   }
+  a {
+    color: #8dc6ff;
+  }
+  a:hover {
+    color: #1301ff;
+  }
+  .logo {
+    width: 211px;
+    margin: -38px;
+  }
+  .router-link-exact-active {
+    background-color: #25313e !important;
+  }
   .nav-menu{
     background-color: #2C3E50;
   }
   .nav-menu ul {
     height: 100%;
+    text-align: left;
   }
   .nav-menu li {
     display: inline-flex;
