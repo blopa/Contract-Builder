@@ -13,7 +13,10 @@
 Contract Builder is a free open-source project that allows anyone to easily maintain and build any kind of contract (legal documents, lawsuit, rent, agreements, construction and so on) using Google Spreadsheets. This was develop as a personal project to help a friend who was struggling spending up to an hour to make a custom contract, now she is able to do it in less than 5 minutes. Hooray! **[TRY IT NOW](https://blopa.github.io/contract/index.html).**
 
 ## Libraries
-For this project I'm using [Jquery](https://github.com/jquery/jquery), [Sheetrock](https://github.com/chriszarate/sheetrock), [html-docx-js](https://github.com/evidenceprime/html-docx-js), [Bootstrap](https://github.com/twbs/bootstrap) and [startbootstrap-freelancer](https://github.com/BlackrockDigital/startbootstrap-freelancer), so a big thanks to all the developers that worked really hard on these libs and make our day easier :D and also a big thanks to [cdnjs.com](https://cdnjs.com/) and [jsdelivr.com](https://www.jsdelivr.com/) for hosting those libs for us.
+- For the jQuery version ( < 0.0.4 ) of this project I'm using [jQuery](https://github.com/jquery/jquery), [Sheetrock](https://github.com/chriszarate/sheetrock), [html-docx-js](https://github.com/evidenceprime/html-docx-js) and [Bootstrap](https://github.com/twbs/bootstrap).
+- For the vue.js version ( > 0.0.4 )of this project I'm using [vue.js](https://github.com/vuejs/vue), [html-docx-js](https://github.com/evidenceprime/html-docx-js) and [Bootstrap](https://github.com/twbs/bootstrap).
+
+So a big thanks to all the developers that worked really hard on these libs and make our day easier :D and also a big thanks to [cdnjs.com](https://cdnjs.com/) and [jsdelivr.com](https://www.jsdelivr.com/) for hosting those libs for us.
 
 ## Features
 - Parse data from Google Spreadsheet
@@ -32,8 +35,11 @@ First of all you need to create a Google Spreadsheet following the same rules as
 - **content**: The actual content that will appear on the contract. Use HTML tags to format this content
 - **type**: Type of the block
 	- **title**: A title for the contract
+	- **title-center**: A centralized title for the contract
 	- **subtitle**: A subtitle for the contract
+	- **subtitle-center**: A centralized subtitle for the contract
 	- **paragraph**: A paragraph for the contract
+	- **paragraph-center**: A centralized paragraph for the contract
 	- **list**: A basic list
 	- **numeric-list**: A list with a incremented number before it
 	- **circle-list**: A list with a circle before it
@@ -287,6 +293,8 @@ You can create complex tree decisions using the field ``depends``. The following
 ![ScreenShot](https://raw.githubusercontent.com/blopa/Contract-Builder/master/screenshots/screenshot_3.png)
 
 ## Release Notes
+- **v0.0.5:**
+	- [Feature] Remade everything using Vue.js
 - **v0.0.4:**
 	- [Feature] Add option to upload .xls Spreadsheet file
 	- [Feature] Layout improvements
