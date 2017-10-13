@@ -84,8 +84,8 @@
       },
       draggableDivMouseDown (event) {
         // // debugger
-        let draggableDiv = document.getElementById('pick-option')
-        // let draggableDiv = this.$refs.pickOption
+//        let draggableDiv = document.getElementById('pick-option')
+        let draggableDiv = this.$refs.pickOption
         this.isMouseButtonDown = true
         this.mousePositionOffset = [
           draggableDiv.offsetLeft - event.clientX,
@@ -98,8 +98,8 @@
       },
       draggableDivMouseMove (event) {
         // // debugger
-        let draggableDiv = document.getElementById('pick-option')
-        // let draggableDiv = this.$refs.pickOption
+//        let draggableDiv = document.getElementById('pick-option')
+        let draggableDiv = this.$refs.pickOption
         event.preventDefault()
         if (this.isMouseButtonDown) {
           this.mousePosition = {
@@ -112,8 +112,8 @@
       },
       pickOptionListener (opt) {
         // debugger
-        let draggableDiv = document.getElementById('pick-option')
-        // let draggableDiv = this.$refs.pickOption
+//        let draggableDiv = document.getElementById('pick-option')
+        let draggableDiv = this.$refs.pickOption
         if (opt === 1) {
           if (draggableDiv) {
             draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
@@ -222,7 +222,7 @@
             this.updateNumericListCount(1)
           }
           let styleDiv = document.getElementById('custom-styles')
-          // let styleDiv = this.$refs.customStyles
+//          let styleDiv = this.$parent.$refs.customStyles
           let className = 'number-' + this.numericListCount
           styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
           // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
@@ -300,14 +300,15 @@
         window.print()
       },
       prepareDownload () {
-        let app = document.getElementById('app')
-        // let app = this.$refs.app
-        let content = document.getElementById('contract-section')
-        // let content = this.$refs.contractSection
+        debugger
+//        let app = document.getElementById('app')
+        let app = this.$parent.$refs.app
+//        let content = document.getElementById('contract-section')
+        let content = this.$refs.contractSection
         let htmlDoc = content.cloneNode(true)
         app.appendChild(htmlDoc)
         let styles = document.getElementById('custom-styles')
-        // let styles = this.$refs.customStyles
+//        let styles = this.$parent.$refs.customStyles
         let wrapper = document.createElement('div')
         let innerWrapper = document.createElement('div')
         computedToInline(htmlDoc, true) // add all styles to inline

@@ -6,8 +6,8 @@
       let style = document.createElement('style')
       style.id = 'custom-styles'
       style.setAttribute('ref', 'customStyle')
-      let app = document.getElementById('app')
-      // let app = this.$refs.app
+//      let app = document.getElementById('app')
+      let app = this.$refs.app
       app.appendChild(style)
     },
     computed: { // get data from store.js
