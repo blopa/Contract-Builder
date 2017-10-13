@@ -300,6 +300,8 @@ You can create complex tree decisions using the field ``depends``. The following
 - **v0.0.5:**
 	- [Feature] Remade everything using Vue.js
 	- [Feature] Rich Text working with Google Spreadsheet
+
+*DEPRECATED:*
 - **v0.0.4:**
 	- [Feature] Add option to upload .xls Spreadsheet file
 	- [Feature] Layout improvements
@@ -326,6 +328,7 @@ A: Thank you! You can help by codding more features, creating pull requests, or 
 - Add list of recent used documents
 - Add option to save a built contract
 - Add option to save contract variables
+- Add option to download .docx file for vue.js version
 
 ## License
 MIT License

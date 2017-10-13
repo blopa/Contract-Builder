@@ -335,7 +335,7 @@
     text-transform: uppercase;
   }
   #pick-option {
-    background-color: rgba(24, 113, 96, 0.72);
+    background-color: rgba(44, 62, 80, 0.88);
     /* margin: 0 auto; */
     z-index: 999 !important;
     /* display: table-cell; */
@@ -347,11 +347,12 @@
     left: 50%;
     width: 400px;
     text-align: center;
-    border: 2px solid #06776d;
+    border: 2px solid #25313e;
     /*display: none;*/
     color: #ffffff;
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.47);
-    border-radius: 20px;
+    border-radius: 5px;
+    cursor: all-scroll;
   }
   .left-content{
     float: left;
