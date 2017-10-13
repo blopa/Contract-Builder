@@ -1,61 +1,36 @@
-<template>
-  <div>
-    <div class="no-print">
-      <h1>{{ contractName }}</h1>
-      <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
-    </div>
-    <div>
-      <section id="variables-menu" class="no-print" v-show="showContract">
-        <p>Variables</p>
-        <div v-for="(value, key, index) in variables">
-          <label>{{<abbr>{{ key }}</abbr>}}</label> <input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">
-        </div>
-      </section>
-      <section id="contract-section" v-if="showContract">
-        <div v-for="section in contract">
-          <p v-html="section.content"></p>
-        </div>
-      </section>
-    </div>
-    <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print">
-      <p>Add "{{ current.description }}"?</p>
-      <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
-      <button type="button" class="btn btn-danger" v-on:click="JSONPath(decisions, 0)">No</button>
-    </div>
-  </div>
-</template>
-
 <script>
+  import VarInput from '@/components/VarInput.vue'
+  import { mapGetters } from 'vuex'
+  import Vue from 'vue'
+
   export default {
     name: 'ContractBuilder',
+    components: {
+      VarInput
+    },
+    destroyed: function () {
+      this.updateContract([])
+    },
     mounted: function () {
       if (this.decisions.length > 0) {
         this.showButton = true
         this.pickOptionListener(1)
       } else if (this.contract.length > 0) {
         this.showContract = true
+      } else {
+        this.$router.push('/')
       }
-      debugger
+      // debugger
     },
     computed: { // get data from store.js
-      decisions () {
-        return this.$store.getters.getDecisionsTree // method from store.js (Vuex)
-      },
-      current () {
-        return this.$store.getters.getCurrentNode // method from store.js (Vuex)
-      },
-      contract () {
-        return this.$store.getters.getContract // method from store.js (Vuex)
-      },
-      contractName () {
-        return this.$store.getters.getContractName // method from store.js (Vuex)
-      },
-      variables () {
-        return this.$store.getters.getVariables // method from store.js (Vuex)
-      },
-      numericListCount () {
-        return this.$store.getters.getNumericListCount // method from store.js (Vuex)
-      }
+      ...mapGetters({
+        decisions: 'getDecisionsTree',
+        current: 'getCurrentNode',
+        contract: 'getContract',
+        contractName: 'getContractName',
+        variables: 'getVariables',
+        numericListCount: 'getNumericListCount'
+      })
     },
     data () {
       return {
@@ -65,7 +40,12 @@
         isMouseButtonDown: false,
         mousePositionOffset: [],
         mousePosition: {},
-        lastItemType: ''
+        lastItemType: '',
+        dynamicComponents: [],
+        inputVars: {},
+        showVariableInput: [],
+        hideMenu: true,
+        compCount: 1
       }
     },
     methods: {
@@ -97,8 +77,8 @@
         this.$store.commit('updateNumericListCount', value)
       },
       draggableDivMouseDown (event) {
-        // debugger
-        var draggableDiv = document.getElementById('pick-option')
+        // // debugger
+        let draggableDiv = document.getElementById('pick-option')
         this.isMouseButtonDown = true
         this.mousePositionOffset = [
           draggableDiv.offsetLeft - event.clientX,
@@ -106,12 +86,12 @@
         ]
       },
       draggableDivMouseUp () {
-        // debugger
+        // // debugger
         this.isMouseButtonDown = false
       },
       draggableDivMouseMove (event) {
-        // debugger
-        var draggableDiv = document.getElementById('pick-option')
+        // // debugger
+        let draggableDiv = document.getElementById('pick-option')
         event.preventDefault()
         if (this.isMouseButtonDown) {
           this.mousePosition = {
@@ -123,8 +103,8 @@
         }
       },
       pickOptionListener (opt) {
-        // debugger
-        var draggableDiv = document.getElementById('pick-option')
+        // // debugger
+        let draggableDiv = document.getElementById('pick-option')
         if (opt === 1) {
           draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
           document.addEventListener('mouseup', this.draggableDivMouseUp, true)
@@ -138,20 +118,20 @@
       startDecisions () {
         this.showContract = true
         this.showButton = false
-        debugger
+        // debugger
         this.JSONPath(this.decisions, 0) // first call to genHTML and choices
       },
       JSONPath (json, nodeIndex) {
-        var $this = this
-        debugger
+        let $this = this
+        // debugger
         console.log('Current node: ' + nodeIndex)
-        var found = false
-        var tempPaths = []
-        var mandatoryCount = 0
-        var len = json.length
+        let found = false
+        let tempPaths = []
+        let mandatoryCount = 0
+        let len = json.length
 
         json.forEach(function (item) {
-          debugger
+          // debugger
           if (!found) {
             if (item.mandatory) {
               // generate HTML
@@ -165,7 +145,6 @@
             } else {
               // generate choices
               $this.updateCurrent(item)
-              $this.generateChoice(item)
               found = true
             }
           } else {
@@ -179,14 +158,14 @@
           this.auxPath.push(tempPaths)
         }
         if ((!found) && (this.decisions.length > 0)) {
-          debugger
+          // debugger
           found = this.JSONPath(this.decisions, nodeIndex + 1)
         }
         if (nodeIndex === 0) {
-          debugger
+          // debugger
           len = this.auxPath.length
-          var aux = []
-          for (var i = (len - 1); i >= 0; i--) {
+          let aux = []
+          for (let i = (len - 1); i >= 0; i--) {
             aux = this.auxPath[i].concat(aux) // merges arrays
           }
           this.auxPath = []
@@ -197,59 +176,34 @@
         }
         return found
       },
-      updateVarValue (value, variable) {
-        if (value === '') {
-          value = '{{' + variable + '}}'
-        }
-        debugger
-        this.updateVariableContent(variable, value)
-        var contract = this.contract.slice(0)
-        contract.forEach(function (section) {
-          debugger
-          var changed = false
-          var wrapper = document.createElement('div')
-          wrapper.innerHTML = section.content
-          var elements = wrapper.getElementsByTagName('abbr')
-          var len = elements.length
-          for (var i = 0; i < len; i++) {
-            var varName = elements[i].getAttribute('data-bind')
-            if (varName === variable) {
-              elements[i].innerHTML = value
-              changed = true
-            }
-          }
-          if (changed) {
-            section.content = wrapper.innerHTML
-          }
+      prettifyVarName (varName) {
+        return varName.replace(/_/g, ' ').toLowerCase().replace(/^.|\s\S/g, function (w) {
+          return w.toUpperCase()
         })
-        this.updateContract(contract)
       },
-      parseContractVariables (item) {
-        var match = item.content.match(/{{\s*[\w.]+\s*}}/g)
+      toggleVariableMenu () {
+        this.hideMenu = !this.hideMenu
+      },
+      toggleVariableInput (item) {
+        let match = item.content.match(/{{\s*[\w.]+\s*}}/g)
         if (match) {
-          var vueTemp = match.map(function (x) {
+          let $this = this
+          let vueTemp = match.map(function (x) {
             return x.match(/[\w.]+/)[0]
           })
-          this.addVariables(vueTemp)
-          console.log(this.variables)
-          var $this = this
           vueTemp.forEach(function (variable) {
-            var varName = '{{' + variable + '}}'
-            var varContent = $this.variables[variable]
-            if ((varContent === undefined) || (varContent === '')) {
-              varContent = varName
-            }
-            var pattern = new RegExp(varName, 'g')
-            item.content = item.content.replace(pattern, '<abbr data-bind="' + variable + '">' + varContent + '</abbr>')
+            $this.showVariableInput[variable] = true
           })
         }
         return item
       },
       generateHTMLContent (item) {
         debugger
-        var wrapper = document.createElement('div')
-        var innerWrapper
-        item = this.parseContractVariables(item)
+        this.toggleVariableInput(item)
+        let wrapper = document.createElement('div')
+        let innerWrapper
+        let element
+        let classes
         if (item.type === 'list') {
           innerWrapper = document.createElement('li')
           innerWrapper.className = item.type
@@ -260,47 +214,61 @@
           if (this.lastItemType !== item.type) {
             this.updateNumericListCount(1)
           }
-          var styleDiv = document.getElementById('custom-styles')
-          var className = 'number-' + this.numericListCount
+          let styleDiv = document.getElementById('custom-styles')
+          let className = 'number-' + this.numericListCount
           styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
           // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type + ' ' + className
-          innerWrapper.innerHTML = item.content
+          element = 'li'
+          classes = item.type + ' ' + className + ' list'
           this.incrementNumericListCount()
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
         } else if (item.type === 'circle-list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'li'
+          classes = item.type + ' list'
         } else if (item.type === 'square-list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'li'
+          classes = item.type + ' list'
+        } else if (item.type === 'list') {
+          element = 'li'
+          classes = item.type
         } else if (item.type === 'title') {
-          innerWrapper = document.createElement('h1')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'h1'
+          classes = item.type
+        } else if (item.type === 'title-center') {
+          element = 'h1'
+          classes = item.type
+        } else if (item.type === 'subtitle-center') {
+          element = 'h2'
+          classes = item.type
         } else if (item.type === 'subtitle') {
-          innerWrapper = document.createElement('h2')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'h2'
+          classes = item.type
+        } else if (item.type === 'paragraph-center') {
+          element = 'p'
+          classes = item.type
         } else { // if (item.type === 'paragraph') {
-          innerWrapper = document.createElement('p')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
+          element = 'p'
+          classes = item.type
         }
+        innerWrapper = document.createElement(element)
+        innerWrapper.className = classes
+        innerWrapper.innerHTML = item.content
+        wrapper.appendChild(innerWrapper)
+        item.content = wrapper.innerHTML
+        let $this = this
+        let compName = 'dynamicComp_' + this.compCount
+        Vue.component(compName, {
+          template: '<div>' + item.content + '</div>',
+          props: ['dynamicContent'],
+          data () {
+            return this.dynamicContent
+          }
+        })
+        Object.keys(this.variables).forEach(function (variable) {
+          debugger
+          Vue.set($this.inputVars, variable, variable.toUpperCase())
+        })
+        this.dynamicComponents.push({name: compName, content: this.$data.inputVars})
+        this.compCount++
         this.lastItemType = item.type
         this.addContractSection(item)
         if (!item.mandatory) {
@@ -313,23 +281,58 @@
           }
           this.JSONPath(this.decisions, 0)
         }
-      },
-      generateChoice (item) {
-        debugger
       }
     }
   }
 </script>
 
+<template>
+  <div>
+    <div class="no-print">
+      <h1>{{ contractName }}</h1>
+      <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
+    </div>
+    <div>
+      <section id="variables-container" class="no-print" :class="{'hide-menu': hideMenu}" v-if="decisions.length === 0">
+        <div id="variables-menu-toggle" class="hide-menu">
+          <button type="button" class="btn btn-success" v-on:click="toggleVariableMenu()">Toggle Menu</button>
+        </div>
+        <div id="variables-menu" :class="{'hide-menu': hideMenu}">
+          <h3>Variables</h3>
+          <!--<div v-for="(value, key, index) in variables">-->
+          <!--<label>{{<abbr>{{ key }}</abbr>}}</label>-->
+          <!--<input class="form-control" type="text" v-bind:placeholder="key" v-on:input="updateVarValue($event.target.value, key)">-->
+          <!--</div>-->
+          <div v-for="(value, key, index) in variables">
+            <div v-show="showVariableInput[key]" class="variableEditor">
+              <label class="col-form-label" :for="key + index">{{ prettifyVarName(key) }}</label>
+              <var-input :id="key + index" class="form-control" v-model="inputVars" :inputField="key"></var-input>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="contract-section" v-show="showContract">
+        <!--<div v-for="section in contract">-->
+          <!--<p v-html="section.content"></p>-->
+        <!--</div>-->
+        <div v-for="dynamicComponent in dynamicComponents">
+          <p :is="dynamicComponent.name" :dynamicContent="dynamicComponent.content"></p>
+        </div>
+      </section>
+    </div>
+    <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print">
+      <p>Add "{{ current.description }}"?</p>
+      <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
+      <button type="button" class="btn btn-danger" v-on:click="JSONPath(decisions, 0)">No</button>
+    </div>
+  </div>
+</template>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  #contract-section{
-    white-space: pre-wrap;
-    padding: 30mm 20mm 20mm 30mm;
-    width: 210mm;
-    margin: 0 auto;
-    text-align: justify;
-    /*float: left;*/
+  h1 {
+    color: #FFFFFF;
+    text-transform: uppercase;
   }
   #pick-option {
     background-color: rgba(24, 113, 96, 0.72);
@@ -353,10 +356,62 @@
   .left-content{
     float: left;
   }
-  #variables-menu{
+  #variables-container{
     width: 400px;
     float: right;
-    position: absolute;
+    position: fixed;
     right: 0;
+  }
+  #variables-menu{
+    width: 400px;
+    background-color: #2c3e50;
+    position: fixed;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 50%;
+    border: 1px solid #25313e;
+    padding: 5px;
+    color: #FFFFFF;
+  }
+  #variables-menu-toggle {
+    display: none;
+    width: 100px;
+    margin-left: 270px;
+    margin-bottom: 10px;
+  }
+  @media screen and (max-width: 1611px) {
+    #variables-menu.hide-menu {
+      display: none !important;
+      background-color: #2C3E50 !important;
+    }
+    #variables-container.hide-menu {
+      /*width: 100px !important;*/
+    }
+    #variables-menu-toggle.hide-menu {
+      display: block !important;
+    }
+  }
+  .variableEditor label{
+    font-weight: bold;
+  }
+  .variableEditor {
+    border-bottom: 1px solid #25313e;
+    padding-bottom: 5px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #2c3e50;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    background-color: #25313e;
   }
 </style>
