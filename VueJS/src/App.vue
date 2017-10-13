@@ -144,7 +144,7 @@
   #contract-section .list{
     list-style-type: none;
     margin-left: 40px;
-    text-indent: -23px;
+    /*text-indent: -23px;*/
     margin-bottom: 1rem;
   }
   #contract-section p {

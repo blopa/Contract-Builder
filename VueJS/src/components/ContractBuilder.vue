@@ -214,13 +214,7 @@
         let innerWrapper
         let element
         let classes
-        if (item.type === 'list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
-        } else if (item.type === 'numeric-list') {
+        if (item.type === 'numeric-list') {
           if (this.lastItemType !== item.type) {
             this.updateNumericListCount(1)
           }
@@ -262,6 +256,12 @@
         innerWrapper = document.createElement(element)
         innerWrapper.className = classes
         innerWrapper.innerHTML = item.content
+        if ((item.type === 'numeric-list') || (item.type === 'circle-list') || (item.type === 'square-list') || (item.type === 'list')) {
+          debugger
+          let auxWrapper = innerWrapper.cloneNode(true)
+          innerWrapper = document.createElement('ul')
+          innerWrapper.appendChild(auxWrapper)
+        }
         wrapper.appendChild(innerWrapper)
         item.content = wrapper.innerHTML
         let $this = this
