@@ -12,12 +12,6 @@
 ## About
 Contract Builder is a free open-source project that allows anyone to easily maintain and build any kind of contract (legal documents, lawsuit, rent, agreements, construction and so on) using Google Spreadsheets. This was develop as a personal project to help a friend who was struggling spending up to an hour to make a custom contract, now she is able to do it in less than 5 minutes. Hooray! **[TRY IT NOW](https://blopa.github.io/contract/index.html).**
 
-## Libraries
-- For the jQuery version ( < 0.0.4 ) of this project I'm using [jQuery](https://github.com/jquery/jquery), [Sheetrock](https://github.com/chriszarate/sheetrock), [html-docx-js](https://github.com/evidenceprime/html-docx-js) and [Bootstrap](https://github.com/twbs/bootstrap).
-- For the vue.js version ( > 0.0.4 )of this project I'm using [vue.js](https://github.com/vuejs/vue), [html-docx-js](https://github.com/evidenceprime/html-docx-js) and [Bootstrap](https://github.com/twbs/bootstrap).
-
-So a big thanks to all the developers that worked really hard on these libs and make our day easier :D and also a big thanks to [cdnjs.com](https://cdnjs.com/) and [jsdelivr.com](https://www.jsdelivr.com/) for hosting those libs for us.
-
 ## Features
 - Parse data from Google Spreadsheet
 - Use HTML to enhance your contract
@@ -49,6 +43,16 @@ First of all you need to create a Google Spreadsheet following the same rules as
 - **disabled**: Disable row
 
 So whenever you want a part of the contract to be only available when certain other part is on the contract, you should use the ``depends`` field. One row can depend of another row that also depends on another and so on. Use your creativity.
+
+## Libraries
+- For the jQuery version ( < 0.0.4 ) of this project I'm using [jQuery](https://github.com/jquery/jquery), [Sheetrock](https://github.com/chriszarate/sheetrock), [html-docx-js](https://github.com/evidenceprime/html-docx-js) and [Bootstrap](https://github.com/twbs/bootstrap).
+- For the vue.js version ( > 0.0.4 )of this project I'm using [vue.js](https://github.com/vuejs/vue), [html-docx-js](https://github.com/evidenceprime/html-docx-js) and [Bootstrap](https://github.com/twbs/bootstrap).
+- Honorable mentions: [babel](https://github.com/babel/babel), [webpack](https://github.com/webpack/webpack), [Vuex](https://github.com/vuejs/vuex) and [IntelliJ IDEA](https://github.com/JetBrains/intellij-community), 
+
+So a big thanks to all the developers that worked really hard on these libs and make our day easier :D and also a big thanks to [cdnjs.com](https://cdnjs.com/) and [jsdelivr.com](https://www.jsdelivr.com/) for hosting those libs for us.
+
+## Deployment
+Run `npm run build` then copy the `dist/` folder into your website root directory. Done.
 
 ## Example
 You can create complex tree decisions using the field ``depends``. The following ``JSON`` is a result of [this Google Spreadsheet](https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/edit). For a better view of the ``JSON`` [click here](https://codebeautify.org/jsonviewer/cba7783b).
@@ -295,6 +299,7 @@ You can create complex tree decisions using the field ``depends``. The following
 ## Release Notes
 - **v0.0.5:**
 	- [Feature] Remade everything using Vue.js
+	- [Feature] Rich Text working with Google Spreadsheet
 - **v0.0.4:**
 	- [Feature] Add option to upload .xls Spreadsheet file
 	- [Feature] Layout improvements
@@ -318,9 +323,19 @@ A: I can try. Open a issue and I'll see what I can do.
 A: Thank you! You can help by codding more features, creating pull requests, or donating using Bitcoin: **1BdL9w4SscX21b2qeiP1ApAFNAYhPj5GgG**
 
 ## TODO
-- Create TODO list
+- Add list of recent used documents
+- Add option to save a built contract
+- Add option to save contract variables
 
 ## License
-Free. Don't forget to star :D and send pull requests. :D
+MIT License
+
+Copyright (c) 2017 blopa
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 **Free Software, Hell Yeah!**
