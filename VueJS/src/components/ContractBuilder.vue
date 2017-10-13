@@ -261,7 +261,7 @@
         innerWrapper.className = classes
         innerWrapper.innerHTML = item.content
         if ((item.type === 'numeric-list') || (item.type === 'circle-list') || (item.type === 'square-list') || (item.type === 'list')) {
-          debugger
+          // debugger
           let auxWrapper = innerWrapper.cloneNode(true)
           innerWrapper = document.createElement('ul')
           innerWrapper.appendChild(auxWrapper)
@@ -303,6 +303,8 @@
         debugger
 //        let app = document.getElementById('app')
         let app = this.$parent.$refs.app
+        let downloadButton = this.$refs.downloadButton
+        downloadButton.disabled = true
 //        let content = document.getElementById('contract-section')
         let content = this.$refs.contractSection
         let htmlDoc = content.cloneNode(true)
@@ -318,6 +320,7 @@
         let converted = _DOCX.asBlob(wrapper.innerHTML)
         saveAs(converted, 'contract.docx')
         app.removeChild(htmlDoc)
+        downloadButton.disabled = false
       }
     }
   }
@@ -336,7 +339,7 @@
             <button type="button" class="btn btn-info btn-menu" v-on:click="preparePrint()">Print</button>
           </div>
           <div>
-            <button type="button" class="btn btn-info btn-menu" v-on:click="prepareDownload()">Download</button>
+            <button type="button" class="btn btn-info btn-menu" v-on:click="prepareDownload()" ref="downloadButton">Download</button>
           </div>
         </div>
         <div id="variables-menu-toggle" class="hide-menu">
