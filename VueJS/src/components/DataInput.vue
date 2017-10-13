@@ -158,11 +158,11 @@
           $this.decisions.push(tempObject)
         })
         collDependency = this.decisions.filter(function (item) { // get all objects that has dependency
-          // // debugger
+          // debugger
           return (item.depends)
         })
         let auxObj = this.decisions.filter(function (item) { // get all objects that no has dependency
-          // // debugger
+          // debugger
           return (!item.depends)
         })
         this.updateDecisions(auxObj)
@@ -175,7 +175,7 @@
         // debugger
         while (!stop) {
           collDependency.forEach(function (item) {
-            // // debugger
+            // debugger
             found = $this.findFather($this.decisions, item)
             if (found) {
               i++

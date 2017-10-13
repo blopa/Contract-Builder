@@ -11,6 +11,9 @@
     components: {
       VarInput
     },
+    beforeDestroy: function () {
+      this.pickOptionListener(0)
+    },
     destroyed: function () {
       this.updateContract([])
     },
@@ -106,14 +109,18 @@
         }
       },
       pickOptionListener (opt) {
-        // // debugger
+        // debugger
         let draggableDiv = document.getElementById('pick-option')
         if (opt === 1) {
-          draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
+          if (draggableDiv) {
+            draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
+          }
           document.addEventListener('mouseup', this.draggableDivMouseUp, true)
           document.addEventListener('mousemove', this.draggableDivMouseMove, true)
         } else {
-          draggableDiv.removeEventListener('mousedown', this.draggableDivMouseDown, true)
+          if (draggableDiv) {
+            draggableDiv.removeEventListener('mousedown', this.draggableDivMouseDown, true)
+          }
           document.removeEventListener('mouseup', this.draggableDivMouseUp, true)
           document.removeEventListener('mousemove', this.draggableDivMouseMove, true)
         }
@@ -314,7 +321,7 @@
   <div>
     <div class="no-print">
       <h1>{{ contractName }}</h1>
-      <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
+      <button id="start-building" v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start Building</button>
     </div>
     <div>
       <section id="variables-container" class="no-print" :class="{'hide-menu': hideMenu}" v-if="decisions.length === 0">
@@ -368,6 +375,10 @@
   }
   .btn-menu {
     width: 100%;
+  }
+  #start-building {
+    width: 400px;
+    height: 100px;
   }
   #pick-option {
     background-color: rgba(44, 62, 80, 0.88);
