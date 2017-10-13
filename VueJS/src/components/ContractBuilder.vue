@@ -198,7 +198,7 @@
         return item
       },
       generateHTMLContent (item) {
-        debugger
+        // debugger
         this.toggleVariableInput(item)
         let wrapper = document.createElement('div')
         let innerWrapper
@@ -264,7 +264,7 @@
           }
         })
         Object.keys(this.variables).forEach(function (variable) {
-          debugger
+          // debugger
           Vue.set($this.inputVars, variable, variable.toUpperCase())
         })
         this.dynamicComponents.push({name: compName, content: this.$data.inputVars})
@@ -273,7 +273,7 @@
         this.addContractSection(item)
         if (!item.mandatory) {
           if (item.childs.length > 0) {
-            debugger
+            // debugger
             let len = item.childs.length
             for (var i = (len - 1); i >= 0; i--) {
               this.addDecision(item.childs[i])

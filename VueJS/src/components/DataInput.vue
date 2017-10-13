@@ -61,12 +61,12 @@
         this.parseDataFromURL(spreadsheetId, sheetId)
       },
       parseUpload (event) {
-        debugger
+        // debugger
         let file = event.target.files[0]
         let reader = new FileReader()
         let $this = this
         reader.onload = function (e) {
-          debugger
+          // debugger
           $this.parseSpreadsheetData(e, e.target.result)
         }
         reader.readAsBinaryString(file)
@@ -82,7 +82,7 @@
         xhr.open('GET', url, true)
         xhr.overrideMimeType('text/plain; charset=x-user-defined')
         xhr.onload = function (e) {
-          debugger
+          // debugger
           let data = xhr.responseText
           let f = new File([], 'sample.xlsx', {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
           let reader = new FileReader()
