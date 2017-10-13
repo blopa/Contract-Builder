@@ -2,11 +2,17 @@
   import VarInput from '@/components/VarInput.vue'
   import { mapGetters } from 'vuex'
   import Vue from 'vue'
+  import _DOCX from 'html-docx-js/dist/html-docx'
+  import { saveAs } from 'file-saver'
+  const computedToInline = require('computed-style-to-inline-style')
 
   export default {
     name: 'ContractBuilder',
     components: {
       VarInput
+    },
+    beforeDestroy: function () {
+      this.pickOptionListener(0)
     },
     destroyed: function () {
       this.updateContract([])
@@ -78,7 +84,8 @@
       },
       draggableDivMouseDown (event) {
         // // debugger
-        let draggableDiv = document.getElementById('pick-option')
+//        let draggableDiv = document.getElementById('pick-option')
+        let draggableDiv = this.$refs.pickOption
         this.isMouseButtonDown = true
         this.mousePositionOffset = [
           draggableDiv.offsetLeft - event.clientX,
@@ -91,7 +98,8 @@
       },
       draggableDivMouseMove (event) {
         // // debugger
-        let draggableDiv = document.getElementById('pick-option')
+//        let draggableDiv = document.getElementById('pick-option')
+        let draggableDiv = this.$refs.pickOption
         event.preventDefault()
         if (this.isMouseButtonDown) {
           this.mousePosition = {
@@ -103,14 +111,19 @@
         }
       },
       pickOptionListener (opt) {
-        // // debugger
-        let draggableDiv = document.getElementById('pick-option')
+        // debugger
+//        let draggableDiv = document.getElementById('pick-option')
+        let draggableDiv = this.$refs.pickOption
         if (opt === 1) {
-          draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
+          if (draggableDiv) {
+            draggableDiv.addEventListener('mousedown', this.draggableDivMouseDown, true)
+          }
           document.addEventListener('mouseup', this.draggableDivMouseUp, true)
           document.addEventListener('mousemove', this.draggableDivMouseMove, true)
         } else {
-          draggableDiv.removeEventListener('mousedown', this.draggableDivMouseDown, true)
+          if (draggableDiv) {
+            draggableDiv.removeEventListener('mousedown', this.draggableDivMouseDown, true)
+          }
           document.removeEventListener('mouseup', this.draggableDivMouseUp, true)
           document.removeEventListener('mousemove', this.draggableDivMouseMove, true)
         }
@@ -204,17 +217,12 @@
         let innerWrapper
         let element
         let classes
-        if (item.type === 'list') {
-          innerWrapper = document.createElement('li')
-          innerWrapper.className = item.type
-          innerWrapper.innerHTML = item.content
-          wrapper.appendChild(innerWrapper)
-          item.content = wrapper.innerHTML
-        } else if (item.type === 'numeric-list') {
+        if (item.type === 'numeric-list') {
           if (this.lastItemType !== item.type) {
             this.updateNumericListCount(1)
           }
           let styleDiv = document.getElementById('custom-styles')
+//          let styleDiv = this.$parent.$refs.customStyles
           let className = 'number-' + this.numericListCount
           styleDiv.append(document.createTextNode('.' + className + ':before {content: "' + this.numericListCount + '";margin-left: -20px;margin-right: 15px;}'))
           // $('<style>.number-1:before {content: "1";margin-left: -20px;margin-right: 10px;}</style>')
@@ -252,6 +260,12 @@
         innerWrapper = document.createElement(element)
         innerWrapper.className = classes
         innerWrapper.innerHTML = item.content
+        if ((item.type === 'numeric-list') || (item.type === 'circle-list') || (item.type === 'square-list') || (item.type === 'list')) {
+          // debugger
+          let auxWrapper = innerWrapper.cloneNode(true)
+          innerWrapper = document.createElement('ul')
+          innerWrapper.appendChild(auxWrapper)
+        }
         wrapper.appendChild(innerWrapper)
         item.content = wrapper.innerHTML
         let $this = this
@@ -281,6 +295,32 @@
           }
           this.JSONPath(this.decisions, 0)
         }
+      },
+      preparePrint () {
+        window.print()
+      },
+      prepareDownload () {
+        // debugger
+//        let app = document.getElementById('app')
+        let app = this.$parent.$refs.app
+        let downloadButton = this.$refs.downloadButton
+        downloadButton.disabled = true
+//        let content = document.getElementById('contract-section')
+        let content = this.$refs.contractSection
+        let htmlDoc = content.cloneNode(true)
+        app.appendChild(htmlDoc)
+        let styles = document.getElementById('custom-styles')
+//        let styles = this.$parent.$refs.customStyles
+        let wrapper = document.createElement('div')
+        let innerWrapper = document.createElement('div')
+        computedToInline(htmlDoc, true) // add all styles to inline
+        wrapper.appendChild(styles.cloneNode(true))
+        innerWrapper.innerHTML = htmlDoc.innerHTML
+        wrapper.appendChild(innerWrapper)
+        let converted = _DOCX.asBlob(wrapper.innerHTML)
+        saveAs(converted, 'contract.docx')
+        app.removeChild(htmlDoc)
+        downloadButton.disabled = false
       }
     }
   }
@@ -290,12 +330,20 @@
   <div>
     <div class="no-print">
       <h1>{{ contractName }}</h1>
-      <button v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start</button>
+      <button id="start-building" v-if="showButton" type="button" class="btn btn-primary" v-on:click="startDecisions()">Start Building</button>
     </div>
     <div>
       <section id="variables-container" class="no-print" :class="{'hide-menu': hideMenu}" v-if="decisions.length === 0">
+        <div id="contract-options">
+          <div>
+            <button type="button" class="btn btn-info btn-menu" v-on:click="preparePrint()">Print</button>
+          </div>
+          <div>
+            <button type="button" class="btn btn-info btn-menu" v-on:click="prepareDownload()" ref="downloadButton">Download</button>
+          </div>
+        </div>
         <div id="variables-menu-toggle" class="hide-menu">
-          <button type="button" class="btn btn-success" v-on:click="toggleVariableMenu()">Toggle Menu</button>
+          <button type="button" class="btn btn-primary btn-menu" v-on:click="toggleVariableMenu()">Toggle Menu</button>
         </div>
         <div id="variables-menu" :class="{'hide-menu': hideMenu}">
           <h3>Variables</h3>
@@ -311,7 +359,7 @@
           </div>
         </div>
       </section>
-      <section id="contract-section" v-show="showContract">
+      <section id="contract-section" v-show="showContract" ref="contractSection">
         <!--<div v-for="section in contract">-->
           <!--<p v-html="section.content"></p>-->
         <!--</div>-->
@@ -320,7 +368,7 @@
         </div>
       </section>
     </div>
-    <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print">
+    <div v-show="showContract && (decisions.length > 0)" id="pick-option" class="no-print" ref="pickOption">
       <p>Add "{{ current.description }}"?</p>
       <button type="button" class="btn btn-success" v-on:click="generateHTMLContent(current)">Yes</button>
       <button type="button" class="btn btn-danger" v-on:click="JSONPath(decisions, 0)">No</button>
@@ -333,6 +381,13 @@
   h1 {
     color: #FFFFFF;
     text-transform: uppercase;
+  }
+  .btn-menu {
+    width: 100%;
+  }
+  #start-building {
+    width: 400px;
+    height: 100px;
   }
   #pick-option {
     background-color: rgba(44, 62, 80, 0.88);
@@ -374,13 +429,23 @@
     padding: 5px;
     color: #FFFFFF;
   }
+  #contract-options div{
+    margin-bottom: 10px;
+  }
+  #contract-options {
+    width: 400px;
+  }
   #variables-menu-toggle {
     display: none;
-    width: 100px;
+    width: 120px;
     margin-left: 270px;
     margin-bottom: 10px;
   }
   @media screen and (max-width: 1611px) {
+    #contract-options {
+      width: 120px;
+      margin-left: 270px;
+    }
     #variables-menu.hide-menu {
       display: none !important;
       background-color: #2C3E50 !important;

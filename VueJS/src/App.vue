@@ -5,7 +5,9 @@
     mounted: function () {
       let style = document.createElement('style')
       style.id = 'custom-styles'
-      let app = document.getElementById('app')
+      style.setAttribute('ref', 'customStyle')
+//      let app = document.getElementById('app')
+      let app = this.$refs.app
       app.appendChild(style)
     },
     computed: { // get data from store.js
@@ -17,7 +19,7 @@
 </script>
 
 <template>
-  <div id="app">
+  <div id="app" ref="app">
     <div class="nav-menu no-print">
       <ul>
         <li>
@@ -144,7 +146,7 @@
   #contract-section .list{
     list-style-type: none;
     margin-left: 40px;
-    text-indent: -23px;
+    /*text-indent: -23px;*/
     margin-bottom: 1rem;
   }
   #contract-section p {
