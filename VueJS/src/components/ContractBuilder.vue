@@ -291,11 +291,15 @@
       prepareDownload (contentId) {
         debugger
         let htmlDoc = document.getElementById(contentId)
+        let styles = document.getElementById('custom-styles')
+        let wrapper = document.createElement('div')
         let innerAux = htmlDoc.innerHTML
         computedToInline(htmlDoc, true)
+        wrapper.appendChild(styles)
+        wrapper.appendChild(htmlDoc)
 //        htmlDoc = htmlDoc.replace(/(?:\r\n|\r|\n)/g, '<br/>')
 //        htmlDoc = htmlDoc.replace(/ {2}/g, '&nbsp;&nbsp;') // replace double whitespaces by double &nbsp;
-        let converted = _DOCX.asBlob(htmlDoc.innerHTML)
+        let converted = _DOCX.asBlob(wrapper.innerHTML)
         saveAs(converted, 'contract.docx')
         htmlDoc.innerHTML = innerAux
         htmlDoc.removeAttribute('style')
