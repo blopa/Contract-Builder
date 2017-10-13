@@ -300,7 +300,7 @@
         window.print()
       },
       prepareDownload () {
-        debugger
+        // debugger
 //        let app = document.getElementById('app')
         let app = this.$parent.$refs.app
         let downloadButton = this.$refs.downloadButton

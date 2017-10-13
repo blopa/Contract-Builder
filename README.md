@@ -297,6 +297,9 @@ You can create complex tree decisions using the field ``depends``. The following
 ![ScreenShot](https://raw.githubusercontent.com/blopa/Contract-Builder/master/screenshots/screenshot_3.png)
 
 ## Release Notes
+- **v0.0.6:**
+	- [Bugfix] Fix problem with .docx file style
+	- [Bugfix] Fix some other minor glitches
 - **v0.0.5:**
 	- [Feature] Remade everything using Vue.js
 	- [Feature] Rich Text working with Google Spreadsheet
@@ -328,7 +331,6 @@ A: Thank you! You can help by codding more features, creating pull requests, or 
 - Add list of recent used documents
 - Add option to save a built contract
 - Add option to save contract variables
-- Add option to download .docx file for vue.js version
 
 ## License
 MIT License
