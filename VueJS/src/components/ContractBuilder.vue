@@ -2,6 +2,9 @@
   import VarInput from '@/components/VarInput.vue'
   import { mapGetters } from 'vuex'
   import Vue from 'vue'
+  import _DOCX from 'html-docx-js/dist/html-docx'
+  import { saveAs } from 'file-saver'
+  const computedToInline = require('computed-style-to-inline-style')
 
   export default {
     name: 'ContractBuilder',
@@ -281,6 +284,21 @@
           }
           this.JSONPath(this.decisions, 0)
         }
+      },
+      preparePrint () {
+        window.print()
+      },
+      prepareDownload (contentId) {
+        debugger
+        let htmlDoc = document.getElementById(contentId)
+        let innerAux = htmlDoc.innerHTML
+        computedToInline(htmlDoc, true)
+//        htmlDoc = htmlDoc.replace(/(?:\r\n|\r|\n)/g, '<br/>')
+//        htmlDoc = htmlDoc.replace(/ {2}/g, '&nbsp;&nbsp;') // replace double whitespaces by double &nbsp;
+        let converted = _DOCX.asBlob(htmlDoc.innerHTML)
+        saveAs(converted, 'contract.docx')
+        htmlDoc.innerHTML = innerAux
+        htmlDoc.removeAttribute('style')
       }
     }
   }
@@ -294,8 +312,16 @@
     </div>
     <div>
       <section id="variables-container" class="no-print" :class="{'hide-menu': hideMenu}" v-if="decisions.length === 0">
+        <div id="contract-options">
+          <div>
+            <button type="button" class="btn btn-info btn-menu" v-on:click="preparePrint()">Print</button>
+          </div>
+          <div>
+            <button type="button" class="btn btn-info btn-menu" v-on:click="prepareDownload('contract-section')">Download</button>
+          </div>
+        </div>
         <div id="variables-menu-toggle" class="hide-menu">
-          <button type="button" class="btn btn-success" v-on:click="toggleVariableMenu()">Toggle Menu</button>
+          <button type="button" class="btn btn-primary btn-menu" v-on:click="toggleVariableMenu()">Toggle Menu</button>
         </div>
         <div id="variables-menu" :class="{'hide-menu': hideMenu}">
           <h3>Variables</h3>
@@ -333,6 +359,9 @@
   h1 {
     color: #FFFFFF;
     text-transform: uppercase;
+  }
+  .btn-menu {
+    width: 100%;
   }
   #pick-option {
     background-color: rgba(44, 62, 80, 0.88);
@@ -374,13 +403,23 @@
     padding: 5px;
     color: #FFFFFF;
   }
+  #contract-options div{
+    margin-bottom: 10px;
+  }
+  #contract-options {
+    width: 400px;
+  }
   #variables-menu-toggle {
     display: none;
-    width: 100px;
+    width: 120px;
     margin-left: 270px;
     margin-bottom: 10px;
   }
   @media screen and (max-width: 1611px) {
+    #contract-options {
+      width: 120px;
+      margin-left: 270px;
+    }
     #variables-menu.hide-menu {
       display: none !important;
       background-color: #2C3E50 !important;
