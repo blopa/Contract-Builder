@@ -12,7 +12,7 @@
     </section>
     <section>
       <h2>Features</h2>
-      <p>Lorem ipsum.</p>
+      <p>Contract Builder have plenty features to help you build that borring and complex contract withing minutes. Check below</p>
       <ul>
         <li>Parse data from Google Spreadsheet</li>
         <li>Use HTML to enhance your contract</li>
@@ -30,7 +30,7 @@
     </section>
     <section>
       <h2>Usage</h2>
-      <p>First of all you need to create a Google Spreadsheet or .xls file following the same rules as this one (you can <a href="https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/copy">make a copy</a> or <a href="https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=0">download it</a> if you like) and populate with your contract informations.</p>
+      <p>First of all you need to create a Google Spreadsheet or .xls file following the same rules as <a href="https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/">this one</a> (you can <a href="https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/copy">make a copy</a> or <a href="https://docs.google.com/spreadsheets/d/1HFGm_cSH_XeZtxfREusftu-4S1LYZeAVSVjWMmsRHtY/export?format=xlsx&gid=0">download it</a> if you like) and populate with your contract informations.</p>
 
       <ul>
         <li><b>id:</b> The identification of the row, it can be anything but must be unique</li>
