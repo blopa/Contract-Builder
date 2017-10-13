@@ -47,7 +47,7 @@ So whenever you want a part of the contract to be only available when certain ot
 ## Libraries
 - For the jQuery version ( < 0.0.4 ) of this project I'm using [jQuery](https://github.com/jquery/jquery), [Sheetrock](https://github.com/chriszarate/sheetrock), [html-docx-js](https://github.com/evidenceprime/html-docx-js) and [Bootstrap](https://github.com/twbs/bootstrap).
 - For the vue.js version ( > 0.0.4 )of this project I'm using [vue.js](https://github.com/vuejs/vue), [html-docx-js](https://github.com/evidenceprime/html-docx-js) and [Bootstrap](https://github.com/twbs/bootstrap).
-- Honorable mentions: [babel](https://github.com/babel/babel), [webpack](https://github.com/webpack/webpack), [Vuex](https://github.com/vuejs/vuex) and [IntelliJ IDEA](https://github.com/JetBrains/intellij-community), 
+- Honorable mentions: [babel](https://github.com/babel/babel), [webpack](https://github.com/webpack/webpack), [Vuex](https://github.com/vuejs/vuex), [IntelliJ IDEA](https://github.com/JetBrains/intellij-community) and [Squarespace](https://logo.squarespace.com).
 
 So a big thanks to all the developers that worked really hard on these libs and make our day easier :D and also a big thanks to [cdnjs.com](https://cdnjs.com/) and [jsdelivr.com](https://www.jsdelivr.com/) for hosting those libs for us.
 
