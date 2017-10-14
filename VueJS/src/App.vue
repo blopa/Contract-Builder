@@ -144,6 +144,7 @@
     background-color: #FFFFFF;
     display: table;
     table-layout: fixed;
+    box-shadow: 10px 10px 25px #888888;
   }
   #contract-section .no-doc {
 
@@ -155,8 +156,12 @@
     font-size: 13pt;
   }
   #contract-section .page-break-warning{
-    background-color: #859c98;
+    background-color: #18bc9c;
     text-align: center;
+    font-weight: bold;
+    margin-right: -30mm;
+    margin-left: -50mm;
+    margin-bottom: 30mm;
   }
   #contract-section .page-break{
     /*page-break-before: always !important;*/

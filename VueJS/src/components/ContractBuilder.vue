@@ -275,7 +275,7 @@
           innerWrapper.appendChild(auxWrapper.cloneNode(true))
           auxWrapper = document.createElement('div')
           auxWrapper.title = 'Page Break'
-          auxWrapper.innerHTML = 'Page Break (this text won\'t be displayed in final version)' // <abbr style="color: #ff0000">PAGE BREAK HERE</abbr>
+          auxWrapper.innerHTML = 'PAGE BREAK' // 'Page Break (this text won\'t be displayed in final version)' // <abbr style="color: #ff0000">PAGE BREAK HERE</abbr>
           auxWrapper.className = 'no-print no-doc page-break-warning'
           innerWrapper.appendChild(auxWrapper.cloneNode(true))
           auxWrapper = document.createElement('div') // needed to work on printing
