@@ -121,6 +121,14 @@
   @page {
     margin: 2cm 2cm 2cm 4cm;
   }
+  /*@page document-page{*/
+    /*mso-page-orientation: landscape;*/
+    /*size: 841.95pt 595.35pt; !* EU A4 *!*/
+    /*!* size:11.0in 8.5in; *! !* US Letter *!*/
+  /*}*/
+  /*div.document-page {*/
+    /*page: document-page;*/
+  /*}*/
   #contract-section {
     /*font-family: 'Courier New', Courier, monospace;*/
     /*font-family: 'Times New Roman', Times, serif;*/
@@ -137,11 +145,25 @@
     display: table;
     table-layout: fixed;
   }
+  #contract-section .no-doc {
+
+  }
   #contract-section h1 {
     font-size: 14pt;
   }
   #contract-section h2 {
     font-size: 13pt;
+  }
+  #contract-section .page-break-warning{
+    background-color: #859c98;
+    text-align: center;
+  }
+  #contract-section .page-break{
+    page-break-before: always !important;
+    /*page-break-after: always !important;*/
+    /*break-before: page !important;*/
+    /*break-after: page !important;*/
+    clear: both;
   }
   #contract-section .list{
     list-style-type: none;

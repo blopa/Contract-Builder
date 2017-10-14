@@ -153,7 +153,7 @@
               // $this.updateCurrent(item)
               item.content = item.content.replace(/&#x000a;/g, '<br/>')
               if (item.childs.length > 0) {
-                found = $this.JSONPath(item.childs, nodeIndex + 1)
+                found = !$this.JSONPath(item.childs, nodeIndex + 1)
               }
             } else {
               // generate choices
@@ -187,6 +187,7 @@
             this.pickOptionListener(0)
           }
         }
+        // debugger
         return found
       },
       prettifyVarName (varName) {
@@ -250,6 +251,9 @@
         } else if (item.type === 'subtitle') {
           element = 'h2'
           classes = item.type
+        } else if (item.type === 'page-break') {
+          element = 'br'
+          classes = item.type
         } else if (item.type === 'paragraph-center') {
           element = 'p'
           classes = item.type
@@ -265,6 +269,18 @@
           let auxWrapper = innerWrapper.cloneNode(true)
           innerWrapper = document.createElement('ul')
           innerWrapper.appendChild(auxWrapper)
+        } else if (item.type === 'page-break') {
+          // debugger
+          let auxWrapper = innerWrapper.cloneNode(true)
+          innerWrapper = document.createElement('div')
+          innerWrapper.appendChild(auxWrapper.cloneNode(true))
+          auxWrapper = document.createElement('div')
+          auxWrapper.innerHTML = '!!! PAGE BREAK HERE !!! (this text won\'t be displayed in final version)'
+          auxWrapper.className = 'no-print no-doc page-break-warning'
+          innerWrapper.appendChild(auxWrapper.cloneNode(true))
+          auxWrapper = document.createElement('div') // needed to work on printing
+          auxWrapper.className = item.type
+          innerWrapper.appendChild(auxWrapper)
         }
         wrapper.appendChild(innerWrapper)
         item.content = wrapper.innerHTML
@@ -277,6 +293,7 @@
             return this.dynamicContent
           }
         })
+        // debugger
         Object.keys(this.variables).forEach(function (variable) {
           // debugger
           Vue.set($this.inputVars, variable, variable.toUpperCase())
@@ -300,7 +317,7 @@
         window.print()
       },
       prepareDownload () {
-        // debugger
+        debugger
 //        let app = document.getElementById('app')
         let app = this.$parent.$refs.app
         let downloadButton = this.$refs.downloadButton
@@ -343,9 +360,9 @@
           </div>
         </div>
         <div id="variables-menu-toggle" class="hide-menu">
-          <button type="button" class="btn btn-primary btn-menu" v-on:click="toggleVariableMenu()">Toggle Menu</button>
+          <button type="button" class="btn btn-primary btn-menu" v-on:click="toggleVariableMenu()" v-show="Object.keys(this.variables).length > 0">Toggle Menu</button>
         </div>
-        <div id="variables-menu" :class="{'hide-menu': hideMenu}">
+        <div id="variables-menu" :class="{'hide-menu': hideMenu}" v-show="Object.keys(this.variables).length > 0">
           <h3>Variables</h3>
           <!--<div v-for="(value, key, index) in variables">-->
           <!--<label>{{<abbr>{{ key }}</abbr>}}</label>-->
@@ -359,7 +376,7 @@
           </div>
         </div>
       </section>
-      <section id="contract-section" v-show="showContract" ref="contractSection">
+      <section id="contract-section" v-show="showContract" ref="contractSection" class="document-page">
         <!--<div v-for="section in contract">-->
           <!--<p v-html="section.content"></p>-->
         <!--</div>-->
