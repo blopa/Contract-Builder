@@ -301,6 +301,7 @@ You can create complex tree decisions using the field ``depends``. The following
 ## Release Notes
 - **v0.0.7:**
 	- [Feature] Add option to break page
+	- [Bugfix] Fix problem with decision tree algorithm
 	- [Bugfix] Fix some other minor glitches
 - **v0.0.6:**
 	- [Bugfix] Fix problem with .docx file style

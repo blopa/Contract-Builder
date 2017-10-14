@@ -1,6 +1,6 @@
 {
   "name": "contract-builder",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "Easily build complex contracts",
   "author": "blopa <montenegro.pablo@outlook.com>",
   "private": true,
