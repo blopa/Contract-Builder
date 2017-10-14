@@ -15,11 +15,12 @@ Contract Builder is a free open-source project that allows anyone to easily main
 ## Features
 - Parse data from Google Spreadsheet or .xls file
 - Use Rich Text to enhance your contract
-- 4 different types of "blocks"
+- 5 different types of "blocks"
 	- Title
 	- Subtitle
 	- Paragraph
 	- List
+	- Page Break
 - Download the contract as .docx
 
 ## Usage
@@ -34,6 +35,7 @@ First of all you need to create a Google Spreadsheet following the same rules as
 	- **subtitle-center**: A centralized subtitle for the contract
 	- **paragraph**: A paragraph for the contract
 	- **paragraph-center**: A centralized paragraph for the contract
+	- **page-break**: A page break
 	- **list**: A basic list
 	- **numeric-list**: A list with a incremented number before it
 	- **circle-list**: A list with a circle before it
@@ -46,7 +48,7 @@ So whenever you want a part of the contract to be only available when certain ot
 
 ## Libraries
 - For the jQuery version ( < 0.0.4 ) of this project I'm using [jQuery](https://github.com/jquery/jquery), [Sheetrock](https://github.com/chriszarate/sheetrock), [html-docx-js](https://github.com/evidenceprime/html-docx-js), [FileSaver](https://github.com/eligrey/FileSaver.js/) and [Bootstrap](https://github.com/twbs/bootstrap).
-- For the vue.js version ( > 0.0.4 ) of this project I'm using [vue.js](https://github.com/vuejs/vue), [html-docx-js](https://github.com/evidenceprime/html-docx-js), [FileSaver](https://github.com/eligrey/FileSaver.js/), [computed-style-to-inline-style](https://github.com/lukehorvat/computed-style-to-inline-style) and [Bootstrap](https://github.com/twbs/bootstrap).
+- For the vue.js version ( > 0.0.4 ) of this project I'm using [vue.js](https://github.com/vuejs/vue), [html-docx-js](https://github.com/evidenceprime/html-docx-js), [FileSaver](https://github.com/eligrey/FileSaver.js/) and [Bootstrap](https://github.com/twbs/bootstrap).
 - Honorable mentions: [babel](https://github.com/babel/babel), [webpack](https://github.com/webpack/webpack), [Vuex](https://github.com/vuejs/vuex), [IntelliJ IDEA](https://github.com/JetBrains/intellij-community) and [Squarespace](https://logo.squarespace.com).
 
 So a big thanks to all the developers that worked really hard on these libs and make our day easier :D and also a big thanks to [cdnjs.com](https://cdnjs.com/) and [jsdelivr.com](https://www.jsdelivr.com/) for hosting those libs for us.
@@ -297,6 +299,9 @@ You can create complex tree decisions using the field ``depends``. The following
 ![ScreenShot](https://raw.githubusercontent.com/blopa/Contract-Builder/master/screenshots/screenshot_3.png)
 
 ## Release Notes
+- **v0.0.7:**
+	- [Feature] Add option to break page
+	- [Bugfix] Fix some other minor glitches
 - **v0.0.6:**
 	- [Bugfix] Fix problem with .docx file style
 	- [Bugfix] Fix some other minor glitches

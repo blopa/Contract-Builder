@@ -159,8 +159,8 @@
     text-align: center;
   }
   #contract-section .page-break{
-    page-break-before: always !important;
-    /*page-break-after: always !important;*/
+    /*page-break-before: always !important;*/
+    page-break-after: always !important;
     /*break-before: page !important;*/
     /*break-after: page !important;*/
     clear: both;

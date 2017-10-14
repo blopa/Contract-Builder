@@ -4,7 +4,6 @@
   import Vue from 'vue'
   import _DOCX from 'html-docx-js/dist/html-docx'
   import { saveAs } from 'file-saver'
-  const computedToInline = require('computed-style-to-inline-style')
 
   export default {
     name: 'ContractBuilder',
@@ -275,7 +274,8 @@
           innerWrapper = document.createElement('div')
           innerWrapper.appendChild(auxWrapper.cloneNode(true))
           auxWrapper = document.createElement('div')
-          auxWrapper.innerHTML = '!!! PAGE BREAK HERE !!! (this text won\'t be displayed in final version)'
+          auxWrapper.title = 'Page Break'
+          auxWrapper.innerHTML = 'Page Break (this text won\'t be displayed in final version)' // <abbr style="color: #ff0000">PAGE BREAK HERE</abbr>
           auxWrapper.className = 'no-print no-doc page-break-warning'
           innerWrapper.appendChild(auxWrapper.cloneNode(true))
           auxWrapper = document.createElement('div') // needed to work on printing
@@ -317,27 +317,52 @@
         window.print()
       },
       prepareDownload () {
-        debugger
-//        let app = document.getElementById('app')
-        let app = this.$parent.$refs.app
+        // debugger
+        let app = this.$parent.$refs.app // document.getElementById('app')
         let downloadButton = this.$refs.downloadButton
         downloadButton.disabled = true
-//        let content = document.getElementById('contract-section')
-        let content = this.$refs.contractSection
+        let content = this.$refs.contractSection // document.getElementById('contract-section')
         let htmlDoc = content.cloneNode(true)
-        app.appendChild(htmlDoc)
-        let styles = document.getElementById('custom-styles')
-//        let styles = this.$parent.$refs.customStyles
+        let styles = document.getElementById('custom-styles') // this.$parent.$refs.customStyles dosen't work because this tag is created in execution
+        let stylesClone = styles.cloneNode(true)
         let wrapper = document.createElement('div')
         let innerWrapper = document.createElement('div')
-        computedToInline(htmlDoc, true) // add all styles to inline
-        wrapper.appendChild(styles.cloneNode(true))
+
+        app.appendChild(htmlDoc) // append a clone to main div
+        let descendants = htmlDoc.getElementsByTagName('*')
+
+        for (let i = 0; i < descendants.length; ++i) {
+          this.applyStyle(descendants[i])
+          if (descendants[i].classList.contains('page-break')) { // for some reason, computed properties transforms page-break-before to break-before
+            descendants[i].innerHTML = '<br style="page-break-after: always; clear: both" />'
+            i++
+          }
+          if (descendants[i].classList.contains('no-doc')) {
+            descendants[i].style.display = 'none'
+          }
+        }
+
+        // debugger
+        wrapper.appendChild(stylesClone)
         innerWrapper.innerHTML = htmlDoc.innerHTML
         wrapper.appendChild(innerWrapper)
         let converted = _DOCX.asBlob(wrapper.innerHTML)
-        saveAs(converted, 'contract.docx')
+        saveAs(converted, this.contractName + '.docx')
         app.removeChild(htmlDoc)
         downloadButton.disabled = false
+      },
+      applyStyle (el) {
+        let styles = getComputedStyle(el)
+        for (let key in styles) {
+          let property = key.replace(/-([a-z])/g, function (v) {
+            return v[1].toUpperCase()
+          })
+          try {
+            el.style[property] = styles[key]
+          } catch (err) {
+            console.log('error')
+          }
+        }
       }
     }
   }
