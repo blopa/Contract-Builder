@@ -4,7 +4,6 @@
   import Vue from 'vue'
   import _DOCX from 'html-docx-js/dist/html-docx'
   import { saveAs } from 'file-saver'
-  const computedToInline = require('computed-style-to-inline-style')
 
   export default {
     name: 'ContractBuilder',
@@ -153,7 +152,7 @@
               // $this.updateCurrent(item)
               item.content = item.content.replace(/&#x000a;/g, '<br/>')
               if (item.childs.length > 0) {
-                found = $this.JSONPath(item.childs, nodeIndex + 1)
+                found = !$this.JSONPath(item.childs, nodeIndex + 1)
               }
             } else {
               // generate choices
@@ -187,6 +186,7 @@
             this.pickOptionListener(0)
           }
         }
+        // debugger
         return found
       },
       prettifyVarName (varName) {
@@ -250,6 +250,9 @@
         } else if (item.type === 'subtitle') {
           element = 'h2'
           classes = item.type
+        } else if (item.type === 'page-break') {
+          element = 'br'
+          classes = item.type
         } else if (item.type === 'paragraph-center') {
           element = 'p'
           classes = item.type
@@ -265,6 +268,19 @@
           let auxWrapper = innerWrapper.cloneNode(true)
           innerWrapper = document.createElement('ul')
           innerWrapper.appendChild(auxWrapper)
+        } else if (item.type === 'page-break') {
+          // debugger
+          let auxWrapper = innerWrapper.cloneNode(true)
+          innerWrapper = document.createElement('div')
+          innerWrapper.appendChild(auxWrapper.cloneNode(true))
+          auxWrapper = document.createElement('div')
+          auxWrapper.title = 'Page Break'
+          auxWrapper.innerHTML = 'Page Break (this text won\'t be displayed in final version)' // <abbr style="color: #ff0000">PAGE BREAK HERE</abbr>
+          auxWrapper.className = 'no-print no-doc page-break-warning'
+          innerWrapper.appendChild(auxWrapper.cloneNode(true))
+          auxWrapper = document.createElement('div') // needed to work on printing
+          auxWrapper.className = item.type
+          innerWrapper.appendChild(auxWrapper)
         }
         wrapper.appendChild(innerWrapper)
         item.content = wrapper.innerHTML
@@ -277,6 +293,7 @@
             return this.dynamicContent
           }
         })
+        // debugger
         Object.keys(this.variables).forEach(function (variable) {
           // debugger
           Vue.set($this.inputVars, variable, variable.toUpperCase())
@@ -301,26 +318,51 @@
       },
       prepareDownload () {
         // debugger
-//        let app = document.getElementById('app')
-        let app = this.$parent.$refs.app
+        let app = this.$parent.$refs.app // document.getElementById('app')
         let downloadButton = this.$refs.downloadButton
         downloadButton.disabled = true
-//        let content = document.getElementById('contract-section')
-        let content = this.$refs.contractSection
+        let content = this.$refs.contractSection // document.getElementById('contract-section')
         let htmlDoc = content.cloneNode(true)
-        app.appendChild(htmlDoc)
-        let styles = document.getElementById('custom-styles')
-//        let styles = this.$parent.$refs.customStyles
+        let styles = document.getElementById('custom-styles') // this.$parent.$refs.customStyles dosen't work because this tag is created in execution
+        let stylesClone = styles.cloneNode(true)
         let wrapper = document.createElement('div')
         let innerWrapper = document.createElement('div')
-        computedToInline(htmlDoc, true) // add all styles to inline
-        wrapper.appendChild(styles.cloneNode(true))
+
+        app.appendChild(htmlDoc) // append a clone to main div
+        let descendants = htmlDoc.getElementsByTagName('*')
+
+        for (let i = 0; i < descendants.length; ++i) {
+          this.applyStyle(descendants[i])
+          if (descendants[i].classList.contains('page-break')) { // for some reason, computed properties transforms page-break-before to break-before
+            descendants[i].innerHTML = '<br style="page-break-after: always; clear: both" />'
+            i++
+          }
+          if (descendants[i].classList.contains('no-doc')) {
+            descendants[i].style.display = 'none'
+          }
+        }
+
+        // debugger
+        wrapper.appendChild(stylesClone)
         innerWrapper.innerHTML = htmlDoc.innerHTML
         wrapper.appendChild(innerWrapper)
         let converted = _DOCX.asBlob(wrapper.innerHTML)
-        saveAs(converted, 'contract.docx')
+        saveAs(converted, this.contractName + '.docx')
         app.removeChild(htmlDoc)
         downloadButton.disabled = false
+      },
+      applyStyle (el) {
+        let styles = getComputedStyle(el)
+        for (let key in styles) {
+          let property = key.replace(/-([a-z])/g, function (v) {
+            return v[1].toUpperCase()
+          })
+          try {
+            el.style[property] = styles[key]
+          } catch (err) {
+            console.log('error')
+          }
+        }
       }
     }
   }
@@ -343,9 +385,9 @@
           </div>
         </div>
         <div id="variables-menu-toggle" class="hide-menu">
-          <button type="button" class="btn btn-primary btn-menu" v-on:click="toggleVariableMenu()">Toggle Menu</button>
+          <button type="button" class="btn btn-primary btn-menu" v-on:click="toggleVariableMenu()" v-show="Object.keys(this.variables).length > 0">Toggle Menu</button>
         </div>
-        <div id="variables-menu" :class="{'hide-menu': hideMenu}">
+        <div id="variables-menu" :class="{'hide-menu': hideMenu}" v-show="Object.keys(this.variables).length > 0">
           <h3>Variables</h3>
           <!--<div v-for="(value, key, index) in variables">-->
           <!--<label>{{<abbr>{{ key }}</abbr>}}</label>-->
@@ -359,7 +401,7 @@
           </div>
         </div>
       </section>
-      <section id="contract-section" v-show="showContract" ref="contractSection">
+      <section id="contract-section" v-show="showContract" ref="contractSection" class="document-page">
         <!--<div v-for="section in contract">-->
           <!--<p v-html="section.content"></p>-->
         <!--</div>-->

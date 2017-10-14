@@ -135,20 +135,25 @@
           tempObject.id = item.id
           tempObject.description = item.description
           tempObject.content = item.content
+          if (tempObject.content === undefined) {
+            tempObject.content = ''
+          }
           tempObject.type = item.type
           tempObject.depends = item.depends
           if (tempObject.depends === undefined) {
             tempObject.depends = ''
           }
           tempObject.mandatory = item.mandatory
-          if (tempObject.mandatory.toLowerCase() === 'true') {
+          if (tempObject.mandatory === undefined) {
+            tempObject.mandatory = false
+          } else if (tempObject.mandatory.toLowerCase() === 'true') {
             tempObject.mandatory = true
-          } else { // if (tempObject.mandatory.toLowerCase() === 'true')
+          } else { // if (tempObject.mandatory.toLowerCase() === 'false')
             tempObject.mandatory = false
           }
           tempObject.disabled = item.disabled
           if (tempObject.disabled === undefined) {
-            tempObject.disabled = ''
+            tempObject.disabled = false
           } else if (tempObject.disabled.toLowerCase() === 'true') { // ignore disabled rows
             return
           }

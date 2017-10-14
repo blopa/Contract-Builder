@@ -1,6 +1,6 @@
 {
   "name": "contract-builder",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "Easily build complex contracts",
   "author": "blopa <montenegro.pablo@outlook.com>",
   "private": true,
@@ -14,7 +14,6 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
-    "computed-style-to-inline-style": "^1.1.1",
     "file-saver": "^1.3.3",
     "html-docx-js": "^0.3.1",
     "vue": "^2.4.2",
