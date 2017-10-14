@@ -9,6 +9,10 @@
     <section>
       <h2>Contact</h2>
       <p>To get in contact please access our GitHub project page <a href="https://github.com/blopa/Contract-Builder">here</a></p>
+      <p>And please don't forget to git the project a star, that will help me a lot :D</p>
+      <iframe src="https://ghbtns.com/github-btn.html?user=blopa&repo=Contract-Builder&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+      <iframe src="https://ghbtns.com/github-btn.html?user=blopa&repo=Contract-Builder&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+      <iframe src="https://ghbtns.com/github-btn.html?user=blopa&repo=Contract-Builder&type=fork&count=true&size=large" frameborder="0" scrolling="0" width="158px" height="30px"></iframe>
     </section>
   </div>
 </template>

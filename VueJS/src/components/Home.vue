@@ -17,12 +17,13 @@
         <li>Parse data from Google Spreadsheet</li>
         <li>Use HTML to enhance your contract</li>
         <li>
-          4 different types of "blocks"
+          5 different types of "blocks"
           <ul>
             <li>Title</li>
             <li>Subtitle</li>
             <li>Paragraph</li>
             <li>List</li>
+            <li>Page Break</li>
           </ul>
         </li>
         <li>Download the contract as .docx</li>
@@ -45,7 +46,8 @@
             <li><b>subtitle-center:</b> A centralized subtitle for the contract</li>
             <li><b>paragraph:</b> A paragraph for the contract</li>
             <li><b>paragraph-center:</b> A centralized paragraph for the contract</li>
-            <li><b>list:</b> A basic list </li>
+            <li><b>page-break:</b> A page break</li>
+            <li><b>list:</b> A basic list</li>
             <li><b>numeric-list:</b> A list with a incremented number before it</li>
             <li><b>circle-list:</b> A list with a circle before it</li>
             <li><b>square-list:</b> A list with a square before it</li>
